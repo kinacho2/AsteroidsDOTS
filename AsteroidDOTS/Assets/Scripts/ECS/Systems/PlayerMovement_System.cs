@@ -1,47 +1,46 @@
+using Asteroids.ECS.Components;
 using Unity.Entities;
-using UnityEngine;
-using Unity.Transforms;
-using Unity.Mathematics;
 using Unity.Jobs;
+using Unity.Mathematics;
+using Unity.Transforms;
 
-public class PlayerMovement_System : JobComponentSystem
+namespace Asteroids.ECS.Systems
 {
-    
-
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    public class PlayerMovement_System : JobComponentSystem
     {
-        float deltaTime = Time.DeltaTime;
-        Entities
-            .WithBurst()
-            .ForEach((Entity entity, int entityInQueryIndex, PlayerInputComponent input, ref PlayerMoveComponent move, ref Translation translation, ref Rotation rotation) =>
-                {
-                    var dspeed = input.direction.y * move.acceleration * deltaTime;
-                    var drotation = input.direction.x * math.radians(move.rotationSpeedDeg) * deltaTime;
-                    rotation.Value = math.mul(rotation.Value, quaternion.RotateZ(drotation));
 
-                    ref var velocity = ref move.velocity;
-                    var fordward = math.mul(rotation.Value, math.down());
-
-                    velocity += fordward * dspeed;
-                    var len = math.length(velocity);
-                    if (len > 0)
+        protected override JobHandle OnUpdate(JobHandle inputDeps)
+        {
+            
+            float deltaTime = Time.DeltaTime;
+            Entities
+                .ForEach((Entity entity, int entityInQueryIndex, ref PlayerMoveComponent move, ref Translation translation, ref Rotation rotation, in PlayerInputComponent input) =>
                     {
-                        velocity = velocity / len * math.clamp(len, 0, move.maxSpeed);
+                        var dspeed = input.direction.y * move.acceleration * deltaTime;
+                        var drotation = input.direction.x * math.radians(move.rotationSpeedDeg) * deltaTime;
+                        rotation.Value = math.mul(rotation.Value, quaternion.RotateZ(drotation));
 
-                        translation.Value += velocity * deltaTime;
+                        ref var velocity = ref move.velocity;
+                        var fordward = math.mul(rotation.Value, math.down());
 
-                        ref var value = ref translation.Value;
-                        if (math.abs(value.x) > move.cameraLimits.x)
-                            value.x = -value.x;
-                        if (math.abs(value.y) > move.cameraLimits.y)
-                            value.y = -value.y;
-                    }
+                        velocity += fordward * dspeed;
+                        var len = math.length(velocity);
+                        if (len > 0)
+                        {
+                            velocity = velocity / len * math.clamp(len, 0, move.maxSpeed);
 
-                    
+                            translation.Value += velocity * deltaTime;
 
-                })
-                .Run();
-
-        return default;
+                            ref var value = ref translation.Value;
+                            if (math.abs(value.x) >= move.cameraLimits.x)
+                                value.x = -math.sign(value.x) * move.cameraLimits.x;
+                            if (math.abs(value.y) >= move.cameraLimits.y)
+                                value.y = -math.sign(value.y) * move.cameraLimits.y;
+                        }
+                    })
+                    .Run();
+            inputDeps.Complete();
+            return inputDeps;
+        }
     }
 }
