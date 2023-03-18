@@ -13,12 +13,11 @@ namespace Asteroids.ECS.Systems
             float tr = Input.GetAxis("Vertical");
             float rot = Input.GetAxis("Horizontal");
 
-            Entities.WithAll<PlayerInputComponent, PlayerMoveComponent>()
+            Entities.WithAll<PlayerInputComponent, PlayerStatsComponent>()
                     .WithoutBurst()
-                    .ForEach((Entity entity, int entityInQueryIndex, ref PlayerInputComponent input, ref PlayerMoveComponent move) =>
+                    .ForEach((Entity entity, int entityInQueryIndex, ref PlayerInputComponent input, ref PlayerStatsComponent move) =>
                     {
                         ref var dir = ref input.direction;
-                        move.cameraLimits = Configs.CameraLimits;
                         dir.y = tr;
                         dir.x = -rot;
                     })

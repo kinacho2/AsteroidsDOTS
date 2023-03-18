@@ -7,9 +7,10 @@ namespace Asteroids.Setup
     public class InitializeConfigs : MonoBehaviour
     {
         [SerializeField] Camera Camera;
+        [SerializeField] Material LineMaterial;
         void Awake()
         {
-            Configs.InitializeConfigs(Camera);
+            Configs.InitializeConfigs(Camera, LineMaterial);
             Destroy(gameObject);
         }
 
