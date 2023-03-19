@@ -16,31 +16,31 @@ namespace Asteroids.ECS.Systems
 
             float deltaTime = Time.DeltaTime;
             Entities
-                .WithoutBurst()
+                //.WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex,
-                    ref PlayerStatsComponent move,
+                    ref PlayerStatsComponent stats,
                     ref Translation translation,
                     ref Rotation rotation,
                     ref PhysicsVelocity physics,
-                    in PlayerDataComponent stats,
+                    in PlayerDataComponent data,
                     in PlayerInputComponent input) =>
                 {
-                    var dspeed = input.direction.y * stats.acceleration * deltaTime;
-                    if (move.stunnedTimer > 0)
+                    var dspeed = input.direction.y * data.acceleration * deltaTime;
+                    if (stats.stunnedTimer > 0)
                         dspeed = 0;
                     else
-                        physics.Angular = input.direction.x * math.radians(stats.rotationSpeedDeg);
+                        physics.Angular = input.direction.x * math.radians(data.rotationSpeedDeg);
 
                     //compute velocity
                     var velocity = physics.Linear;
-                    float2 fordward = math.mul(rotation.Value, math.down()).ToFloat2();
+                    var fordward = math.mul(rotation.Value, math.down()).ToFloat2();
                     velocity += fordward * dspeed;
 
                     //clamp velocity
                     var len = math.length(velocity);
                     if (len > 0)
                     {
-                        velocity = velocity / len * math.clamp(len, 0, stats.maxSpeed);
+                        velocity = velocity / len * math.clamp(len, 0, data.maxSpeed);
                         physics.Linear = velocity;
                     }
                 })

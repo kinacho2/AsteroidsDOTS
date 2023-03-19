@@ -7,4 +7,5 @@ public struct PlayerDataComponent : IComponentData
     public float rotationSpeedDeg;
     public float restitution;
     public float stunnedTime;
+    public float shootCooldown;
 }

@@ -12,7 +12,7 @@ namespace Asteroids.ECS.Systems
         {
             float tr = Input.GetAxis("Vertical");
             float rot = Input.GetAxis("Horizontal");
-
+            bool shoot = Input.GetKey(KeyCode.Space);
             Entities.WithAll<PlayerInputComponent, PlayerStatsComponent>()
                     .WithoutBurst()
                     .ForEach((Entity entity, int entityInQueryIndex, ref PlayerInputComponent input, ref PlayerStatsComponent move) =>
@@ -20,6 +20,7 @@ namespace Asteroids.ECS.Systems
                         ref var dir = ref input.direction;
                         dir.y = tr;
                         dir.x = -rot;
+                        input.shoot = shoot;
                     })
                     .Run();
         }

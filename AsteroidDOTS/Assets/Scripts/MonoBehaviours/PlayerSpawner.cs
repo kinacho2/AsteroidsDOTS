@@ -51,6 +51,7 @@ public class PlayerSpawner : MonoBehaviour
             restitution = PlayerData.restitution,
             rotationSpeedDeg = PlayerData.rotationSpeedDeg,
             stunnedTime = PlayerData.stunnedTime,
+            shootCooldown = PlayerData.shootCooldown,
         });
 
     }

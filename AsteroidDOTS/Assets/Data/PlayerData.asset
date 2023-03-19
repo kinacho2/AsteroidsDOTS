@@ -17,4 +17,5 @@ MonoBehaviour:
   <rotationSpeedDeg>k__BackingField: 120
   <restitution>k__BackingField: 0.7
   <stunnedTime>k__BackingField: 1
+  <shootCooldown>k__BackingField: 0.7
   <health>k__BackingField: 3

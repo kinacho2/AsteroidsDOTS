@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 3076392846019290667, guid: 4fa71fb43a51fbe43b06fe79419cee67, type: 3}
+  type: 3
 --- !u!4 &358856814
 Transform:
   m_ObjectHideFlags: 0
@@ -343,7 +344,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 519420031}
-  LineMaterial: {fileID: 2100000, guid: 5df2d849d8f24d5448468faccb9f5c0c, type: 2}
+  MisilePrefab: {fileID: 4608512767964900769, guid: 0b6cedac43863744eae8d8444dedf188, type: 3}
+  AsteroidDB: {fileID: 11400000, guid: f7cdab2ed8f14154bb921a918e305c86, type: 2}
 --- !u!4 &1805921231
 Transform:
   m_ObjectHideFlags: 0

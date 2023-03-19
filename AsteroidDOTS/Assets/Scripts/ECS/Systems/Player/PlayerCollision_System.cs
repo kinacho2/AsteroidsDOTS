@@ -11,11 +11,15 @@ using UnityEngine;
 
 public class PlayerCollision_System : SystemBase
 {
+    private PhysicsWorldSystem physicsWorldSystem;
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        physicsWorldSystem = World.GetExistingSystem<PhysicsWorldSystem>();
+    }
     protected override void OnUpdate()
     {
-        var physicsWorldSystem = World.GetExistingSystem<PhysicsWorldSystem>();
         var physicsWorld = physicsWorldSystem.PhysicsWorld;
-
         var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
         var deltaTime = Time.DeltaTime;
@@ -37,9 +41,9 @@ public class PlayerCollision_System : SystemBase
                         {
                             Collider = collider.Collider,
                             Transform = new PhysicsTransform(tr.Value, rot.Value),
-                            Filter = collider.Collider.Value.Filter
+                            Filter = collider.Collider.Value.Filter,
                         },
-                        out OverlapColliderHit hit))
+                        out var hit))
                     {
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
 
@@ -53,21 +57,25 @@ public class PlayerCollision_System : SystemBase
                         var invMass = 1 / (m1 + m2);
                         var v0 = velocity.Linear - otherVelocity.Linear;
                         var v1 = (m1 - m2) * v0 * invMass * data.restitution;
-                        var v2 = 2 * m1 * v0 * invMass * data.restitution;
-                        velocity.Linear = v1;
+                        var v2 = 2 * m1 * v0 * invMass;
 
                         //compute angular velocity
                         var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
+                        var w2 = 0.0f;
+                        if (math.lengthsq(velocity.Linear) > 0)
+                        {
+                            var fordward = math.normalize(velocity.Linear);
+                            var dir = math.normalize(otherTranslation.Value - tr.Value);
+                            var cross = math.cross(fordward.ToFloat3(), dir);
+                            var asin = math.asin(cross.z) * math.length(v0);
+                            //var w0 = velocity.Angular - otherVelocity.Angular;
+                            var w1 = (m1 - m2) * asin * invMass * data.restitution;
+                            w2 = 2 * m1 * asin * invMass * data.restitution;
 
-                        var fordward = math.normalize(velocity.Linear);
-                        var dir = math.normalize(otherTranslation.Value - tr.Value);
-                        var cross = math.cross(fordward.ToFloat3(), dir);
-                        var asin = math.asin(cross.z) * math.length(v0);
-                        var w0 = velocity.Angular - otherVelocity.Angular;
-                        var w1 = (m1 - m2) * asin * invMass * data.restitution;
-                        var w2 = 2 * m1 * asin * invMass * data.restitution;
+                            velocity.Angular = w1;
+                        }
+                        velocity.Linear = v1;
 
-                        velocity.Angular = w1;
                         cmdBuffer.SetComponent(hitEntity, new PhysicsVelocity { Angular = otherVelocity.Angular + w2, Linear = v2 });
 
                         //set stats

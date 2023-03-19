@@ -1,6 +1,10 @@
 using Unity.Entities;
 
-public struct AsteroidComponent : IComponentData
+namespace Asteroids.ECS.Components
 {
-
+    public struct AsteroidComponent : IComponentData
+    {
+        public int health;
+        public int type;
+    }
 }

@@ -9,9 +9,17 @@ namespace Asteroids.Tools
 {
     public static class AMeshTools
     {
-        public static void InitializeLineShape(GameObject Prefab)
+        public static void InitializePolygonShape(GameObject Prefab, Vector2[] points)
         {
             var polygonCollider = Prefab.GetComponent<PolygonCollider2D>();
+            if (!polygonCollider)
+            {
+                Debug.LogWarning("Object does not contain PolygonCollider component");
+                return;
+            }
+            polygonCollider.points = points;
+            polygonCollider.SetPath(0, points);
+            
             var meshFilter = Prefab.GetComponentInChildren<MeshFilter>();
             if (!meshFilter)
             {

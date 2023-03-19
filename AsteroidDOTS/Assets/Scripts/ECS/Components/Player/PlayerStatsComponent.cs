@@ -7,5 +7,6 @@ namespace Asteroids.ECS.Components
     {
         public int health;
         public float stunnedTimer;
+        public float shootTimer;
     }
 }
