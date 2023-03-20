@@ -1,40 +1,36 @@
 using Asteroids.ECS.Components;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.U2D.Entities.Physics;
-using UnityEngine;
-
-public class PlayerCollision_System : SystemBase
+namespace Asteroids.ECS.Systems
 {
-    private PhysicsWorldSystem physicsWorldSystem;
-    protected override void OnCreate()
+    public class PlayerCollision_System : SystemBase
     {
-        base.OnCreate();
-        physicsWorldSystem = World.GetExistingSystem<PhysicsWorldSystem>();
-    }
-    protected override void OnUpdate()
-    {
-        var physicsWorld = physicsWorldSystem.PhysicsWorld;
-        var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
+        private PhysicsWorldSystem physicsWorldSystem;
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            physicsWorldSystem = World.GetExistingSystem<PhysicsWorldSystem>();
+        }
+        protected override void OnUpdate()
+        {
+            var physicsWorld = physicsWorldSystem.PhysicsWorld;
+            var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
-        var deltaTime = Time.DeltaTime;
-        Entities
-            .WithoutBurst()
-            .ForEach((Entity entity, int entityInQueryIndex, 
-                ref PlayerStatsComponent stats,
-                ref PhysicsColliderBlob collider,
-                ref Translation tr, 
-                ref Rotation rot,
-                ref PhysicsVelocity velocity,
-                in PlayerDataComponent data
-                ) =>
-            {
-                if (stats.stunnedTimer <= 0)
+            var deltaTime = Time.DeltaTime;
+            Entities
+                .WithoutBurst()
+                .ForEach((Entity player, int entityInQueryIndex,
+                    ref PlayerStatsComponent stats,
+                    ref PhysicsColliderBlob collider,
+                    ref Translation tr,
+                    ref Rotation rot,
+                    ref PhysicsVelocity velocity,
+                    in PlayerDataComponent data
+                    ) =>
                 {
                     if (physicsWorld.OverlapCollider(
                         new OverlapColliderInput
@@ -49,53 +45,73 @@ public class PlayerCollision_System : SystemBase
 
                         var otherVelocity = EntityManager.GetComponentData<PhysicsVelocity>(hitEntity);
                         var otherMass = EntityManager.GetComponentData<PhysicsMass>(hitEntity);
-                        var mass = EntityManager.GetComponentData<PhysicsMass>(entity);
+                        var mass = EntityManager.GetComponentData<PhysicsMass>(player);
+
+                        var len1 = math.length(velocity.Linear);
+                        var len2 = math.length(otherVelocity.Linear);
 
                         //compute velocity
                         var m1 = mass.GetMass();
                         var m2 = otherMass.GetMass();
-                        var invMass = 1 / (m1 + m2);
-                        var v0 = velocity.Linear - otherVelocity.Linear;
-                        var v1 = (m1 - m2) * v0 * invMass * data.restitution;
-                        var v2 = 2 * m1 * v0 * invMass;
+                        var invMass = 1.0f / (m1 + m2);
+                        var v0_1 = otherVelocity.Linear - velocity.Linear;
+                        var v0_2 = velocity.Linear - otherVelocity.Linear;
+                        var v1 = 2 * m2 * v0_1 * invMass + velocity.Linear;
+                        var v2 = 2 * m1 * v0_2 * invMass + otherVelocity.Linear;
+
+                        var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
+
+                        var dir = math.normalize(otherTranslation.Value - tr.Value);
+
+                        var linear1 = math.normalize(v1 - dir.ToFloat2() * len1 * 1 / data.restitution) * math.length(v1);
+                        var linear2 = math.normalize(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
+
+                        var w1 = velocity.Angular;
+                        var w2 = otherVelocity.Angular;
 
                         //compute angular velocity
-                        var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
-                        var w2 = 0.0f;
                         if (math.lengthsq(velocity.Linear) > 0)
                         {
                             var fordward = math.normalize(velocity.Linear);
-                            var dir = math.normalize(otherTranslation.Value - tr.Value);
                             var cross = math.cross(fordward.ToFloat3(), dir);
-                            var asin = math.asin(cross.z) * math.length(v0);
-                            //var w0 = velocity.Angular - otherVelocity.Angular;
-                            var w1 = (m1 - m2) * asin * invMass * data.restitution;
-                            w2 = 2 * m1 * asin * invMass * data.restitution;
+                            var asin = math.asin(cross.z);
+
+                            w1 = 2 * m2 * asin * math.length(v0_1) * invMass * data.restitution;
+                            w2 = 2 * m1 * asin * math.length(v0_2) * invMass;
 
                             velocity.Angular = w1;
                         }
                         velocity.Linear = v1;
+                        cmdBuffer.SetComponent(player, new PhysicsVelocity { Angular = w1, Linear = v1 });
+                        cmdBuffer.SetComponent(hitEntity, new PhysicsVelocity { Angular = w2, Linear = v2 });
 
-                        cmdBuffer.SetComponent(hitEntity, new PhysicsVelocity { Angular = otherVelocity.Angular + w2, Linear = v2 });
+                        var tr2 = otherTranslation.Value + linear2.ToFloat3() * deltaTime;
+                        var tr1 = tr.Value + linear1.ToFloat3() * deltaTime;
+                        cmdBuffer.SetComponent(hitEntity, new Translation { Value = tr2 });
+                        cmdBuffer.SetComponent(player, new Translation{ Value = tr1 });
 
-                        //set stats
-                        stats.stunnedTimer = data.stunnedTime;
-                        stats.health -= 1;
-
-                        if(stats.health <= 0)
+                        if (stats.stunnedTimer <= 0)
                         {
-                            cmdBuffer.DestroyEntity(entity);
+                            //set stats
+                            if (stats.shieldHealth <= 0)
+                            {
+                                stats.stunnedTimer = data.stunnedTime;
+                                stats.health -= 1;
+                            }
+                            else
+                            {
+                                stats.shieldHealth -= 1;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    stats.stunnedTimer -= deltaTime;
-                }
-            })
-            .Run();
 
-        cmdBuffer.Playback(EntityManager);
-        cmdBuffer.Dispose();
+                    stats.stunnedTimer = math.max(0, stats.stunnedTimer - deltaTime);
+
+                })
+                .Run();
+
+            cmdBuffer.Playback(EntityManager);
+            cmdBuffer.Dispose();
+        }
     }
 }

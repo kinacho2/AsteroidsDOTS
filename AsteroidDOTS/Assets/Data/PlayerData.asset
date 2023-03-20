@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a561911caa330458b5808aaf0e7fd7, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
+  <PlayerPrefab>k__BackingField: {fileID: 6216514982384367654, guid: 088deb58c8ef2dd40854509dfb714634, type: 3}
   <maxSpeed>k__BackingField: 5
   <acceleration>k__BackingField: 4
   <rotationSpeedDeg>k__BackingField: 120
   <restitution>k__BackingField: 0.7
   <stunnedTime>k__BackingField: 1
   <shootCooldown>k__BackingField: 0.7
-  <health>k__BackingField: 3
+  <health>k__BackingField: 10
+  <shieldHealth>k__BackingField: 4

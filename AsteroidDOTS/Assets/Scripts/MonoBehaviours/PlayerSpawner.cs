@@ -3,6 +3,7 @@ using Asteroids.ECS.Components;
 using Asteroids.Tools;
 using Unity.Entities;
 using UnityEngine;
+using System.Linq;
 
 public class PlayerSpawner : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class PlayerSpawner : MonoBehaviour
         defaultWorld = World.DefaultGameObjectInjectionWorld;
         entityManager = defaultWorld.EntityManager;
 
-        InitiializeLineShape();
+        InitializeLineShape();
 
         var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
         entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(PlayerPrefab, settings);
@@ -25,13 +26,16 @@ public class PlayerSpawner : MonoBehaviour
         InstantiatePlayerEntity();
     }
 
-    private void InitiializeLineShape()
+    private void InitializeLineShape()
     {
         var polygonCollider = PlayerPrefab.GetComponent<PolygonCollider2D>();
         var meshFilter = PlayerPrefab.GetComponentInChildren<MeshFilter>();
         meshFilter.sharedMesh = new Mesh();
-        AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, meshFilter.sharedMesh);
+        AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, PlayerPrefab.transform.localScale, meshFilter.sharedMesh);
 
+        var shieldMeshFilter = PlayerPrefab.GetComponentsInChildren<MeshFilter>().Where((x) => x.tag == "Shield").FirstOrDefault();
+        if (shieldMeshFilter)
+            AMeshTools.CreateCircleMesh(shieldMeshFilter, 0.5f, 20);
     }
 
     private void InstantiatePlayerEntity()
@@ -42,10 +46,12 @@ public class PlayerSpawner : MonoBehaviour
         {
             stunnedTimer = 0,
             health = PlayerData.health,
-
+            shieldHealth = PlayerData.shieldHealth,
         });
         entityManager.AddComponentData(entity, new PlayerDataComponent
         {
+            maxHealth = PlayerData.health,
+            shieldHealth = PlayerData.shieldHealth,
             acceleration = PlayerData.acceleration,
             maxSpeed = PlayerData.maxSpeed,
             restitution = PlayerData.restitution,
@@ -53,7 +59,12 @@ public class PlayerSpawner : MonoBehaviour
             stunnedTime = PlayerData.stunnedTime,
             shootCooldown = PlayerData.shootCooldown,
         });
-
+        entityManager.AddComponentData(entity, new PlayerWeaponComponent
+        {
+            misileSpeed = 10,
+            misileLifeTime = 1,
+            range = .3f,
+        });
     }
 
 }

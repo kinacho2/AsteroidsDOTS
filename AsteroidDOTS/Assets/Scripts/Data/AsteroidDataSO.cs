@@ -9,9 +9,12 @@ namespace Asteroids.Data
     public class AsteroidDataSO : ScriptableObject
     {
         [field: SerializeField]
-        public GameObject[] PrefabPool { get; private set; }
+        public GameObject Prefab { get; private set; }
+
         [SerializeField]
         private AsteroidData[] Asteroids;
+
+        public int DataCount => Asteroids.Length;
 
         public AsteroidData Get(AsteroidType type)
         {
@@ -19,6 +22,15 @@ namespace Asteroids.Data
             return Asteroids[((int)type)];
         }
 
+        public int ShapesCount()
+        {
+            int n = 0;
+            foreach(var data in Asteroids)
+            {
+                n += data.shapes.Length;
+            }
+            return n;
+        }
     }
 
     [System.Serializable] 
@@ -27,6 +39,8 @@ namespace Asteroids.Data
         public AsteroidType type;
         public float maxSpeed;
         public int health;
+        public float mass;
+        public float size;
         public ShapeData[] shapes;
     }
 

@@ -29,7 +29,7 @@ namespace Asteroids.Setup
         public static float2 GetRandomPositionOutOfScreen()
         {
             var dir = AGeometry.RotateZ(math.right().ToFloat2(), Random.Range(0, math.PI * 2));
-            var len = math.length(CameraLimits + new float2(1,1))/2;
+            var len = math.length(CameraLimits + new float2(1,1));
             return dir * len;
         }
 

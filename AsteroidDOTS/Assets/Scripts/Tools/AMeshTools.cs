@@ -18,7 +18,6 @@ namespace Asteroids.Tools
                 return;
             }
             polygonCollider.points = points;
-            polygonCollider.SetPath(0, points);
             
             var meshFilter = Prefab.GetComponentInChildren<MeshFilter>();
             if (!meshFilter)
@@ -27,9 +26,28 @@ namespace Asteroids.Tools
                 return;
             }
             meshFilter.sharedMesh = new Mesh();
-            AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, meshFilter.sharedMesh);
+            AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, Prefab.transform.localScale, meshFilter.sharedMesh);
         }
-        public static void CreateMeshWithMassCenter(Vector2[] points, Mesh mesh)
+        public static void InitializeMeshShape(GameObject Prefab)
+        {
+            var polygonCollider = Prefab.GetComponent<PolygonCollider2D>();
+            if (!polygonCollider)
+            {
+                Debug.LogWarning("Object does not contain PolygonCollider component");
+                return;
+            }
+
+            var meshFilter = Prefab.GetComponentInChildren<MeshFilter>();
+            if (!meshFilter)
+            {
+                Debug.LogWarning("Object does not contain MeshFilter component");
+                return;
+            }
+            meshFilter.sharedMesh = new Mesh();
+            AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, Prefab.transform.localScale, meshFilter.sharedMesh);
+        }
+
+        public static void CreateMeshWithMassCenter(Vector2[] points, Vector2 scale, Mesh mesh)
         {
             Vector2 center = float2.zero;
             foreach (var point in points)
@@ -140,6 +158,35 @@ namespace Asteroids.Tools
                 indices[(points.Length + i) * 3] = points.Length + i;
                 indices[(points.Length + i) * 3 + 1] = points.Length + (i + 1) % points.Length;
                 indices[(points.Length + i) * 3 + 2] = (i + 1) % points.Length;
+            }
+
+            mesh.vertices = vertices;
+            mesh.uv = uvs;
+            mesh.triangles = indices;
+        }
+
+        public static void CreateCircleMesh(MeshFilter meshFilter, float radius, int resolution)
+        {
+            Vector2 center = float2.zero;
+            var mesh = meshFilter.sharedMesh = new Mesh();
+
+            Vector3[] vertices = new Vector3[resolution + 1];
+            Vector2[] uvs = new Vector2[resolution + 1];
+            int[] indices = new int[(resolution) * 3];
+
+            for (int i = 0; i < resolution; i++)
+            {
+                vertices[i] = AGeometry.RotateZ(Vector2.right, i * 2 * Mathf.PI / resolution) * radius;
+                uvs[i] = Vector2.zero;
+            }
+            vertices[resolution] = center;
+            uvs[resolution] = Vector2.one;
+
+            for (int i = 0; i < resolution; i++)
+            {
+                indices[i * 3] = i;
+                indices[i * 3 + 1] = resolution;
+                indices[i * 3 + 2] = (i + 1) % resolution;
             }
 
             mesh.vertices = vertices;

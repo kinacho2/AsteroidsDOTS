@@ -1,8 +1,6 @@
 using Asteroids.ECS.Components;
 using Asteroids.Setup;
 using Asteroids.Tools;
-using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -35,7 +33,7 @@ namespace Asteroids.Core.Spawners
 
             entityPrefabs = new Entity[asteroidData.shapes.Length];
 
-            for(int i=0; i< entityPrefabs.Length; i++)
+            for (int i = 0; i < entityPrefabs.Length; i++)
             {
                 AMeshTools.InitializePolygonShape(Prefab, asteroidData.shapes[i].points);
                 var collider = Prefab.GetComponent<PolygonCollider2D>();
@@ -45,10 +43,10 @@ namespace Asteroids.Core.Spawners
 
 
             //var entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(Prefab, settings);
-            for (int i = 0; i < 6; i++) 
+            for (int i = 0; i < 6; i++)
             {
                 InstantiateAsteroid(
-                    entityPrefabs[Random.Range(0,entityPrefabs.Length)],
+                    entityPrefabs[Random.Range(0, entityPrefabs.Length)],
                     Configs.GetRandomPositionOutOfScreen(),
                     Configs.GetRandomVelocity(asteroidData.maxSpeed),
                     Random.Range(0, Mathf.PI / 2),
@@ -56,11 +54,11 @@ namespace Asteroids.Core.Spawners
             }
         }
 
-        public static void InstantiateAsteroid(Entity entityPrefab,float2 position, float2 velocity, float angular, int type)
+        public static void InstantiateAsteroid(Entity entityPrefab, float2 position, float2 velocity, float angular, int type)
         {
             var entity = entityManager.Instantiate(entityPrefab);
             entityManager.AddComponent<LimitCheckComponent>(entity);
-            entityManager.AddComponentData(entity, new AsteroidComponent { health = 3 , type = type});
+            entityManager.AddComponentData(entity, new AsteroidComponent { health = 3, type = type });
             entityManager.SetComponentData(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
             entityManager.SetComponentData(entity, new Translation { Value = position.ToFloat3() });
             //var mass = entityManager.GetComponentData<PhysicsMass>(entity);

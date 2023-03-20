@@ -6,6 +6,7 @@ namespace Asteroids.ECS.Components
     public struct PlayerStatsComponent : IComponentData
     {
         public int health;
+        public int shieldHealth;
         public float stunnedTimer;
         public float shootTimer;
     }

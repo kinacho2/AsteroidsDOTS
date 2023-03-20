@@ -1,13 +1,10 @@
 using Asteroids.ECS.Components;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.U2D.Entities.Physics;
-using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
@@ -24,10 +21,11 @@ namespace Asteroids.ECS.Systems
             //if (true) return;
             var physicsWorld = physicsWorldSystem.PhysicsWorld;
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-
+            var deltaTime = Time.DeltaTime;
+            
             Entities
                 .WithoutBurst()
-                .ForEach((Entity entity, int entityInQueryIndex,
+                .ForEach((Entity asteroidEntity, int entityInQueryIndex,
                     ref PhysicsColliderBlob collider,
                     ref Translation tr,
                     ref Rotation rot,
@@ -35,6 +33,8 @@ namespace Asteroids.ECS.Systems
                     in AsteroidComponent asteroid
                     ) =>
                 {
+                    var allHits = new NativeList<OverlapColliderHit>(Allocator.Temp);
+
                     if (physicsWorld.OverlapCollider(
                         new OverlapColliderInput
                         {
@@ -42,70 +42,106 @@ namespace Asteroids.ECS.Systems
                             Transform = new PhysicsTransform(tr.Value, rot.Value),
                             Filter = collider.Collider.Value.Filter,
                         },
-                        out var hit))
+                        ref allHits))
                     {
+                        var hit = allHits[0];
+
+                        if (physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity.Index == asteroidEntity.Index && allHits.Length > 1)
+                        {
+                            hit = allHits[1];
+                        }
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
 
-                        if (HasComponent<AsteroidComponent>(hitEntity) && hitEntity.Index != entity.Index)
+                        if (HasComponent<AsteroidComponent>(hitEntity) && hitEntity.Index != asteroidEntity.Index)
                         {
-                            
                             var otherVelocity = EntityManager.GetComponentData<PhysicsVelocity>(hitEntity);
-                            var otherMass = EntityManager.GetComponentData<PhysicsMass>(hitEntity);
-                            var mass = EntityManager.GetComponentData<PhysicsMass>(entity);
 
-                            var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
+                            var len1 = math.length(velocity.Linear);
+                            var len2 = math.length(otherVelocity.Linear);
 
-                            //compute velocity
-                            var m1 = mass.GetMass();
-                            var m2 = otherMass.GetMass();
-                            var invMass = 1 / (m1 + m2);
-                            var v0 = velocity.Linear - otherVelocity.Linear;
-                            var v1 = (m1 - m2 * 0.5f) * v0 * invMass;
-                            var v2 = 2 * m1 * v0 * invMass;
-
-
-                            //compute angular velocity
-
-                            if (math.lengthsq(velocity.Linear) > 0)
+                            if (len1 > len2)
                             {
-                                var fordward = math.normalize(velocity.Linear);
+                                var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
+                                var otherAsteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
+                                var otherMass = EntityManager.GetComponentData<PhysicsMass>(hitEntity);
+                                var mass = EntityManager.GetComponentData<PhysicsMass>(asteroidEntity);
+
+                                //compute velocity
+                                var m1 = mass.GetMass();
+                                var m2 = otherMass.GetMass();
+                                var invMass = 1.0f / (m1 + m2);
+                                var v0_1 = otherVelocity.Linear - velocity.Linear;
+                                var v0_2 = velocity.Linear - otherVelocity.Linear;
+                                var v1 = 2 * m2 * v0_1 * invMass + velocity.Linear;
+                                var v2 = 2 * m1 * v0_2 * invMass + otherVelocity.Linear;
+
                                 var dir = math.normalize(otherTranslation.Value - tr.Value);
 
-                                //rotation
-                                var cross = math.cross(fordward.ToFloat3(), dir);
-                                var asin = math.asin(cross.z) * math.length(v0);
-                                //var w0 = otherVelocity.Angular - velocity.Angular;
-                                var w1 = (m1 - m2 * 0.5f) * asin * invMass;
-                                var w2 = 2 * m1 * asin * invMass;
 
-                                //velocity.Angular = w1;
-                                //velocity.Linear = -dir.ToFloat2() * math.length(v1);
-                                cmdBuffer.SetComponent(entity, new PhysicsVelocity { Angular = w1, Linear = 
-                                    math.normalize(
-                                    -dir.ToFloat2()*4
-                                    + v1
-                                    ) 
-                                    //* math.length(velocity.Linear)
-                                    * math.length(v1) 
+                                var v1len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
+                                var v2len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
+                                var linear1 = math.normalize(v1 - dir.ToFloat2() * len1 * 0.5f) * math.length(v1);
+                                var linear2 = math.normalize(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
+
+                                
+                                var w1 = velocity.Angular;
+                                var w2 = otherVelocity.Angular;
+
+                                //compute angular velocity
+                                if (math.lengthsq(velocity.Linear) > 0)
+                                {
+                                    var fordward = math.normalize(velocity.Linear);
+
+                                    //rotation
+                                    var cross = math.cross(fordward.ToFloat3(), dir);
+                                    var asin = math.asin(cross.z);
+
+                                    w1 = 2 * m2 * asin * math.length(v0_1) * invMass;
+                                    w2 = 2 * m1 * asin * math.length(v0_2) * invMass;
+                                }
+                                cmdBuffer.SetComponent(hitEntity, new PhysicsVelocity
+                                {
+                                    Angular = w2,
+                                    Linear = linear2
                                 });
-                            }
-                            else
-                            {
-                                //velocity.Linear = v1;
-                                cmdBuffer.SetComponent(entity, new PhysicsVelocity { Angular = velocity.Angular, Linear = v1 });
+                                cmdBuffer.SetComponent(asteroidEntity, new PhysicsVelocity
+                                {
+                                    Angular = w1,
+                                    Linear = linear1
+                                });
 
-                            }
-                            //cmdBuffer.SetComponent(entity, new AsteroidComponent { health = asteroid.health - 1 });
+                                var tr2 = otherTranslation.Value + linear2.ToFloat3() * deltaTime;
+                                var tr1 = tr.Value + linear1.ToFloat3() * deltaTime;
+                                cmdBuffer.SetComponent(hitEntity, new Translation
+                                {
+                                    Value = tr2
+                                });
+                                cmdBuffer.SetComponent(asteroidEntity, new Translation
+                                {
+                                    Value = tr1
+                                });
 
-                            //asteroid.health--;
+                                //asteroid health reduction with each collision (can cause chain reaction)
+                                /*
+                                var thisAsteroid = asteroid;
+                                otherAsteroid.health -= 1;
+                                thisAsteroid.health -= 1;
+                                otherAsteroid.explodeDirection = dir.ToFloat2();
+                                thisAsteroid.explodeDirection = dir.ToFloat2();
+
+                                cmdBuffer.SetComponent(hitEntity, otherAsteroid);
+                                cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
+                                /**/
+                            }
                         }
 
 
                     }
-                   
+
+                    allHits.Dispose();
                 })
                 .Run();
-
+            
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
         }

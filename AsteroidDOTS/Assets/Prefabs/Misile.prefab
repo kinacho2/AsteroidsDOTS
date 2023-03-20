@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 207893812}
   - component: {fileID: 207893811}
   m_Layer: 7
-  m_Name: LineRenderer
+  m_Name: MisileLineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5df2d849d8f24d5448468faccb9f5c0c, type: 2}
+  - {fileID: 2100000, guid: 4ee20b105d83c524f93ddf263cdbc68c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -156,7 +156,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: f720bc68c3ba29242b21f2447abd547d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.22745098}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -212,11 +212,11 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.05195055, y: 0.07644933}
-      - {x: -0.073636055, y: 0.111914776}
-      - {x: -0.21218713, y: 0.11124317}
-      - {x: -0.21156581, y: -0.11092363}
-      - {x: -0.07087231, y: -0.11211672}
-      - {x: -0.04693087, y: -0.07254404}
-      - {x: 0.2132829, y: -0.040961288}
-      - {x: 0.21266158, y: 0.04207374}
+    - - {x: 0.2125701, y: 0.03782607}
+      - {x: -0.05403471, y: 0.06824225}
+      - {x: -0.07661724, y: 0.1130034}
+      - {x: -0.2130909, y: 0.11271951}
+      - {x: -0.21452647, y: -0.10347554}
+      - {x: -0.07843238, y: -0.10387862}
+      - {x: -0.054519176, y: -0.06433009}
+      - {x: 0.21260595, y: -0.036359422}

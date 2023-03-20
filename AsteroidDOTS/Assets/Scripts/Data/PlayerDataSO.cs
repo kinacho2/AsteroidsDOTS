@@ -7,6 +7,9 @@ namespace Asteroids.Data
     public class PlayerDataSO : ScriptableObject
     {
         [field: SerializeField]
+        public GameObject PlayerPrefab { get; protected set; }
+
+        [field: SerializeField]
         public float maxSpeed { get; protected set; }
 
         [field: SerializeField]
@@ -26,5 +29,10 @@ namespace Asteroids.Data
 
         [field: SerializeField]
         public int health { get; protected set; }
+
+        [field: SerializeField]
+        public int shieldHealth { get; protected set; }
+
+        
     }
 }

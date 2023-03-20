@@ -46,10 +46,13 @@ public class MisileCollision_System : SystemBase
                     if (HasComponent<AsteroidComponent>(hitEntity)) 
                     {
                         var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
-                        cmdBuffer.DestroyEntity(misile);
+                        var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
                         asteroid.health--;
+                        asteroid.explodeDirection = math.normalize((asteroidTr.Value - tr.Value).ToFloat2());
+
+                        cmdBuffer.DestroyEntity(misile);
                         cmdBuffer.SetComponent(hitEntity, asteroid);
-                        
+
                     }
                     //cmdBuffer.DestroyEntity(misile);
                 }
