@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476c0d002b23b984eb0be1894d0dbd5e, type: 3}
   m_Name: AsteroidData
   m_EditorClassIdentifier: 
+  <InitialCount>k__BackingField: 3
   <Prefab>k__BackingField: {fileID: 3076392846019290667, guid: 4fa71fb43a51fbe43b06fe79419cee67, type: 3}
   Asteroids:
   - type: 0
@@ -108,7 +109,7 @@ MonoBehaviour:
       - {x: 0.225, y: 0.13}
       - {x: 0.145, y: 0.19999999}
   - type: 2
-    maxSpeed: 4.5
+    maxSpeed: 4
     health: 1
     mass: 2
     size: 0.5
@@ -131,7 +132,7 @@ MonoBehaviour:
       - {x: 0.145, y: 0.049999997}
       - {x: 0.085, y: 0.13}
   - type: 3
-    maxSpeed: 6.5
+    maxSpeed: 5
     health: 1
     mass: 0.5
     size: 0.5

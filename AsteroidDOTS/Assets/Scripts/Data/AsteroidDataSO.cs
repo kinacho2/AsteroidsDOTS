@@ -9,10 +9,14 @@ namespace Asteroids.Data
     public class AsteroidDataSO : ScriptableObject
     {
         [field: SerializeField]
+        public int InitialCount { get; protected set; }
+
+        [field: SerializeField]
         public GameObject Prefab { get; private set; }
 
         [SerializeField]
         private AsteroidData[] Asteroids;
+
 
         public int DataCount => Asteroids.Length;
 

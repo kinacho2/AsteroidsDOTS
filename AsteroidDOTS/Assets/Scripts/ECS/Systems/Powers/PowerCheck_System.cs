@@ -11,7 +11,7 @@ using Unity.U2D.Entities.Physics;
 using UnityEngine;
 
 namespace Asteroids.ECS.Systems {
-    public class PowerUpCheck_System : SystemBase
+    public class PowerCheck_System : SystemBase
     {
         private PhysicsWorldSystem physicsWorldSystem;
         private NativeArray<WeaponData> Weapons;
@@ -60,7 +60,7 @@ namespace Asteroids.ECS.Systems {
                             {
 
                                 var power = EntityManager.GetComponentData<PowerComponent>(hitEntity);
-
+                                var powerTr = EntityManager.GetComponentData<Translation>(hitEntity);
                                 switch (power.type)
                                 {
                                     case (int)PowerType.Shield:
@@ -82,6 +82,7 @@ namespace Asteroids.ECS.Systems {
                                         stats.health = math.min(stats.health + 2, data.maxHealth);
                                         break;
                                     case (int)PowerType.Bomb:
+                                        BombSpawn_System.SpawnQueue.Enqueue(powerTr.Value);
                                         break;
                                 }
 

@@ -16,7 +16,6 @@ namespace Asteroids.ECS.Systems
     {
         public static NativeQueue<float3> SpawnQueue;
         protected Entity[] entityPrefabs;
-        //protected AsteroidData[] data;
 
         Random Random;
         protected override void OnCreate()
@@ -72,6 +71,7 @@ namespace Asteroids.ECS.Systems
             if (SpawnQueue.TryDequeue(out float3 position))
             {
                 var type = Random.NextInt(0, entityPrefabs.Length) % entityPrefabs.Length;
+                //type = 2;
                 var entityPrefab = entityPrefabs[type];
                 InstantiatePower(entityPrefab, type, position, ref cmdBuffer);
             }

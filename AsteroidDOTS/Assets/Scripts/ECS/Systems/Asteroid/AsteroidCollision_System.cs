@@ -1,3 +1,4 @@
+using Asteroids.Data;
 using Asteroids.ECS.Components;
 using Asteroids.Tools;
 using Unity.Collections;
@@ -122,15 +123,21 @@ namespace Asteroids.ECS.Systems
                                 });
 
                                 //asteroid health reduction with each collision (can cause chain reaction)
-                                /*
+                                
                                 var thisAsteroid = asteroid;
-                                otherAsteroid.health -= 1;
-                                thisAsteroid.health -= 1;
-                                otherAsteroid.explodeDirection = dir.ToFloat2();
-                                thisAsteroid.explodeDirection = dir.ToFloat2();
 
-                                cmdBuffer.SetComponent(hitEntity, otherAsteroid);
-                                cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
+                                if (thisAsteroid.type == (int)AsteroidType.Tiny)
+                                {
+                                    thisAsteroid.health -= 1;
+                                    thisAsteroid.explodeDirection = dir.ToFloat2();
+                                    cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
+                                }
+                                if (otherAsteroid.type == (int)AsteroidType.Tiny)
+                                {
+                                    otherAsteroid.health -= 1;
+                                    otherAsteroid.explodeDirection = dir.ToFloat2();
+                                    cmdBuffer.SetComponent(hitEntity, otherAsteroid);
+                                }
                                 /**/
                             }
                         }

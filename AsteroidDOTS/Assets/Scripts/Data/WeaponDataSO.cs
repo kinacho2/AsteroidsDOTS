@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Asteroids.Data
 {
@@ -7,6 +5,7 @@ namespace Asteroids.Data
 
     public class WeaponDataSO : ScriptableObject
     {
+        [field: SerializeField] public GameObject BombPrefab { get; protected set; }
         [field: SerializeField] public GameObject MisilePrefab { get; protected set; }
         [field: SerializeField] public WeaponData[] Weapons { get; protected set; }
         [field: SerializeField] public float[] MisileAngleDeg;

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7688542f4eefb41bb8941fcb04c068, type: 3}
   m_Name: WeaponsData
   m_EditorClassIdentifier: 
+  <BombPrefab>k__BackingField: {fileID: 7454336349755648338, guid: 34b051fe184f8bf4d8bc11e3a2b2d9a9, type: 3}
   <MisilePrefab>k__BackingField: {fileID: 4608512767964900769, guid: 2e37481f58f3c654bb43fbcb966ba858, type: 3}
   <Weapons>k__BackingField:
   - misileAmount: 1
