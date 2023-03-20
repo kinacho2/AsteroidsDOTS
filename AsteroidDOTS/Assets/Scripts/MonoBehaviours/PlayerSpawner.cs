@@ -4,6 +4,7 @@ using Asteroids.Tools;
 using Unity.Entities;
 using UnityEngine;
 using System.Linq;
+using Asteroids.Setup;
 
 public class PlayerSpawner : MonoBehaviour
 {
@@ -59,11 +60,14 @@ public class PlayerSpawner : MonoBehaviour
             stunnedTime = PlayerData.stunnedTime,
             shootCooldown = PlayerData.shootCooldown,
         });
+        var weaponData = Configs.WeaponDB.Get(0);
         entityManager.AddComponentData(entity, new PlayerWeaponComponent
         {
-            misileSpeed = 10,
-            misileLifeTime = 1,
-            range = .3f,
+            misileAmount = weaponData.misileAmount,
+            misileSpeed = weaponData.misileSpeed,
+            misileLifeTime = weaponData.misileLifeTime,
+            range = weaponData.range,
+            type = 0,
         });
     }
 

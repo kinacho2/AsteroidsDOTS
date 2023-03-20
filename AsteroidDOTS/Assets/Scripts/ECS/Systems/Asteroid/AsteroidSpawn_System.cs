@@ -17,7 +17,6 @@ namespace Asteroids.ECS.Systems
         protected const float PI2 = math.PI * 2;
         protected Entity[] entityPrefabs;
         protected AsteroidData[] data;
-        protected World defaultWorld;
         //protected EntityManager entityManager;
 
         Random Random;
@@ -39,7 +38,7 @@ namespace Asteroids.ECS.Systems
             entityPrefabs = new Entity[asteroidDB.ShapesCount()];
             data = new AsteroidData[asteroidDB.DataCount];
 
-            defaultWorld = World.DefaultGameObjectInjectionWorld;
+            var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
 
             int k = 0;
@@ -88,6 +87,14 @@ namespace Asteroids.ECS.Systems
                             InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f/3f), asteroid.size, ref cmdBuffer);
                             InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2), asteroid.size, ref cmdBuffer);
                             //InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 1.75f), asteroid.size, ref cmdBuffer);
+                        }
+                        if(asteroid.type < (int)AsteroidType.Small)
+                        {
+                            var rand = Random.NextUInt(0, 10);
+                            //if (rand == 1)
+                            {
+                                PowerSpawn_System.SpawnQueue.Enqueue(tr.Value);
+                            }
                         }
                         //Spawn asteroids
                     }

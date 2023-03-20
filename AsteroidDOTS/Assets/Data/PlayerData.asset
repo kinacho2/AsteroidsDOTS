@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   <PlayerPrefab>k__BackingField: {fileID: 6216514982384367654, guid: 088deb58c8ef2dd40854509dfb714634, type: 3}
-  <maxSpeed>k__BackingField: 5
-  <acceleration>k__BackingField: 4
+  <maxSpeed>k__BackingField: 3
+  <acceleration>k__BackingField: 3
   <rotationSpeedDeg>k__BackingField: 120
   <restitution>k__BackingField: 0.7
   <stunnedTime>k__BackingField: 1

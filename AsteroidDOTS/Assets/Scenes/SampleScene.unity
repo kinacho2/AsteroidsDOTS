@@ -2172,6 +2172,8 @@ MonoBehaviour:
   Camera: {fileID: 519420031}
   MisilePrefab: {fileID: 4608512767964900769, guid: 2e37481f58f3c654bb43fbcb966ba858, type: 3}
   AsteroidDB: {fileID: 11400000, guid: f7cdab2ed8f14154bb921a918e305c86, type: 2}
+  PowerDB: {fileID: 11400000, guid: 2bec01104630bca42a62b2e830159394, type: 2}
+  WeaponDB: {fileID: 11400000, guid: 1c985c03793ea2a4c9babc45ddcaac1e, type: 2}
 --- !u!4 &1805921231
 Transform:
   m_ObjectHideFlags: 0

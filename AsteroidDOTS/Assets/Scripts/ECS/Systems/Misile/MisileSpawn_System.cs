@@ -12,7 +12,9 @@ public class MisileSpawn_System : SystemBase
 {
     private Entity misileEntityPrefab;
     private World defaultWorld;
-    GameObject MisilePrefab;
+
+    private NativeArray<float> MisileAngles;
+    //GameObject MisilePrefab;
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -24,8 +26,16 @@ public class MisileSpawn_System : SystemBase
     private void Configs_OnInitializedConfig()
     {
         Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+
+
+
         //TODO Misile DB
-        MisilePrefab = Configs.MisilePrefab;
+        var weaponsDB = Configs.WeaponDB;
+
+        MisileAngles = new NativeArray<float>(weaponsDB.MisileAngleDeg, Allocator.Persistent);
+
+
+        var MisilePrefab = weaponsDB.MisilePrefab;
         var polygonCollider = MisilePrefab.GetComponent<PolygonCollider2D>();
         var meshFilter = MisilePrefab.GetComponentInChildren<MeshFilter>();
         meshFilter.sharedMesh = new Mesh();
@@ -48,7 +58,6 @@ public class MisileSpawn_System : SystemBase
                 in Rotation rotation,
                 in PhysicsVelocity physics,
                 in PlayerDataComponent data
-                
                 ) =>
             {
                 if (stats.shootTimer <= 0)
@@ -59,17 +68,22 @@ public class MisileSpawn_System : SystemBase
                         stats.shootTimer = data.shootCooldown;
                         input.shoot = false;
                         var pos = translation.Value;
-                        var rot = math.mul(rotation.Value, quaternion.RotateZ(math.radians(-90)));
-                        var fordward = math.mul(rotation.Value, math.down()).ToFloat2();
 
-                        var velocity = fordward * weapon.misileSpeed;
-
-                        var len = math.length(physics.Linear);
-                        if (len > 0)
+                        for (int i = 0; i < weapon.misileAmount; i++)
                         {
-                            velocity += fordward * math.dot(fordward, physics.Linear / len) * len;
+                            var angle = math.radians(MisileAngles[i]);
+                            var rot = math.mul(rotation.Value, quaternion.RotateZ(math.radians(-90) + angle));
+                            var fordward = math.mul(rotation.Value, math.down()).ToFloat2();
+
+                            var velocity = AGeometry.RotateZ(fordward, angle) * weapon.misileSpeed;
+
+                            var len = math.length(physics.Linear);
+                            if (len > 0)
+                            {
+                                velocity += fordward * math.dot(fordward, physics.Linear / len) * len;
+                            }
+                            InstantiateMisile(translation.Value, rot, math.length(velocity), weapon, ref cmdBuffer);
                         }
-                        InstantiateMisile(translation.Value, rot, math.length(velocity), weapon, ref cmdBuffer);
                     }
                 }
                 else
@@ -88,8 +102,13 @@ public class MisileSpawn_System : SystemBase
         var entity = cmdBuffer.Instantiate(misileEntityPrefab);
         cmdBuffer.AddComponent<LimitCheckComponent>(entity);
         cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range });
-        //cmdBuffer.SetComponent(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
         cmdBuffer.SetComponent(entity, new Translation { Value = position });
         cmdBuffer.SetComponent(entity, new Rotation { Value = rotation });
+    }
+
+    protected override void OnDestroy()
+    {
+        MisileAngles.Dispose();
+        base.OnDestroy();
     }
 }

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c7688542f4eefb41bb8941fcb04c068, type: 3}
+  m_Name: WeaponsData
+  m_EditorClassIdentifier: 
+  <MisilePrefab>k__BackingField: {fileID: 4608512767964900769, guid: 2e37481f58f3c654bb43fbcb966ba858, type: 3}
+  <Weapons>k__BackingField:
+  - misileAmount: 1
+    misileSpeed: 5
+    misileLifeTime: 0.7
+    range: 0.3
+  - misileAmount: 3
+    misileSpeed: 7
+    misileLifeTime: 0.8
+    range: 0.3
+  - misileAmount: 6
+    misileSpeed: 9
+    misileLifeTime: 0.9
+    range: 0.3
+  - misileAmount: 10
+    misileSpeed: 11
+    misileLifeTime: 1
+    range: 0.3
+  MisileAngleDeg:
+  - 0
+  - 25
+  - -25
+  - 180
+  - 155
+  - -155
+  - 115
+  - 65
+  - -65
+  - -115

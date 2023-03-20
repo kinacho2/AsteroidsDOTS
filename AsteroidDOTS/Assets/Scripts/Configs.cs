@@ -13,12 +13,15 @@ namespace Asteroids.Setup
     {
         public static event InitializedConfigs OnInitializedConfig;
         public static float2 CameraLimits { get; private set; }
-        public static GameObject MisilePrefab { get; private set; }
+        //public static GameObject MisilePrefab { get; private set; }
         public static AsteroidDataSO AsteroidDB { get; private set; }
-        public static void InitializeConfigs(Camera camera, GameObject misilePrefab, AsteroidDataSO asteroidDB)
+        public static PowerDataSO PowerDB { get; private set; }
+        public static WeaponDataSO WeaponDB { get; private set; }
+        public static void InitializeConfigs(Camera camera, AsteroidDataSO asteroidDB, PowerDataSO powerDB, WeaponDataSO weaponDB)
         {
             AsteroidDB = asteroidDB;
-            MisilePrefab = misilePrefab;
+            PowerDB = powerDB;
+            WeaponDB = weaponDB;
             var worldPoint = camera.ViewportToWorldPoint(Vector2.one);
             CameraLimits = new float2(worldPoint.y * camera.pixelWidth / camera.pixelHeight, worldPoint.y);
 

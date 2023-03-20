@@ -1,43 +1,119 @@
+using Asteroids.Data;
 using Asteroids.ECS.Components;
+using Asteroids.Setup;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
+using Unity.U2D.Entities.Physics;
 using UnityEngine;
 
-public class PowerUpCheck_System : SystemBase
-{
-    protected override void OnUpdate()
+namespace Asteroids.ECS.Systems {
+    public class PowerUpCheck_System : SystemBase
     {
-        bool enableShield = Input.GetKey(KeyCode.R);
+        private PhysicsWorldSystem physicsWorldSystem;
+        private NativeArray<WeaponData> Weapons;
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            physicsWorldSystem = World.GetExistingSystem<PhysicsWorldSystem>();
+            
+            Configs.OnInitializedConfig += Configs_OnInitializedConfig;
+        }
 
-        var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
+        private void Configs_OnInitializedConfig()
+        {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
 
-        Entities.WithAll<PlayerShieldComponent>()
-                .WithoutBurst()
-                .ForEach((Entity entity, int entityInQueryIndex,
-                    in Translation tr,
-                    in PlayerShieldComponent shieldRef
-                    ) =>
-                {
-                    var shield = EntityManager.GetComponentData<ShieldComponent>(shieldRef.ShieldEntity);
-                    /*
-                    if (!shield.enabled && enableShield)
+            Weapons = new NativeArray<WeaponData>(Configs.WeaponDB.Weapons, Allocator.Persistent);
+
+        }
+
+        protected override void OnUpdate()
+        {
+            var physicsWorld = physicsWorldSystem.PhysicsWorld;
+            var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
+
+            Entities.WithAll<PlayerShieldComponent>()
+                    .WithoutBurst()
+                    .ForEach((Entity player, int entityInQueryIndex,
+                        ref PhysicsColliderBlob collider,
+                        ref Translation tr,
+                        ref Rotation rot,
+                        ref PlayerStatsComponent stats,
+                        ref PlayerDataComponent data
+                        ) =>
                     {
-                        shield.enabled = true;
-                        cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
+                        if (physicsWorld.OverlapCollider(
+                            new OverlapColliderInput
+                            {
+                                Collider = collider.Collider,
+                                Transform = new PhysicsTransform(tr.Value, rot.Value),
+                                Filter = collider.Collider.Value.Filter,
+                            },
+                            out var hit))
+                        {
+                            var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
+                            if (HasComponent<PowerComponent>(hitEntity))
+                            {
+
+                                var power = EntityManager.GetComponentData<PowerComponent>(hitEntity);
+
+                                switch (power.type)
+                                {
+                                    case (int)PowerType.Shield:
+                                        stats.shieldHealth = data.shieldHealth;
+                                        break;
+                                    case (int)PowerType.Weapon:
+                                        var weapon = EntityManager.GetComponentData<PlayerWeaponComponent>(player);
+                                        if(weapon.type + 1 < Weapons.Length)
+                                        {
+                                            weapon.type++;
+                                            weapon.misileAmount = Weapons[weapon.type].misileAmount;
+                                            weapon.misileLifeTime = Weapons[weapon.type].misileLifeTime;
+                                            weapon.misileSpeed = Weapons[weapon.type].misileSpeed;
+                                            weapon.range = Weapons[weapon.type].range;
+                                            cmdBuffer.SetComponent(player, weapon);
+                                        }
+                                        break;
+                                    case (int)PowerType.Health:
+                                        stats.health = math.min(stats.health + 2, data.maxHealth);
+                                        break;
+                                    case (int)PowerType.Bomb:
+                                        break;
+                                }
+
+                                cmdBuffer.DestroyEntity(hitEntity);
+
+
+                            }
+                        //var shield = EntityManager.GetComponentData<ShieldComponent>(shieldRef.ShieldEntity);
+                        /*
+                        if (!shield.enabled && enableShield)
+                        {
+                            shield.enabled = true;
+                            cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
+                        }
+                        if(shield.enabled && !enableShield)
+                        {
+                            shield.enabled = false;
+                            cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
+                        }/**/
+                        //cmdBuffer.SetComponent(shieldRef.ShieldEntity, tr);
                     }
-                    if(shield.enabled && !enableShield)
-                    {
-                        shield.enabled = false;
-                        cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
-                    }/**/
-                    //cmdBuffer.SetComponent(shieldRef.ShieldEntity, tr);
-                })
-                .Run();
+                    })
+                    .Run();
 
-        cmdBuffer.Playback(EntityManager);
-        cmdBuffer.Dispose();
+            cmdBuffer.Playback(EntityManager);
+            cmdBuffer.Dispose();
+        }
+
+        protected override void OnDestroy()
+        {
+            Weapons.Dispose();
+            base.OnDestroy();
+        }
     }
 }
