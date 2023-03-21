@@ -18,6 +18,23 @@ MonoBehaviour:
   <rotationSpeedDeg>k__BackingField: 120
   <restitution>k__BackingField: 0.7
   <stunnedTime>k__BackingField: 1
+  <invTime>k__BackingField: 2
   <shootCooldown>k__BackingField: 0.7
   <health>k__BackingField: 10
   <shieldHealth>k__BackingField: 4
+  <shape>k__BackingField:
+  - {x: 0.20460936, y: 0.13450186}
+  - {x: 0.20460936, y: 0.212625}
+  - {x: 0.12976088, y: 0.21229511}
+  - {x: 0.04897026, y: 0.13175192}
+  - {x: -0.0029446962, y: 0.14956579}
+  - {x: -0.051825095, y: 0.130775}
+  - {x: -0.13178039, y: 0.21196523}
+  - {x: -0.20460936, y: 0.212625}
+  - {x: -0.20460938, y: 0.13450187}
+  - {x: -0.1182094, y: -0.16225302}
+  - {x: -0.075691216, y: -0.16246071}
+  - {x: -0.061171874, y: -0.212625}
+  - {x: 0.05695312, y: -0.212625}
+  - {x: 0.07404599, y: -0.16260916}
+  - {x: 0.11721137, y: -0.1621743}

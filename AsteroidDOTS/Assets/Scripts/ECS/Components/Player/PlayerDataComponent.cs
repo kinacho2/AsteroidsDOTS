@@ -11,6 +11,7 @@ namespace Asteroids.ECS.Components
         public float rotationSpeedDeg;
         public float restitution;
         public float stunnedTime;
+        public float invTime;
         public float shootCooldown;
     }
 }

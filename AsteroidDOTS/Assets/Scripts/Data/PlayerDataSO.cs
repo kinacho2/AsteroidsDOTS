@@ -25,6 +25,9 @@ namespace Asteroids.Data
         public float stunnedTime { get; protected set; }
 
         [field: SerializeField]
+        public float invTime { get; protected set; }
+
+        [field: SerializeField]
         public float shootCooldown { get; protected set; }
 
         [field: SerializeField]
@@ -33,6 +36,7 @@ namespace Asteroids.Data
         [field: SerializeField]
         public int shieldHealth { get; protected set; }
 
-        
+        [field: SerializeField]
+        public Vector2[] shape { get; protected set; }
     }
 }

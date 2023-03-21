@@ -29,10 +29,11 @@ public class PlayerSpawner : MonoBehaviour
 
     private void InitializeLineShape()
     {
-        var polygonCollider = PlayerPrefab.GetComponent<PolygonCollider2D>();
+        //var polygonCollider = PlayerPrefab.GetComponent<PolygonCollider2D>();
         var meshFilter = PlayerPrefab.GetComponentInChildren<MeshFilter>();
         meshFilter.sharedMesh = new Mesh();
-        AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, PlayerPrefab.transform.localScale, meshFilter.sharedMesh);
+        AMeshTools.CreateMeshWithMassCenter(PlayerData.shape, PlayerPrefab.transform.localScale, meshFilter.sharedMesh);
+
 
         var shieldMeshFilter = PlayerPrefab.GetComponentsInChildren<MeshFilter>().Where((x) => x.tag == "Shield").FirstOrDefault();
         if (shieldMeshFilter)
@@ -47,7 +48,7 @@ public class PlayerSpawner : MonoBehaviour
         {
             stunnedTimer = 0,
             health = PlayerData.health,
-            shieldHealth = PlayerData.shieldHealth,
+            shieldHealth = 0,
         });
         entityManager.AddComponentData(entity, new PlayerDataComponent
         {
@@ -58,6 +59,7 @@ public class PlayerSpawner : MonoBehaviour
             restitution = PlayerData.restitution,
             rotationSpeedDeg = PlayerData.rotationSpeedDeg,
             stunnedTime = PlayerData.stunnedTime,
+            invTime = PlayerData.invTime,
             shootCooldown = PlayerData.shootCooldown,
         });
         var weaponData = Configs.WeaponDB.Get(0);

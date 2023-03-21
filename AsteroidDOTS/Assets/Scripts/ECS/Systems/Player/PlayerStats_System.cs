@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using UnityEngine;
+using Unity.Rendering;
 
 namespace Asteroids.ECS.Systems
 {
@@ -18,6 +18,12 @@ namespace Asteroids.ECS.Systems
         private PlayerStatsComponent _currentPlayerStats;
         private PlayerStatsComponent _lastPlayerStats;
         private PlayerDataComponent _playerData;
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            _lastPlayerStats = new PlayerStatsComponent { health = -1, shieldHealth = -1, stunnedTimer = 0, shootTimer = 0 };
+        }
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
@@ -27,25 +33,57 @@ namespace Asteroids.ECS.Systems
             .ForEach((Entity player, int entityInQueryIndex,
                 in PlayerStatsComponent stats,
                 in PlayerDataComponent data,
-                in PlayerShieldComponent shieldRef
+                in PlayerRendererComponent rendererRef
+                
                 ) =>
             {
                 _currentPlayerStats = stats;
                 _playerData = data;
 
+
+                //health
                 if (stats.health <= 0)
                 {
                     cmdBuffer.DestroyEntity(player);
+                    return;
                 }
+
+                //shield
+                var shield = EntityManager.GetComponentData<ShieldComponent>(rendererRef.ShieldEntity);
                 if (stats.shieldHealth <= 0)
                 {
-                    var shield = EntityManager.GetComponentData<ShieldComponent>(shieldRef.ShieldEntity);
                     if (shield.enabled)
                     {
                         shield.enabled = false;
-                        cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
+                        cmdBuffer.SetComponent(rendererRef.ShieldEntity, shield);
                     }
                 }
+                else
+                {
+                    if (!shield.enabled)
+                    {
+                        shield.enabled = true;
+                        cmdBuffer.SetComponent(rendererRef.ShieldEntity, shield);
+                    }
+                }
+
+                //invTime
+                if(stats.invTime > 0)
+                {
+                    int value = (int)(stats.invTime * 10);
+                    if (value % 2 == 0)
+                    {
+                        cmdBuffer.AddComponent<Disabled>(rendererRef.Renderer);
+                    }
+                    else
+                        cmdBuffer.RemoveComponent<Disabled>(rendererRef.Renderer);
+                }
+                else
+                {
+                    cmdBuffer.RemoveComponent<Disabled>(rendererRef.Renderer);
+                }
+
+
             })
             .Run();
 

@@ -71,7 +71,7 @@ namespace Asteroids.ECS.Systems
             if (SpawnQueue.TryDequeue(out float3 position))
             {
                 var type = Random.NextInt(0, entityPrefabs.Length) % entityPrefabs.Length;
-                //type = 2;
+                //type = 0;
                 var entityPrefab = entityPrefabs[type];
                 InstantiatePower(entityPrefab, type, position, ref cmdBuffer);
             }

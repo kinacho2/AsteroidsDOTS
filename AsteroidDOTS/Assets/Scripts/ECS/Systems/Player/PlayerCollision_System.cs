@@ -91,12 +91,13 @@ namespace Asteroids.ECS.Systems
                             cmdBuffer.SetComponent(hitEntity, new Translation { Value = tr2 });
                             cmdBuffer.SetComponent(player, new Translation { Value = tr1 });
 
-                            if (stats.stunnedTimer <= 0)
+                            if (stats.stunnedTimer <= 0 && stats.invTime <= 0)
                             {
                                 //set stats
+                                stats.stunnedTimer = data.stunnedTime + deltaTime;
+                                stats.invTime = data.invTime + data.stunnedTime;
                                 if (stats.shieldHealth <= 0)
                                 {
-                                    stats.stunnedTimer = data.stunnedTime;
                                     stats.health -= 1;
                                 }
                                 else
@@ -108,6 +109,7 @@ namespace Asteroids.ECS.Systems
                     }
 
                     stats.stunnedTimer = math.max(0, stats.stunnedTimer - deltaTime);
+                    stats.invTime = math.max(0, stats.invTime - deltaTime);
 
                 })
                 .Run();

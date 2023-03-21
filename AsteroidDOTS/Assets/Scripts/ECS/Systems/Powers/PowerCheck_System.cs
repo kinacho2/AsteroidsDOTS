@@ -36,7 +36,7 @@ namespace Asteroids.ECS.Systems {
             var physicsWorld = physicsWorldSystem.PhysicsWorld;
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
-            Entities.WithAll<PlayerShieldComponent>()
+            Entities.WithAll<PlayerRendererComponent>()
                     .WithoutBurst()
                     .ForEach((Entity player, int entityInQueryIndex,
                         ref PhysicsColliderBlob collider,

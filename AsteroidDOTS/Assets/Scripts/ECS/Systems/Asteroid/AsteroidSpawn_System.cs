@@ -12,6 +12,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace Asteroids.ECS.Systems
 {
+
     public class AsteroidSpawn_System : SystemBase
     {
         protected const float PI2 = math.PI * 2;
@@ -91,8 +92,8 @@ namespace Asteroids.ECS.Systems
                         if(asteroid.type < (int)AsteroidType.Small)
                         {
                             //power ups
-                            var rand = Random.NextUInt(0, 10);
-                            if (rand < 9)
+                            //var rand = Random.NextUInt(0, 10);
+                            //if (rand < 9)
                             {
                                 PowerSpawn_System.SpawnQueue.Enqueue(tr.Value);
                             }
