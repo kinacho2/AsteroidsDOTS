@@ -138,6 +138,14 @@ namespace Asteroids.ECS.Systems
                                     otherAsteroid.explodeDirection = dir.ToFloat2();
                                     cmdBuffer.SetComponent(hitEntity, otherAsteroid);
                                 }
+
+                                Events_System.OnAsteroidsCollision.PostEvent(new Events.AsteroidsCollision
+                                {
+                                    type = math.max(thisAsteroid.type, otherAsteroid.type),
+                                    position = thisAsteroid.type > otherAsteroid.type? tr.Value : otherTranslation.Value
+                                    
+                                });
+
                                 /**/
                             }
                         }

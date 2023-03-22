@@ -65,6 +65,7 @@ namespace Asteroids.ECS.Systems {
                                 {
                                     case (int)PowerType.Shield:
                                         stats.shieldHealth = data.shieldHealth;
+                                        
                                         break;
                                     case (int)PowerType.Weapon:
                                         var weapon = EntityManager.GetComponentData<PlayerWeaponComponent>(player);
@@ -88,7 +89,7 @@ namespace Asteroids.ECS.Systems {
 
                                 cmdBuffer.DestroyEntity(hitEntity);
 
-
+                                Events_System.OnPickPower.PostEvent(new Events.PickPower { position = tr.Value, type = power.type });
                             }
                         //var shield = EntityManager.GetComponentData<ShieldComponent>(shieldRef.ShieldEntity);
                         /*

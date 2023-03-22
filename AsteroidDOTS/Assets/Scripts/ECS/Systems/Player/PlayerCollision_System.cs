@@ -104,6 +104,13 @@ namespace Asteroids.ECS.Systems
                                 {
                                     stats.shieldHealth -= 1;
                                 }
+                                Events_System.OnPlayerCollision.PostEvent(
+                                    new Events.PlayerCollision 
+                                    { 
+                                        position = tr.Value, 
+                                        shield = stats.shieldHealth > 0 
+                                    });
+
                             }
                         }
                     }

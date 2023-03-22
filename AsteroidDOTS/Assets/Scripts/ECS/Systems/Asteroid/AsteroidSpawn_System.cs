@@ -82,6 +82,7 @@ namespace Asteroids.ECS.Systems
                     if (asteroid.health <= 0)
                     {
                         cmdBuffer.DestroyEntity(entity);
+                        Events_System.OnAsteroidDestroyed.PostEvent(new Events.AsteroidDestroyed { position = tr.Value, type = asteroid.type });
                         if (asteroid.type < (int)AsteroidType.Tiny)
                         {
                             InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f/3f), asteroid, ref cmdBuffer);

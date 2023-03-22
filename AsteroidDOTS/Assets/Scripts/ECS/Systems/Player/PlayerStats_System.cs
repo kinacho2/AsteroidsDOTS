@@ -45,6 +45,7 @@ namespace Asteroids.ECS.Systems
                 if (stats.health <= 0)
                 {
                     cmdBuffer.DestroyEntity(player);
+                    Events_System.OnPlayerDestroyed.PostEvent(new Events.PlayerDestroyed());
                     return;
                 }
 
@@ -56,6 +57,7 @@ namespace Asteroids.ECS.Systems
                     {
                         shield.enabled = false;
                         cmdBuffer.SetComponent(rendererRef.ShieldEntity, shield);
+                        Events_System.OnPlayerLoseShield.PostEvent(new Events.PlayerLoseShield());
                     }
                 }
                 else

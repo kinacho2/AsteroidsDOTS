@@ -43,6 +43,7 @@ namespace Asteroids.ECS.Systems
                         velocity = velocity / len * math.clamp(len, 0, data.maxSpeed);
                         physics.Linear = velocity;
                     }
+
                 })
                 .Run();
         }
