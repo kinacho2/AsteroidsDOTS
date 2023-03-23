@@ -1,4 +1,6 @@
+using Asteroids.Data;
 using Asteroids.ECS.Components;
+using Asteroids.ECS.Systems;
 using Asteroids.Setup;
 using Asteroids.Tools;
 using Unity.Collections;
@@ -9,15 +11,13 @@ using UnityEngine;
 using Random = Unity.Mathematics.Random;
 public class BombSpawn_System : SystemBase
 {
-    public static NativeQueue<float3> SpawnQueue;
     protected Entity entityPrefab;
     Random Random;
-
+    private int _eventConsumer;
     protected override void OnCreate()
     {
         base.OnCreate();
         Random = new Random(0x6A622EB2u);
-        SpawnQueue = new NativeQueue<float3>(Allocator.Persistent);
         Configs.OnInitializedConfig += Configs_OnInitializedConfig;
     }
 
@@ -34,14 +34,17 @@ public class BombSpawn_System : SystemBase
         var defaultWorld = World.DefaultGameObjectInjectionWorld;
         var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
         entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
+
+        _eventConsumer = Events_System.OnPickPower.Subscribe(Configs.EVENTS_QUEUE_COUNT);
     }
 
     protected override void OnUpdate()
     {
         var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-        if (SpawnQueue.TryDequeue(out float3 position))
+        if (Events_System.OnPickPower.TryGetEvent(_eventConsumer, out var power))        
         {
-            InstantiateBomb(entityPrefab, position, ref cmdBuffer);
+            if(power.type == PowerType.Bomb)
+                InstantiateBomb(entityPrefab, power.position, ref cmdBuffer);
         }
 
         cmdBuffer.Playback(EntityManager);
@@ -58,9 +61,4 @@ public class BombSpawn_System : SystemBase
         cmdBuffer.AddComponent(entity, new Scale { Value = radius });
     }
 
-    protected override void OnDestroy()
-    {
-        SpawnQueue.Dispose();
-        base.OnDestroy();
-    }
 }

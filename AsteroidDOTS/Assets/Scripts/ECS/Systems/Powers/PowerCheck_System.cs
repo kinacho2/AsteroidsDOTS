@@ -64,11 +64,11 @@ namespace Asteroids.ECS.Systems {
                                 var powerTr = EntityManager.GetComponentData<Translation>(hitEntity);
                                 switch (power.type)
                                 {
-                                    case (int)PowerType.Shield:
+                                    case PowerType.Shield:
                                         stats.shieldHealth = data.shieldHealth;
                                         
                                         break;
-                                    case (int)PowerType.Weapon:
+                                    case PowerType.Weapon:
                                         var weapon = EntityManager.GetComponentData<WeaponComponent>(player);
                                         if(weapon.type + 1 < Weapons.Length)
                                         {
@@ -80,11 +80,12 @@ namespace Asteroids.ECS.Systems {
                                             cmdBuffer.SetComponent(player, weapon);
                                         }
                                         break;
-                                    case (int)PowerType.Health:
+                                    case PowerType.Health:
                                         health.health = math.min(health.health + 2, data.maxHealth);
                                         break;
-                                    case (int)PowerType.Bomb:
-                                        BombSpawn_System.SpawnQueue.Enqueue(powerTr.Value);
+                                    case PowerType.Bomb:
+                                        
+                                        //BombSpawn_System.SpawnQueue.Enqueue(powerTr.Value);
                                         break;
                                 }
 

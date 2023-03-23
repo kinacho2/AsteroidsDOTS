@@ -6,4 +6,6 @@ namespace Asteroids.ECS.Components
     {
         public int health;
     }
+
+    
 }

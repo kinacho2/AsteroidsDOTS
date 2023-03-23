@@ -54,7 +54,7 @@ namespace Asteroids.Data
         public Vector2[] points;
     }
 
-    public enum AsteroidType
+    public enum AsteroidType : int
     {
         Bigger = 0,
         Medium = 1,

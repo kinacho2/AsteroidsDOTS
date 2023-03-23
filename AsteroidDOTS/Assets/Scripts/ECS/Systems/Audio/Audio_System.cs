@@ -43,10 +43,10 @@ namespace Asteroids.ECS.Systems
             _consumers[((int)AudioType.PlayerStartMove)] = Events_System.OnPlayerStartMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             _consumers[((int)AudioType.PlayerStopMove)] = Events_System.OnPlayerStopMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
 
-            _consumers[((int)AudioType.PlayerShoot)] = Events_System.OnPlayerShoot.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PlayerShoot)] = Events_System.OnEntityShoot.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             _consumers[((int)AudioType.PlayerCollision)] = Events_System.OnPlayerCollision.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             //_consumers[((int)AudioType.PlayerDamage)] = Events_System.OnPlayerDamage.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _consumers[((int)AudioType.PlayerDestroyed)] = Events_System.OnPlayerDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PlayerDestroyed)] = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
 
             _consumers[((int)AudioType.AsteroidCollisionBig)] = 
             _consumers[((int)AudioType.AsteroidCollisionMedium)] =
@@ -71,9 +71,9 @@ namespace Asteroids.ECS.Systems
         protected override void OnUpdate()
         {
             if (!_initialized) return;
-            CheckEvent(AudioType.PlayerShoot, ref Events_System.OnPlayerShoot);
+            CheckEvent(AudioType.PlayerShoot, ref Events_System.OnEntityShoot);
             CheckEvent(AudioType.PlayerCollision, ref Events_System.OnPlayerCollision);
-            CheckEvent(AudioType.PlayerDestroyed, ref Events_System.OnPlayerDestroyed);
+            CheckEvent(AudioType.PlayerDestroyed, ref Events_System.OnEntityDestroyed);
             CheckEvent(AudioType.MisileHit, ref Events_System.OnMisileHit);
             CheckEvent(AudioType.LoseShield, ref Events_System.OnPlayerLoseShield);
 
@@ -81,16 +81,16 @@ namespace Asteroids.ECS.Systems
             {
                 switch (asteroid.type)
                 {
-                    case (int)AsteroidType.Bigger:
+                    case AsteroidType.Bigger:
                         PlaySound(AudioType.AsteroidCollisionBig);
                         break;
-                    case (int)AsteroidType.Medium:
+                    case AsteroidType.Medium:
                         PlaySound(AudioType.AsteroidCollisionMedium);
                         break;
-                    case (int)AsteroidType.Small:
+                    case AsteroidType.Small:
                         PlaySound(AudioType.AsteroidCollisionSmall);
                         break;
-                    case (int)AsteroidType.Tiny:
+                    case AsteroidType.Tiny:
                         PlaySound(AudioType.MisileHit);
                         break;
                 }
@@ -100,13 +100,13 @@ namespace Asteroids.ECS.Systems
             {
                 switch (asteroidDestroyed.type)
                 {
-                    case (int)AsteroidType.Bigger:
+                    case AsteroidType.Bigger:
                         PlaySound(AudioType.AsteroidDestroyedBig);
                         break;
-                    case (int)AsteroidType.Medium:
+                    case AsteroidType.Medium:
                         PlaySound(AudioType.AsteroidDestroyedMedium);
                         break;
-                    case (int)AsteroidType.Small:
+                    case AsteroidType.Small:
                         PlaySound(AudioType.AsteroidDestroyedSmall);
                         break;
                 }
@@ -116,16 +116,16 @@ namespace Asteroids.ECS.Systems
             {
                 switch (power.type)
                 {
-                    case (int)PowerType.Shield:
+                    case PowerType.Shield:
                         PlaySound(AudioType.PickShield);
                         break;
-                    case (int)PowerType.Weapon:
+                    case PowerType.Weapon:
                         PlaySound(AudioType.PickWeapon);
                         break;
-                    case (int)PowerType.Bomb:
+                    case PowerType.Bomb:
                         PlaySound(AudioType.PickBomb);
                         break;
-                    case (int)PowerType.Health:
+                    case PowerType.Health:
                         PlaySound(AudioType.PickHealth);
                         break;
                 }

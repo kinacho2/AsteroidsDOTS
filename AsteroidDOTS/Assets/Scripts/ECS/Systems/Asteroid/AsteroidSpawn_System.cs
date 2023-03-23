@@ -83,21 +83,22 @@ namespace Asteroids.ECS.Systems
                     if (health.health <= 0)
                     {
                         cmdBuffer.DestroyEntity(entity);
-                        Events_System.OnAsteroidDestroyed.PostEvent(new Events.AsteroidDestroyed { position = tr.Value, type = asteroid.type });
-                        if (asteroid.type < (int)AsteroidType.Tiny)
+                        Events_System.OnAsteroidDestroyed.PostEvent(new Events.AsteroidDestroyed { position = tr.Value, type = asteroid.type, size = asteroid.size });
+                        int type = ((int)asteroid.type);
+                        if (asteroid.type < AsteroidType.Tiny)
                         {
-                            InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f/3f), asteroid, ref cmdBuffer);
-                            InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f/3f), asteroid, ref cmdBuffer);
-                            InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2), asteroid, ref cmdBuffer);
+                            InstantiateAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f/3f), asteroid, ref cmdBuffer);
+                            InstantiateAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f/3f), asteroid, ref cmdBuffer);
+                            InstantiateAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2), asteroid, ref cmdBuffer);
                             //InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 1.75f), asteroid.size, ref cmdBuffer);
                         }
-                        if(asteroid.type < (int)AsteroidType.Small)
+                        if(asteroid.type < AsteroidType.Small)
                         {
                             //power ups
                             //var rand = Random.NextUInt(0, 10);
                             //if (rand < 9)
                             {
-                                PowerSpawn_System.SpawnQueue.Enqueue(tr.Value);
+                                //PowerSpawn_System.SpawnQueue.Enqueue(tr.Value);
                             }
                         }
                     }
@@ -130,7 +131,7 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.AddComponent<LimitCheckComponent>(entity);
             cmdBuffer.AddComponent(entity, new AsteroidComponent
             {
-                type = (int)data.type,
+                type = data.type,
                 size = data.size,
                 maxSpeed = data.maxSpeed,
                 lastBombID = parentAsteroid.lastBombID,
@@ -146,7 +147,7 @@ namespace Asteroids.ECS.Systems
         private void InstantiateFirstAsteroids(int count)
         {
             var asteroidData = data[0];
-            var type = (int)asteroidData.type;
+            var type = asteroidData.type;
 
             for (int i = 0; i < count; i++)
             {

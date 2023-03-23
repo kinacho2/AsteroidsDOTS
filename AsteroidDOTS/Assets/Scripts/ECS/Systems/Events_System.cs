@@ -11,14 +11,14 @@ namespace Asteroids.ECS.Systems
         private static EventPublisher<PlayerMove> _onPlayerStoptMove;
         public static ref EventPublisher<PlayerMove> OnPlayerStopMove => ref _onPlayerStoptMove;
 
-        private static EventPublisher<PlayerShoot> _onPlayerShoot;
-        public static ref EventPublisher<PlayerShoot> OnPlayerShoot => ref _onPlayerShoot;
+        private static EventPublisher<EntityShoot> _onPlayerShoot;
+        public static ref EventPublisher<EntityShoot> OnEntityShoot => ref _onPlayerShoot;
 
         private static EventPublisher<PlayerCollision> _onPlayerCollision;
         public static ref EventPublisher<PlayerCollision> OnPlayerCollision => ref _onPlayerCollision;
 
-        private static EventPublisher<PlayerDestroyed> _onPlayerDestroyed;
-        public static ref EventPublisher<PlayerDestroyed> OnPlayerDestroyed => ref _onPlayerDestroyed;
+        private static EventPublisher<EntityDestroyed> _onPlayerDestroyed;
+        public static ref EventPublisher<EntityDestroyed> OnEntityDestroyed => ref _onPlayerDestroyed;
         
         private static EventPublisher<PlayerLoseShield> _onPlayerLoseShield;
         public static ref EventPublisher<PlayerLoseShield> OnPlayerLoseShield => ref _onPlayerLoseShield;
@@ -40,9 +40,9 @@ namespace Asteroids.ECS.Systems
             base.OnCreate();
             _onPlayerStartMove = new EventPublisher<PlayerMove>(20);
             _onPlayerStoptMove = new EventPublisher<PlayerMove>(20);
-            _onPlayerShoot = new EventPublisher<PlayerShoot>(20);
+            _onPlayerShoot = new EventPublisher<EntityShoot>(20);
             _onPlayerCollision = new EventPublisher<PlayerCollision>(20);
-            _onPlayerDestroyed = new EventPublisher<PlayerDestroyed>(20);
+            _onPlayerDestroyed = new EventPublisher<EntityDestroyed>(20);
             _onPlayerLoseShield = new EventPublisher<PlayerLoseShield>(20);
             _onAsteroidsCollision = new EventPublisher<AsteroidsCollision>(20);
             _onAsteroidDestroyed = new EventPublisher<AsteroidDestroyed>(20);

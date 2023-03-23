@@ -127,8 +127,7 @@ namespace Asteroids.ECS.Systems
                                 //tiny asteroids destruction when hit a medium or big asteroid
                                 
                                 var thisAsteroid = asteroid;
-                                var tinyType = (int)AsteroidType.Tiny;
-                                if (thisAsteroid.type == tinyType && otherAsteroid.type < tinyType - 1)
+                                if (thisAsteroid.type == AsteroidType.Tiny && otherAsteroid.type < AsteroidType.Tiny - 1)
                                 {
                                     var thisHealth = health;
                                     thisHealth.health -= 1;
@@ -136,7 +135,7 @@ namespace Asteroids.ECS.Systems
                                     cmdBuffer.SetComponent(asteroidEntity, thisHealth);
                                     cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
                                 }
-                                if (otherAsteroid.type == tinyType && thisAsteroid.type < tinyType - 1)
+                                if (otherAsteroid.type == AsteroidType.Tiny && thisAsteroid.type < AsteroidType.Tiny - 1)
                                 {
                                     var otherHealth = EntityManager.GetComponentData<HealthComponent>(hitEntity);
                                     otherHealth.health -= 1;
@@ -147,7 +146,7 @@ namespace Asteroids.ECS.Systems
 
                                 Events_System.OnAsteroidsCollision.PostEvent(new Events.AsteroidsCollision
                                 {
-                                    type = math.max(thisAsteroid.type, otherAsteroid.type),
+                                    type = (AsteroidType)math.max((int)thisAsteroid.type, (int)otherAsteroid.type),
                                     position = thisAsteroid.type > otherAsteroid.type? tr.Value : otherTranslation.Value
                                     
                                 });

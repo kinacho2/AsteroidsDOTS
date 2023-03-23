@@ -9,19 +9,21 @@ using Asteroids.Tools;
 using System.Linq;
 using Asteroids.ECS.Components;
 using Unity.Transforms;
+using Asteroids.Data;
 
 namespace Asteroids.ECS.Systems
 {
     public class PowerSpawn_System : SystemBase
     {
-        public static NativeQueue<float3> SpawnQueue;
+        //public static NativeQueue<float3> SpawnQueue;
         protected Entity[] entityPrefabs;
+        private int _eventConsumer;
 
         Random Random;
         protected override void OnCreate()
         {
             base.OnCreate();
-            SpawnQueue = new NativeQueue<float3>(Allocator.Persistent);
+            //SpawnQueue = new NativeQueue<float3>(Allocator.Persistent);
             Random = new Random(0x6E622EB2u);
             Configs.OnInitializedConfig += Configs_OnInitializedConfig;
         }
@@ -62,25 +64,30 @@ namespace Asteroids.ECS.Systems
 
                 entityPrefabs[i] = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
             }
+
+            _eventConsumer = Events_System.OnAsteroidDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
         }
 
 
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-            if (SpawnQueue.TryDequeue(out float3 position))
+            if(Events_System.OnAsteroidDestroyed.TryGetEvent(_eventConsumer, out var asteroidEvent))
             {
-                var type = Random.NextInt(0, entityPrefabs.Length) % entityPrefabs.Length;
-                //type = 0;
-                var entityPrefab = entityPrefabs[type];
-                InstantiatePower(entityPrefab, type, position, ref cmdBuffer);
+                if (asteroidEvent.type < AsteroidType.Small)
+                {
+                    var type = Random.NextInt(0, entityPrefabs.Length) % entityPrefabs.Length;
+                    //type = 0;
+                    var entityPrefab = entityPrefabs[type];
+                    InstantiatePower(entityPrefab, (PowerType)type, asteroidEvent.position, ref cmdBuffer);
+                }
             }
 
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
         }
 
-        private void InstantiatePower(Entity entityPrefab, int type, float3 position, ref EntityCommandBuffer cmdBuffer)
+        private void InstantiatePower(Entity entityPrefab, PowerType type, float3 position, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(entityPrefab);
             cmdBuffer.AddComponent(entity, new PowerComponent { type = type});
@@ -90,7 +97,7 @@ namespace Asteroids.ECS.Systems
 
         protected override void OnDestroy()
         {
-            SpawnQueue.Dispose();
+            //SpawnQueue.Dispose();
             base.OnDestroy();
         }
     }

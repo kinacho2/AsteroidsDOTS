@@ -1,9 +1,7 @@
 using Asteroids.ECS.Components;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Rendering;
+using Unity.Transforms;
 
 namespace Asteroids.ECS.Systems
 {
@@ -39,8 +37,8 @@ namespace Asteroids.ECS.Systems
                 in ShipStatsComponent stats,
                 in HealthComponent health,
                 in ShipDataComponent data,
-                in ShipRendererComponent rendererRef
-                
+                in ShipRendererComponent rendererRef,
+                in Translation tr
                 ) =>
             {
                 if (HasComponent<PlayerComponent>(ship))
@@ -73,7 +71,7 @@ namespace Asteroids.ECS.Systems
                 if (health.health <= 0)
                 {
                     cmdBuffer.DestroyEntity(ship);
-                    Events_System.OnPlayerDestroyed.PostEvent(new Events.PlayerDestroyed());
+                    Events_System.OnEntityDestroyed.PostEvent(new Events.EntityDestroyed() { position = tr.Value, entityType = stats.entityType, size = 1 });
                     return;
                 }
 

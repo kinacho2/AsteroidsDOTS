@@ -9,7 +9,7 @@ using Asteroids.ECS.Components;
 
 namespace Asteroids.ECS.Systems
 {
-    public abstract class ShipSpawner_System : SystemBase
+    public abstract class ShipSpawn_System : SystemBase
     {
         //protected Entity _shipPrefab;
         //protected ShipData[] ShipDB;
@@ -41,13 +41,14 @@ namespace Asteroids.ECS.Systems
         }
 
 
-        protected Entity InstantiateShipEntity(EntityManager entityManager, Entity shipPrefab, ShipData data, WeaponData weapon)
+        protected Entity InstantiateShipEntity(EntityManager entityManager, Entity shipPrefab, ShipData data, WeaponData weapon, EntityType type)
         {
             var entity = entityManager.Instantiate(shipPrefab);
             entityManager.AddComponent<LimitCheckComponent>(entity);
             entityManager.AddComponent<ShipInputComponent>(entity);
             entityManager.AddComponentData(entity, new ShipStatsComponent
             {
+                entityType = type,
                 stunnedTimer = 0,
                 shieldHealth = 0,
             });

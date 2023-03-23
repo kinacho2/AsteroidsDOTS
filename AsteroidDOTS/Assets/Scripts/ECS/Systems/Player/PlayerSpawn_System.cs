@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
-    public class PlayerSpawn_System : ShipSpawner_System
+    public class PlayerSpawn_System : ShipSpawn_System
     {
         private Entity EntityPrefab;
         protected override void OnCreate()
@@ -35,7 +35,7 @@ namespace Asteroids.ECS.Systems
         {
             var weapon = Configs.PlayerData.WeaponsDB.Get(0);
 
-            var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon);
+            var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon, EntityType.Player);
             entityManager.AddComponent<PlayerComponent>(entity);
             
         }

@@ -75,10 +75,10 @@ namespace Asteroids.ECS.Systems
 
                             var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
 
-                            var dir = math.normalize(otherTranslation.Value - tr.Value);
+                            var dir = math.normalizesafe(otherTranslation.Value - tr.Value);
 
-                            var linear1 = math.normalize(v1 - dir.ToFloat2() * len1 * 1 / data.restitution) * math.length(v1);
-                            var linear2 = math.normalize(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
+                            var linear1 = math.normalizesafe(v1 - dir.ToFloat2() * len1 * 1 / data.restitution) * math.length(v1);
+                            var linear2 = math.normalizesafe(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
 
                             var w1 = velocity.Angular;
                             var w2 = otherVelocity.Angular;
@@ -86,7 +86,7 @@ namespace Asteroids.ECS.Systems
                             //compute angular velocity
                             if (math.lengthsq(velocity.Linear) > 0)
                             {
-                                var fordward = math.normalize(velocity.Linear);
+                                var fordward = math.normalizesafe(velocity.Linear);
                                 var cross = math.cross(fordward.ToFloat3(), dir);
                                 var asin = math.asin(cross.z);
 

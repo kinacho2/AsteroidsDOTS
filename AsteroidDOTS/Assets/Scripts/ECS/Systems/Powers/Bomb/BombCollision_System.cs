@@ -1,13 +1,10 @@
 using Asteroids.ECS.Components;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.U2D.Entities.Physics;
-using UnityEngine;
 
 public class BombCollision_System : SystemBase
 {
@@ -38,7 +35,7 @@ public class BombCollision_System : SystemBase
                 scale.Value = bomb.radius;
                 bomb.lifeTime -= deltaTime;
 
-                var allHits = new NativeList<OverlapColliderHit>(6*3*3*3, Allocator.Temp);
+                var allHits = new NativeList<OverlapColliderHit>(6 * 3 * 3 * 3, Allocator.Temp);
 
                 var Collider = collider.Collider;
                 ref var circle = ref Collider.GetColliderRef<PhysicsCircleCollider>();
@@ -79,7 +76,7 @@ public class BombCollision_System : SystemBase
 
                 allHits.Dispose();
 
-                if(bomb.lifeTime <= 0)
+                if (bomb.lifeTime <= 0)
                     cmdBuffer.DestroyEntity(entity);
 
             }).Run();

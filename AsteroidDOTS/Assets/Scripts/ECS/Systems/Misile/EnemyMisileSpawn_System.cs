@@ -79,16 +79,9 @@ namespace Asteroids.ECS.Systems
 
                             var velocity = fordward * weapon.misileSpeed;
 
-                            var len = math.length(physics.Linear);
-                            if (len > 0)
-                            {
-                                //add ship velocity as inertia
-                                //velocity += fordward * math.dot(fordward, physics.Linear / len) * len;
-                            }
                             InstantiateMisile(tr.Value, quaternion.RotateZ(rot), math.length(velocity), weapon, ref cmdBuffer);
                             
-
-                            Events_System.OnPlayerShoot.PostEvent(new PlayerShoot { weapon = weapon.type, position = tr.Value });
+                            Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.type, position = tr.Value });
                         }
                     }
                     else

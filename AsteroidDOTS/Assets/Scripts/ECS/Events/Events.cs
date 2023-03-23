@@ -1,4 +1,5 @@
 
+using Asteroids.Data;
 using Unity.Mathematics;
 
 namespace Asteroids.ECS.Events
@@ -8,7 +9,7 @@ namespace Asteroids.ECS.Events
         public float3 position;
     }
 
-    public struct PlayerShoot
+    public struct EntityShoot
     {
         public int weapon;
         public float3 position;
@@ -20,9 +21,11 @@ namespace Asteroids.ECS.Events
         public float3 position;
     }
 
-    public struct PlayerDestroyed
+    public struct EntityDestroyed
     {
+        public EntityType entityType;
         public float3 position;
+        public float size;
     }
 
     public struct PlayerLoseShield
@@ -32,19 +35,20 @@ namespace Asteroids.ECS.Events
 
     public struct AsteroidsCollision
     {
-        public int type;
+        public AsteroidType type;
         public float3 position;
     }
 
     public struct AsteroidDestroyed
     {
-        public int type;
+        public AsteroidType type;
         public float3 position;
+        public float size;
     }
 
     public struct PickPower
     {
-        public int type;
+        public PowerType type;
         public float3 position;
     }
 

@@ -13,7 +13,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace Asteroids.ECS.Systems
 {
-    public class EnemiesSpawn_System : ShipSpawner_System
+    public class EnemiesSpawn_System : ShipSpawn_System
     {
         private NativeArray<Entity> Enemies;
         private ShipData[] EnemiesDB;
@@ -64,7 +64,7 @@ namespace Asteroids.ECS.Systems
         private void InstantiateEnemyEntity(EntityManager entityManager, Entity entityPrefab, ShipData data, int index)
         {
             var weapon = Configs.EnemyDB.WeaponsDB.Get(index);
-            var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon);
+            var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon, EntityType.Enemy);
             entityManager.AddComponentData(entity, new EnemyComponent { AIState = EnemyAIState.Idle, stateTimer = 0, viewDistance = 5
 #if UNITY_EDITOR
                 ,
