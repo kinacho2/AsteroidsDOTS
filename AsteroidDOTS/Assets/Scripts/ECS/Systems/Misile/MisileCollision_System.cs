@@ -26,13 +26,13 @@ namespace Asteroids.ECS.Systems {
 
             Entities
                 .WithoutBurst()
-                .ForEach((Entity misile, int entityInQueryIndex,
-                    in MisileComponent stats,
+                .ForEach((Entity misileEntity, int entityInQueryIndex,
+                    in MisileComponent misile,
                     in Translation tr,
                     in Rotation rot) =>
                 {
                     var forward = math.mul(rot.Value, math.right()).ToFloat2();
-                    var end = tr.Value.ToFloat2() + forward * stats.range;
+                    var end = tr.Value.ToFloat2() + forward * misile.range;
                     if (physicsWorld.CastRay(
                         new RaycastInput
                         {
@@ -44,15 +44,32 @@ namespace Asteroids.ECS.Systems {
                         out var hit))
                     {
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
-                        if (HasComponent<AsteroidComponent>(hitEntity))
+                        if (HasComponent<HealthComponent>(hitEntity))
                         {
-                            var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
+                            var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
                             var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
-                            asteroid.health--;
-                            asteroid.explodeDirection = math.normalize((asteroidTr.Value - tr.Value).ToFloat2());
+                            
+                            if (HasComponent<AsteroidComponent>(hitEntity))
+                            {
+                                var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
+                                asteroid.explodeDirection = math.normalize((asteroidTr.Value - tr.Value).ToFloat2());
+                                cmdBuffer.SetComponent(hitEntity, asteroid);
+                            }
+                            cmdBuffer.DestroyEntity(misileEntity);
+                            if (HasComponent<ShipStatsComponent>(hitEntity))
+                            {
+                                var stats = EntityManager.GetComponentData<ShipStatsComponent>(hitEntity);
+                                var data = EntityManager.GetComponentData<ShipDataComponent>(hitEntity);
+                                if (stats.invTime <= 0)
+                                {
+                                    stats.invTime = data.invTime;
+                                    cmdBuffer.SetComponent(hitEntity, stats);
+                                    health.health--;
+                                }
+                            }
+                            else health.health--;
 
-                            cmdBuffer.DestroyEntity(misile);
-                            cmdBuffer.SetComponent(hitEntity, asteroid);
+                            cmdBuffer.SetComponent(hitEntity, health);
 
                             Events_System.OnMisileHit.PostEvent(new Events.MisileHit { position = tr.Value });
     

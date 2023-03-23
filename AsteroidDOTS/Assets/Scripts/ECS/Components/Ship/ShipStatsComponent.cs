@@ -4,7 +4,7 @@ namespace Asteroids.ECS.Components
 {
     public struct ShipStatsComponent : IComponentData
     {
-        public int health;
+        //public int health;
         public int shieldHealth;
         public float stunnedTimer;
         public float invTime;

@@ -27,7 +27,7 @@ namespace Asteroids.ECS.Systems {
         {
             Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
 
-            Weapons = new NativeArray<WeaponData>(Configs.WeaponDB.Weapons, Allocator.Persistent);
+            Weapons = new NativeArray<WeaponData>(Configs.PlayerData.WeaponsDB.Weapons, Allocator.Persistent);
 
         }
 
@@ -43,6 +43,7 @@ namespace Asteroids.ECS.Systems {
                         ref Translation tr,
                         ref Rotation rot,
                         ref ShipStatsComponent stats,
+                        ref HealthComponent health,
                         ref ShipDataComponent data
                         ) =>
                     {
@@ -68,7 +69,7 @@ namespace Asteroids.ECS.Systems {
                                         
                                         break;
                                     case (int)PowerType.Weapon:
-                                        var weapon = EntityManager.GetComponentData<PlayerWeaponComponent>(player);
+                                        var weapon = EntityManager.GetComponentData<WeaponComponent>(player);
                                         if(weapon.type + 1 < Weapons.Length)
                                         {
                                             weapon.type++;
@@ -80,7 +81,7 @@ namespace Asteroids.ECS.Systems {
                                         }
                                         break;
                                     case (int)PowerType.Health:
-                                        stats.health = math.min(stats.health + 2, data.maxHealth);
+                                        health.health = math.min(health.health + 2, data.maxHealth);
                                         break;
                                     case (int)PowerType.Bomb:
                                         BombSpawn_System.SpawnQueue.Enqueue(powerTr.Value);

@@ -33,17 +33,11 @@ namespace Asteroids.ECS.Systems
 
         private void InstantiatePlayerEntity(EntityManager entityManager, Entity entityPrefab, ShipData data)
         {
-            var entity = InstantiateShipEntity(entityManager, entityPrefab, data);
+            var weapon = Configs.PlayerData.WeaponsDB.Get(0);
+
+            var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon);
             entityManager.AddComponent<PlayerComponent>(entity);
-            var weaponData = Configs.WeaponDB.Get(0);
-            entityManager.AddComponentData(entity, new PlayerWeaponComponent
-            {
-                misileAmount = weaponData.misileAmount,
-                misileSpeed = weaponData.misileSpeed,
-                misileLifeTime = weaponData.misileLifeTime,
-                range = weaponData.range,
-                type = 0,
-            });
+            
         }
 
     }

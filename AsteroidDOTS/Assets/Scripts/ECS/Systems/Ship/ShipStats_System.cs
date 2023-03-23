@@ -17,12 +17,16 @@ namespace Asteroids.ECS.Systems
 
         private ShipStatsComponent _currentPlayerStats;
         private ShipStatsComponent _lastPlayerStats;
+
+        private HealthComponent _currentPlayerHealth;
+        private HealthComponent _lastPlayerHealth;
         private ShipDataComponent _playerData;
 
         protected override void OnCreate()
         {
             base.OnCreate();
-            _lastPlayerStats = new ShipStatsComponent { health = -1, shieldHealth = -1, stunnedTimer = 0, shootTimer = 0 };
+            _lastPlayerStats = new ShipStatsComponent { shieldHealth = -1, stunnedTimer = 0, shootTimer = 0 };
+            _lastPlayerHealth = new HealthComponent { health = -1 };
         }
         protected override void OnUpdate()
         {
@@ -33,6 +37,7 @@ namespace Asteroids.ECS.Systems
             .WithoutBurst()
             .ForEach((Entity ship, int entityInQueryIndex,
                 in ShipStatsComponent stats,
+                in HealthComponent health,
                 in ShipDataComponent data,
                 in ShipRendererComponent rendererRef
                 
@@ -41,6 +46,7 @@ namespace Asteroids.ECS.Systems
                 if (HasComponent<PlayerComponent>(ship))
                 {
                     _currentPlayerStats = stats;
+                    _currentPlayerHealth = health;
                     _playerData = data;
 
                     //shield
@@ -64,7 +70,7 @@ namespace Asteroids.ECS.Systems
                     }
                 }
                 //health
-                if (stats.health <= 0)
+                if (health.health <= 0)
                 {
                     cmdBuffer.DestroyEntity(ship);
                     Events_System.OnPlayerDestroyed.PostEvent(new Events.PlayerDestroyed());
@@ -93,10 +99,10 @@ namespace Asteroids.ECS.Systems
 
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
-            if (_lastPlayerStats.health != _currentPlayerStats.health)
+            if (_lastPlayerHealth.health != _currentPlayerHealth.health)
             {
-                _lastPlayerStats.health = _currentPlayerStats.health;
-                OnHealthUpdate?.Invoke(_currentPlayerStats.health, _playerData.maxHealth);
+                _lastPlayerHealth = _currentPlayerHealth;
+                OnHealthUpdate?.Invoke(_currentPlayerHealth.health, _playerData.maxHealth);
             }
             if (_lastPlayerStats.stunnedTimer != _currentPlayerStats.stunnedTimer)
             {

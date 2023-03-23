@@ -29,7 +29,7 @@ namespace Asteroids.ECS.Systems
                     ref Translation tr,
                     ref Rotation rot,
                     ref PhysicsVelocity velocity,
-                    in ShipDataComponent data
+                    ref HealthComponent health
                     ) =>
                 {
                     var allHits = new NativeList<OverlapColliderHit>(Allocator.Temp);
@@ -55,7 +55,8 @@ namespace Asteroids.ECS.Systems
                         //here avoid hascomponent call using skip bool if there is no other collider
                         if (!skip && HasComponent<PhysicsMass>(hitEntity))
                         {
-                            
+                            var data = EntityManager.GetComponentData<ShipDataComponent>(ship);
+
                             var otherVelocity = EntityManager.GetComponentData<PhysicsVelocity>(hitEntity);
                             var otherMass = EntityManager.GetComponentData<PhysicsMass>(hitEntity);
                             var mass = EntityManager.GetComponentData<PhysicsMass>(ship);
@@ -106,23 +107,32 @@ namespace Asteroids.ECS.Systems
                             if (stats.stunnedTimer <= 0 && stats.invTime <= 0)
                             {
                                 //set stats
-                                if(!HasComponent<EnemyComponent>(ship))
-                                    SetStats(ship, ref cmdBuffer, stats, data, deltaTime);
-                                
-                                Events_System.OnPlayerCollision.PostEvent(
-                                    new Events.PlayerCollision 
-                                    { 
-                                        position = tr.Value, 
-                                        shield = stats.shieldHealth > 0 
-                                    });
+                                stats.stunnedTimer = data.stunnedTime + deltaTime;
+
+                                if (!HasComponent<EnemyComponent>(ship))
+                                {
+                                    stats.invTime = data.invTime + stats.stunnedTimer;
+                                    if (stats.shieldHealth <= 0)
+                                    {
+                                        health.health -= 1;
+                                    }
+                                    else
+                                    {
+                                        stats.shieldHealth -= 1;
+                                    }
+                                    //SetStats(ship, ref cmdBuffer, stats, health, data, deltaTime);
+
+                                }
+                                Events_System.OnPlayerCollision.PostEvent(new Events.PlayerCollision { position = tr.Value, shield = stats.shieldHealth > 0 });
 
                             }
+                            
                             if (HasComponent<ShipDataComponent>(hitEntity))
                             {
-                                if (!HasComponent<EnemyComponent>(hitEntity))
-                                    SetStats(hitEntity, ref cmdBuffer, 
-                                EntityManager.GetComponentData<ShipStatsComponent>(hitEntity),
-                                EntityManager.GetComponentData<ShipDataComponent>(hitEntity), deltaTime);
+                                var otherStats = EntityManager.GetComponentData<ShipStatsComponent>(hitEntity);
+                                var otherData = EntityManager.GetComponentData<ShipDataComponent>(hitEntity);
+                                var otherHealth = EntityManager.GetComponentData<HealthComponent>(hitEntity);
+                                SetStats(hitEntity, ref cmdBuffer, otherStats, otherHealth, otherData, deltaTime);
                             }
                         }
                     }
@@ -137,19 +147,33 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
         }
-        private void SetStats(Entity entity, ref EntityCommandBuffer cmdBuffer, ShipStatsComponent stats, in ShipDataComponent data, float deltaTime)
+        private void SetStats(Entity entity, ref EntityCommandBuffer cmdBuffer, ShipStatsComponent stats, HealthComponent health, in ShipDataComponent data, float deltaTime)
         {
-            stats.stunnedTimer = data.stunnedTime + deltaTime;
-            stats.invTime = data.invTime + data.stunnedTime;
-            if (stats.shieldHealth <= 0)
+            if (stats.stunnedTimer <= 0 && stats.invTime <= 0)
             {
-                stats.health -= 1;
+                //set stats
+                stats.stunnedTimer = data.stunnedTime + deltaTime;
+
+                if (!HasComponent<EnemyComponent>(entity))
+                {
+                    stats.invTime = data.invTime + stats.stunnedTimer;
+                    if (stats.shieldHealth <= 0)
+                    {
+                        health.health -= 1;
+                    }
+                    else
+                    {
+                        stats.shieldHealth -= 1;
+                    }
+                    cmdBuffer.SetComponent(entity, health);
+
+                }
+                else
+                    Events_System.OnPlayerCollision.PostEvent(new Events.PlayerCollision { shield = stats.shieldHealth > 0 });
+
+                cmdBuffer.SetComponent(entity, stats);
             }
-            else
-            {
-                stats.shieldHealth -= 1;
-            }
-            cmdBuffer.SetComponent(entity, stats);
+            
         }
     }
 

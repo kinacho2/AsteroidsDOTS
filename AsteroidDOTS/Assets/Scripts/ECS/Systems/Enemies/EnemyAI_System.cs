@@ -52,7 +52,7 @@ namespace Asteroids.ECS.Systems
                                 EnemyAggroState(ref enemyAI, ref input, ref stats, tr, rot, playerTr);
                                 break;
                             case EnemyAIState.Attacking:
-                                EnemyAttackingState(ref enemyAI, ref stats, tr, rot, data, playerTr);
+                                EnemyAttackingState(ref enemyAI, ref stats, ref input, tr, data, playerTr);
                                 break;
                             case EnemyAIState.Evading:
                                 EnemyEvadingState(ref enemyAI, ref input);
@@ -205,9 +205,10 @@ namespace Asteroids.ECS.Systems
 
         }
 
-        private void EnemyAttackingState(ref EnemyComponent enemyAI, ref ShipStatsComponent stats, in Translation tr, in Rotation rot, in ShipDataComponent data, in Translation playerTr)
+        private void EnemyAttackingState(ref EnemyComponent enemyAI, ref ShipStatsComponent stats, ref ShipInputComponent input, in Translation tr, in ShipDataComponent data, in Translation playerTr)
         {
             Debug.DrawLine(tr.Value.ToVector3(), playerTr.Value.ToVector3(), enemyAI.debugColor, 0.5f);
+            input.shoot = true;
             stats.shootTimer = data.shootCooldown;
             enemyAI.AIState = EnemyAIState.Aggro;
         }

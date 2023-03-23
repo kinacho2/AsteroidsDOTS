@@ -46,8 +46,8 @@ public class PlayerSpawner : MonoBehaviour
     {
         var entity = InstantiateShipEntity();
         entityManager.AddComponent<PlayerComponent>(entity);
-        var weaponData = Configs.WeaponDB.Get(0);
-        entityManager.AddComponentData(entity, new PlayerWeaponComponent
+        var weaponData = Configs.PlayerData.WeaponsDB.Get(0);
+        entityManager.AddComponentData(entity, new WeaponComponent
         {
             misileAmount = weaponData.misileAmount,
             misileSpeed = weaponData.misileSpeed,
@@ -73,8 +73,11 @@ public class PlayerSpawner : MonoBehaviour
         entityManager.AddComponentData(entity, new ShipStatsComponent
         {
             stunnedTimer = 0,
-            health = PlayerData.health,
             shieldHealth = 0,
+        });
+        entityManager.AddComponentData(entity, new HealthComponent
+        {
+            health = PlayerData.health
         });
         entityManager.AddComponentData(entity, new ShipDataComponent
         {

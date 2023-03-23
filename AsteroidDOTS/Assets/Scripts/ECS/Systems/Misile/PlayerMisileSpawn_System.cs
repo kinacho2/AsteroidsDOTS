@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Asteroids.ECS.Systems 
 { 
-    public class MisileSpawn_System : SystemBase
+    public class PlayerMisileSpawn_System : SystemBase
     {
         private Entity misileEntityPrefab;
         private World defaultWorld;
@@ -30,10 +30,7 @@ namespace Asteroids.ECS.Systems
         {
             Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
 
-
-
-            //TODO Misile DB
-            var weaponsDB = Configs.WeaponDB;
+            var weaponsDB = Configs.PlayerData.WeaponsDB;
 
             MisileAngles = new NativeArray<float>(weaponsDB.MisileAngleDeg, Allocator.Persistent);
 
@@ -52,9 +49,9 @@ namespace Asteroids.ECS.Systems
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
             var deltaTime = Time.DeltaTime;
-                Entities
+                Entities.WithAll<PlayerComponent>()
                     .WithoutBurst()
-                    .ForEach((Entity player, int entityInQueryIndex,
+                    .ForEach((Entity ship, int entityInQueryIndex,
                         ref ShipInputComponent input,
                         ref ShipStatsComponent stats,
                         in Translation translation,
@@ -67,7 +64,7 @@ namespace Asteroids.ECS.Systems
                     {
                         if (stats.stunnedTimer <= 0 && input.shoot)
                         {
-                            var weapon = EntityManager.GetComponentData<PlayerWeaponComponent>(player);
+                            var weapon = EntityManager.GetComponentData<WeaponComponent>(ship);
                             stats.shootTimer = data.shootCooldown;
                             input.shoot = false;
                             var pos = translation.Value;
@@ -102,7 +99,7 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.Dispose();
         }
 
-        public void InstantiateMisile(float3 position, quaternion rotation, float speed, PlayerWeaponComponent weapon, ref EntityCommandBuffer cmdBuffer)
+        public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(misileEntityPrefab);
             cmdBuffer.AddComponent<LimitCheckComponent>(entity);

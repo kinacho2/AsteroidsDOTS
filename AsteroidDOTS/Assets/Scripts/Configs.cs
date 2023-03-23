@@ -28,7 +28,7 @@ namespace Asteroids.Setup
         public static ShipDataSO EnemyDB { get; private set; }
         public static AsteroidDataSO AsteroidDB { get; private set; }
         public static PowerDataSO PowerDB { get; private set; }
-        public static WeaponDataSO WeaponDB { get; private set; }
+        //public static WeaponDataSO WeaponDB { get; private set; }
         public static AudioDataSO AudioDB { get; private set; }
         public static SoundManager SoundManager { get; private set; }
 
@@ -38,14 +38,14 @@ namespace Asteroids.Setup
             ShipDataSO enemyDB,
             AsteroidDataSO asteroidDB,
             PowerDataSO powerDB, 
-            WeaponDataSO weaponDB, 
+            //WeaponDataSO weaponDB, 
             AudioDataSO audioDB)
         {
             PlayerData = playerData;
             EnemyDB = enemyDB;
             AsteroidDB = asteroidDB;
             PowerDB = powerDB;
-            WeaponDB = weaponDB;
+            //WeaponDB = weaponDB;
             AudioDB = audioDB;
 
             SoundManager = soundManager;

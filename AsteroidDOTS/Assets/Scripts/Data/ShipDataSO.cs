@@ -10,6 +10,9 @@ namespace Asteroids.Data
         public GameObject ShipPrefab { get; protected set; }
 
         [field: SerializeField]
+        public WeaponDataSO WeaponsDB { get; protected set; }
+
+        [field: SerializeField]
         public ShipData[] Ships { get; protected set; }
     }
 

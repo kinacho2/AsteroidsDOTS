@@ -76,10 +76,11 @@ namespace Asteroids.ECS.Systems
                 .ForEach((Entity entity, int entityInQueryIndex,
                     in PhysicsVelocity vel,
                     in Translation tr,
-                    in AsteroidComponent asteroid
+                    in AsteroidComponent asteroid,
+                    in HealthComponent health
                     ) =>
                 {
-                    if (asteroid.health <= 0)
+                    if (health.health <= 0)
                     {
                         cmdBuffer.DestroyEntity(entity);
                         Events_System.OnAsteroidDestroyed.PostEvent(new Events.AsteroidDestroyed { position = tr.Value, type = asteroid.type });
@@ -129,11 +130,14 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.AddComponent<LimitCheckComponent>(entity);
             cmdBuffer.AddComponent(entity, new AsteroidComponent
             {
-                health = data.health,
                 type = (int)data.type,
                 size = data.size,
                 maxSpeed = data.maxSpeed,
                 lastBombID = parentAsteroid.lastBombID,
+            });
+            cmdBuffer.AddComponent(entity, new HealthComponent
+            {
+                health = data.health,
             });
             cmdBuffer.AddComponent(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
             cmdBuffer.AddComponent(entity, new Translation { Value = position.ToFloat3() });
@@ -156,10 +160,13 @@ namespace Asteroids.ECS.Systems
                 EntityManager.AddComponent<LimitCheckComponent>(entity);
                 EntityManager.AddComponentData(entity, new AsteroidComponent 
                 {
-                    health = asteroidData.health, 
                     type = type, 
                     size = asteroidData.size,
                     maxSpeed = asteroidData.maxSpeed,
+                });
+                EntityManager.AddComponentData(entity, new HealthComponent
+                {
+                    health = asteroidData.health,
                 });
                 EntityManager.AddComponentData(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
                 EntityManager.AddComponentData(entity, new Translation { Value = position.ToFloat3() });

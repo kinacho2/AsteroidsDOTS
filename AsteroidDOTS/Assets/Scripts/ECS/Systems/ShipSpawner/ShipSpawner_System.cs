@@ -41,7 +41,7 @@ namespace Asteroids.ECS.Systems
         }
 
 
-        protected Entity InstantiateShipEntity(EntityManager entityManager, Entity shipPrefab, ShipData data)
+        protected Entity InstantiateShipEntity(EntityManager entityManager, Entity shipPrefab, ShipData data, WeaponData weapon)
         {
             var entity = entityManager.Instantiate(shipPrefab);
             entityManager.AddComponent<LimitCheckComponent>(entity);
@@ -49,9 +49,13 @@ namespace Asteroids.ECS.Systems
             entityManager.AddComponentData(entity, new ShipStatsComponent
             {
                 stunnedTimer = 0,
-                health = data.health,
                 shieldHealth = 0,
             });
+            entityManager.AddComponentData(entity, new HealthComponent
+            {
+                health = data.health
+            });
+            
             entityManager.AddComponentData(entity, new ShipDataComponent
             {
                 maxHealth = data.health,
@@ -64,6 +68,16 @@ namespace Asteroids.ECS.Systems
                 invTime = data.invTime,
                 shootCooldown = data.shootCooldown,
             });
+
+            entityManager.AddComponentData(entity, new WeaponComponent
+            {
+                misileAmount = weapon.misileAmount,
+                misileSpeed = weapon.misileSpeed,
+                misileLifeTime = weapon.misileLifeTime,
+                range = weapon.range,
+                type = 0,
+            });
+
             return entity;
         }
 

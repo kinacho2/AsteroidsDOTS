@@ -62,15 +62,17 @@ public class BombCollision_System : SystemBase
                         if (HasComponent<AsteroidComponent>(hitEntity))
                         {
                             var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
+                            var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
                             var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
                             if (asteroid.lastBombID != bomb.ID)
                             {
-                                asteroid.health = 0;
+                                health.health = 0;
                                 asteroid.lastBombID = bomb.ID;
                                 asteroid.explodeDirection = math.normalize(asteroidTr.Value - tr.Value).ToFloat2();
                                 cmdBuffer.SetComponent(hitEntity, asteroid);
+                                cmdBuffer.SetComponent(hitEntity, health);
                             }
-                            
+
                         }
                     }
                 }

@@ -63,7 +63,8 @@ namespace Asteroids.ECS.Systems
 
         private void InstantiateEnemyEntity(EntityManager entityManager, Entity entityPrefab, ShipData data, int index)
         {
-            var entity = InstantiateShipEntity(entityManager, entityPrefab, data);
+            var weapon = Configs.EnemyDB.WeaponsDB.Get(index);
+            var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon);
             entityManager.AddComponentData(entity, new EnemyComponent { AIState = EnemyAIState.Idle, stateTimer = 0, viewDistance = 5
 #if UNITY_EDITOR
                 ,

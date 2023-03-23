@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: EnemyData
   m_EditorClassIdentifier: 
   <ShipPrefab>k__BackingField: {fileID: 6216514982384367654, guid: b4b33205cd6caf64e903215b8a4c17e3, type: 3}
+  <WeaponsDB>k__BackingField: {fileID: 11400000, guid: 1e34ce1c21fdad9458443468d47ce384, type: 2}
   <Ships>k__BackingField:
   - maxSpeed: 3
     acceleration: 3

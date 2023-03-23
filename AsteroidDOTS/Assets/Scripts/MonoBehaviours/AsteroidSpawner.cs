@@ -58,7 +58,8 @@ namespace Asteroids.Core.Spawners
         {
             var entity = entityManager.Instantiate(entityPrefab);
             entityManager.AddComponent<LimitCheckComponent>(entity);
-            entityManager.AddComponentData(entity, new AsteroidComponent { health = 3, type = type });
+            entityManager.AddComponentData(entity, new AsteroidComponent { type = type });
+            entityManager.AddComponentData(entity, new HealthComponent { health = 3 });
             entityManager.SetComponentData(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
             entityManager.SetComponentData(entity, new Translation { Value = position.ToFloat3() });
             //var mass = entityManager.GetComponentData<PhysicsMass>(entity);

@@ -1,8 +1,6 @@
 using Asteroids.ECS.Components;
 using Asteroids.Setup;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -26,9 +24,9 @@ public class BombSpawn_System : SystemBase
     private void Configs_OnInitializedConfig()
     {
         Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
-        var weaponDB = Configs.WeaponDB;
+        var weaponsDB = Configs.PlayerData.WeaponsDB;
 
-        var prefab = weaponDB.BombPrefab;
+        var prefab = weaponsDB.BombPrefab;
 
         AMeshTools.CreateCircleMesh(prefab.GetComponent<MeshFilter>(), 0.5f, 20);
 

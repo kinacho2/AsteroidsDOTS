@@ -31,6 +31,7 @@ namespace Asteroids.ECS.Systems
                     ref Translation tr,
                     ref Rotation rot,
                     ref PhysicsVelocity velocity,
+                    in HealthComponent health,
                     in AsteroidComponent asteroid
                     ) =>
                 {
@@ -129,15 +130,19 @@ namespace Asteroids.ECS.Systems
                                 var tinyType = (int)AsteroidType.Tiny;
                                 if (thisAsteroid.type == tinyType && otherAsteroid.type < tinyType - 1)
                                 {
-                                    thisAsteroid.health -= 1;
+                                    var thisHealth = health;
+                                    thisHealth.health -= 1;
                                     thisAsteroid.explodeDirection = dir.ToFloat2();
+                                    cmdBuffer.SetComponent(asteroidEntity, thisHealth);
                                     cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
                                 }
                                 if (otherAsteroid.type == tinyType && thisAsteroid.type < tinyType - 1)
                                 {
-                                    otherAsteroid.health -= 1;
+                                    var otherHealth = EntityManager.GetComponentData<HealthComponent>(hitEntity);
+                                    otherHealth.health -= 1;
                                     otherAsteroid.explodeDirection = dir.ToFloat2();
                                     cmdBuffer.SetComponent(hitEntity, otherAsteroid);
+                                    cmdBuffer.SetComponent(hitEntity, otherHealth);
                                 }
 
                                 Events_System.OnAsteroidsCollision.PostEvent(new Events.AsteroidsCollision
