@@ -36,14 +36,14 @@ namespace Asteroids.ECS.Systems {
             var physicsWorld = physicsWorldSystem.PhysicsWorld;
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
-            Entities.WithAll<PlayerRendererComponent>()
+            Entities.WithAll<ShipRendererComponent, PlayerComponent>()
                     .WithoutBurst()
                     .ForEach((Entity player, int entityInQueryIndex,
                         ref PhysicsColliderBlob collider,
                         ref Translation tr,
                         ref Rotation rot,
-                        ref PlayerStatsComponent stats,
-                        ref PlayerDataComponent data
+                        ref ShipStatsComponent stats,
+                        ref ShipDataComponent data
                         ) =>
                     {
                         if (physicsWorld.OverlapCollider(

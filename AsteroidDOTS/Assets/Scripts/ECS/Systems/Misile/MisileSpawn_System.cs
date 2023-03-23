@@ -55,12 +55,12 @@ namespace Asteroids.ECS.Systems
                 Entities
                     .WithoutBurst()
                     .ForEach((Entity player, int entityInQueryIndex,
-                        ref PlayerInputComponent input,
-                        ref PlayerStatsComponent stats,
+                        ref ShipInputComponent input,
+                        ref ShipStatsComponent stats,
                         in Translation translation,
                         in Rotation rotation,
                         in PhysicsVelocity physics,
-                        in PlayerDataComponent data
+                        in ShipDataComponent data
                         ) =>
                     {
                     if (stats.shootTimer <= 0)

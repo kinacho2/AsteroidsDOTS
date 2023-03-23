@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class ApplyScaleToPolygon : MonoBehaviour
 {
-    [SerializeField] PolygonCollider2D PolygonCollider;
+    PolygonCollider2D PolygonCollider;
 
 
     private void Start()
     {
+        PolygonCollider = GetComponent<PolygonCollider2D>();
         var points = PolygonCollider.points;
         for(int i=0; i< points.Length; i++)
         {

@@ -9,13 +9,18 @@ using UnityEngine;
 //using AudioSource = Unity.Tiny.Audio.AudioSource;
 //using AudioListener = Unity.Tiny.Audio.AudioListener;
 
+using AudioType = Asteroids.Data.AudioType;
+using Asteroids.Audio;
+
 namespace Asteroids.ECS.Systems
 {
     public class Audio_System : SystemBase
     {
-        AudioData[] Sounds;
+        //AudioType[] Sounds;
         private NativeArray<int> _consumers;
         private Entity AudioListener;
+        private bool _initialized = false;
+        private SoundManager SoundManager;
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -25,16 +30,19 @@ namespace Asteroids.ECS.Systems
         private void Configs_OnInitializedConfig()
         {
             var audioDB = Configs.AudioDB;
-            Sounds = audioDB.Sounds;
+            if (!audioDB) return;
+            SoundManager = Configs.SoundManager;
 
-            _consumers = new NativeArray<int>(Sounds.Length, Allocator.Persistent);
+            _consumers = new NativeArray<int>(audioDB.Sounds.Length + 1, Allocator.Persistent);
 
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
             settings.DebugConversionName = "AudioSource";
 
 
-            //_consumers[((int)AudioType.PlayerMove)] = Events_System.OnPlayerShoot.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PlayerStartMove)] = Events_System.OnPlayerStartMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PlayerStopMove)] = Events_System.OnPlayerStopMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+
             _consumers[((int)AudioType.PlayerShoot)] = Events_System.OnPlayerShoot.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             _consumers[((int)AudioType.PlayerCollision)] = Events_System.OnPlayerCollision.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             //_consumers[((int)AudioType.PlayerDamage)] = Events_System.OnPlayerDamage.Subscribe(Configs.EVENTS_QUEUE_COUNT);
@@ -56,30 +64,13 @@ namespace Asteroids.ECS.Systems
             _consumers[((int)AudioType.PickHealth)] = Events_System.OnPickPower.Subscribe(Configs.EVENTS_QUEUE_COUNT);
 
             _consumers[((int)AudioType.LoseShield)] = Events_System.OnPlayerLoseShield.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            /*
-             * 
-             *  PlayerMove = 0,
-                PlayerShoot = 1,
-                PlayerCollision = 2,
-                PlayerDamage = 3,
-                PlayerDestroyed = 4,
-                AsteroidCollisionBig = 5,
-                AsteroidCollisionMedium = 6,
-                AsteroidCollisionSmall = 7,
-                AsteroidDestroyedBig = 8,
-                AsteroidDestroyedMedium = 9,
-                AsteroidDestroyedSmall = 10,
-                MisileHit = 11,
-                PickShield = 12,
-                PickWeapon = 13,
-                PickBomb = 14,
-                PickHealth = 15,
-                LoseShield = 16,
-            /**/
+
+            _initialized = true;
         }
 
         protected override void OnUpdate()
         {
+            if (!_initialized) return;
             CheckEvent(AudioType.PlayerShoot, ref Events_System.OnPlayerShoot);
             CheckEvent(AudioType.PlayerCollision, ref Events_System.OnPlayerCollision);
             CheckEvent(AudioType.PlayerDestroyed, ref Events_System.OnPlayerDestroyed);
@@ -91,16 +82,16 @@ namespace Asteroids.ECS.Systems
                 switch (asteroid.type)
                 {
                     case (int)AsteroidType.Bigger:
-                        PlaySound(Sounds[(int)AudioType.AsteroidCollisionBig].clip);
+                        PlaySound(AudioType.AsteroidCollisionBig);
                         break;
                     case (int)AsteroidType.Medium:
-                        PlaySound(Sounds[(int)AudioType.AsteroidCollisionMedium].clip);
+                        PlaySound(AudioType.AsteroidCollisionMedium);
                         break;
                     case (int)AsteroidType.Small:
-                        PlaySound(Sounds[(int)AudioType.AsteroidCollisionSmall].clip);
+                        PlaySound(AudioType.AsteroidCollisionSmall);
                         break;
                     case (int)AsteroidType.Tiny:
-                        PlaySound(Sounds[(int)AudioType.MisileHit].clip);
+                        PlaySound(AudioType.MisileHit);
                         break;
                 }
             }
@@ -110,13 +101,13 @@ namespace Asteroids.ECS.Systems
                 switch (asteroidDestroyed.type)
                 {
                     case (int)AsteroidType.Bigger:
-                        PlaySound(Sounds[(int)AudioType.AsteroidDestroyedBig].clip);
+                        PlaySound(AudioType.AsteroidDestroyedBig);
                         break;
                     case (int)AsteroidType.Medium:
-                        PlaySound(Sounds[(int)AudioType.AsteroidDestroyedMedium].clip);
+                        PlaySound(AudioType.AsteroidDestroyedMedium);
                         break;
                     case (int)AsteroidType.Small:
-                        PlaySound(Sounds[(int)AudioType.AsteroidDestroyedSmall].clip);
+                        PlaySound(AudioType.AsteroidDestroyedSmall);
                         break;
                 }
             }
@@ -126,28 +117,32 @@ namespace Asteroids.ECS.Systems
                 switch (power.type)
                 {
                     case (int)PowerType.Shield:
-                        PlaySound(Sounds[(int)AudioType.PickShield].clip);
+                        PlaySound(AudioType.PickShield);
                         break;
                     case (int)PowerType.Weapon:
-                        PlaySound(Sounds[(int)AudioType.PickWeapon].clip);
+                        PlaySound(AudioType.PickWeapon);
                         break;
                     case (int)PowerType.Bomb:
-                        PlaySound(Sounds[(int)AudioType.PickBomb].clip);
+                        PlaySound(AudioType.PickBomb);
                         break;
                     case (int)PowerType.Health:
-                        PlaySound(Sounds[(int)AudioType.PickHealth].clip);
+                        PlaySound(AudioType.PickHealth);
                         break;
                 }
             }
 
+            CheckEvent(AudioType.PlayerStartMove, ref Events_System.OnPlayerStartMove, true);
+            if (GetEvent(_consumers[(int)AudioType.PlayerStopMove], ref Events_System.OnPlayerStopMove, out var stopMove))
+                StopSound(AudioType.PlayerStartMove);
         }
 
-        protected void CheckEvent<T>(AudioType type, ref EventPublisher<T> publisher) where T : struct
+        protected void CheckEvent<T>(AudioType type, ref EventPublisher<T> publisher, bool loop = false) where T : struct
         {
             int index = (int)type;
             if (publisher.TryGetEvent(_consumers[index], out var eventData))
             {
-                PlaySound(Sounds[index].clip);
+                
+                PlaySound(type, loop);
             }
         }
 
@@ -156,9 +151,13 @@ namespace Asteroids.ECS.Systems
             return publisher.TryGetEvent(consumer, out eventData);
         }
 
-        private void PlaySound(AudioClip Clip, bool loop = false)
+        private void PlaySound(AudioType Clip, bool loop = false)
         {
-            PlayClip_System.PlayClip(Clip);
+            SoundManager.PlayClip(Clip, loop);
+        }
+        private void StopSound(AudioType Clip)
+        {
+            SoundManager.StopLoopeableClip(Clip);
         }
 
         protected override void OnDestroy()

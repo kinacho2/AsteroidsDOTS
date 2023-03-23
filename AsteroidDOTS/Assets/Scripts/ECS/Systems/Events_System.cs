@@ -1,15 +1,15 @@
 using Asteroids.ECS.Events;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
     public class Events_System : SystemBase
     {
-        private static EventPublisher<PlayerMove> _onPlayerMove;
-        public static ref EventPublisher<PlayerMove> OnPlayerMove => ref _onPlayerMove;
+        private static EventPublisher<PlayerMove> _onPlayerStartMove;
+        public static ref EventPublisher<PlayerMove> OnPlayerStartMove => ref _onPlayerStartMove;
+
+        private static EventPublisher<PlayerMove> _onPlayerStoptMove;
+        public static ref EventPublisher<PlayerMove> OnPlayerStopMove => ref _onPlayerStoptMove;
 
         private static EventPublisher<PlayerShoot> _onPlayerShoot;
         public static ref EventPublisher<PlayerShoot> OnPlayerShoot => ref _onPlayerShoot;
@@ -38,7 +38,8 @@ namespace Asteroids.ECS.Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            _onPlayerMove = new EventPublisher<PlayerMove>(20);
+            _onPlayerStartMove = new EventPublisher<PlayerMove>(20);
+            _onPlayerStoptMove = new EventPublisher<PlayerMove>(20);
             _onPlayerShoot = new EventPublisher<PlayerShoot>(20);
             _onPlayerCollision = new EventPublisher<PlayerCollision>(20);
             _onPlayerDestroyed = new EventPublisher<PlayerDestroyed>(20);
@@ -57,7 +58,7 @@ namespace Asteroids.ECS.Systems
 
         protected override void OnDestroy()
         {
-            _onPlayerMove.Dispose();
+            _onPlayerStartMove.Dispose();
             _onPlayerShoot.Dispose();
             _onPlayerCollision.Dispose();
             _onPlayerDestroyed.Dispose();
@@ -66,6 +67,7 @@ namespace Asteroids.ECS.Systems
             _onAsteroidDestroyed.Dispose();
             _onPickPower.Dispose();
             _onMisileHit.Dispose();
+            _onPlayerStoptMove.Dispose();
             base.OnDestroy();
 
         }

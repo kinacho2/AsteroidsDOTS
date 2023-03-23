@@ -1,3 +1,4 @@
+using Asteroids.Audio;
 using Asteroids.Data;
 using Asteroids.Tools;
 using System.Collections;
@@ -15,23 +16,46 @@ namespace Asteroids.Setup
         public const int AUDIO_PLAY_COUNT = 15;
 
         public static event InitializedConfigs OnInitializedConfig;
+
+#if UNITY_EDITOR
+        public static bool DebugMode { get; set; }
+#endif
+
+        public static bool IsInitialized { get; private set; } = false;
         public static float2 CameraLimits { get; private set; }
         //public static GameObject MisilePrefab { get; private set; }
+        public static ShipDataSO PlayerData { get; private set; }
+        public static ShipDataSO EnemyDB { get; private set; }
         public static AsteroidDataSO AsteroidDB { get; private set; }
         public static PowerDataSO PowerDB { get; private set; }
         public static WeaponDataSO WeaponDB { get; private set; }
         public static AudioDataSO AudioDB { get; private set; }
-        public static void InitializeConfigs(Camera camera, AsteroidDataSO asteroidDB, PowerDataSO powerDB, WeaponDataSO weaponDB, AudioDataSO audioDB)
+        public static SoundManager SoundManager { get; private set; }
+
+        public static void InitializeConfigs(Camera camera, 
+            SoundManager soundManager,
+            ShipDataSO playerData,
+            ShipDataSO enemyDB,
+            AsteroidDataSO asteroidDB,
+            PowerDataSO powerDB, 
+            WeaponDataSO weaponDB, 
+            AudioDataSO audioDB)
         {
+            PlayerData = playerData;
+            EnemyDB = enemyDB;
             AsteroidDB = asteroidDB;
             PowerDB = powerDB;
             WeaponDB = weaponDB;
             AudioDB = audioDB;
+
+            SoundManager = soundManager;
+            soundManager.Initialize(AudioDB);
+
             var worldPoint = camera.ViewportToWorldPoint(Vector2.one);
             CameraLimits = new float2(worldPoint.y * camera.pixelWidth / camera.pixelHeight, worldPoint.y);
 
             OnInitializedConfig?.Invoke();
-
+            IsInitialized = true;
         }
 
         public static float2 GetRandomPositionOutOfScreen()

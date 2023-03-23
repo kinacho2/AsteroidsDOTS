@@ -1,51 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(menuName = "Asteroids/Audio Data", fileName = "AudiioData.asset", order = 0)]
 
-public class AudioDataSO : ScriptableObject
+namespace Asteroids.Data
 {
-    [field: SerializeField]
-    public AudioSource AudioSourcePrefab { get; private set; }
+    [CreateAssetMenu(menuName = "Asteroids/Audio Data", fileName = "AudiioData.asset", order = 0)]
 
-    [field: SerializeField]
-    public AudioData[] Sounds { get; private set; }
-
-    void OnValidate()
+    public class AudioDataSO : ScriptableObject
     {
-        for(int i = 0; i < Sounds.Length; i++)
+        [field: SerializeField]
+        public AudioSource AudioSourcePrefab { get; private set; }
+
+        [field: SerializeField]
+        public AudioData[] Sounds { get; private set; }
+
+        void OnValidate()
         {
-            Sounds[i].type = (AudioType)i;
+            for (int i = 0; i < Sounds.Length; i++)
+            {
+                Sounds[i].type = (AudioType)i;
+            }
         }
+
     }
 
-}
+    [System.Serializable]
+    public struct AudioData
+    {
+        public AudioType type;
+        public AudioClip clip;
+    }
 
-[System.Serializable]
-public struct AudioData
-{
-    public AudioType type;
-    public AudioClip clip;
-}
-
-public enum AudioType : int
-{
-    None = -1,
-    PlayerMove = 0,
-    PlayerShoot = 1,
-    PlayerCollision = 2,
-    PlayerDamage = 3,
-    PlayerDestroyed = 4,
-    AsteroidCollisionBig = 5,
-    AsteroidCollisionMedium = 6,
-    AsteroidCollisionSmall = 7,
-    AsteroidDestroyedBig = 8,
-    AsteroidDestroyedMedium = 9,
-    AsteroidDestroyedSmall = 10,
-    MisileHit = 11,
-    PickShield = 12,
-    PickWeapon = 13,
-    PickBomb = 14,
-    PickHealth = 15,
-    LoseShield = 16,
+    public enum AudioType : int
+    {
+        None = -1,
+        PlayerStartMove = 0,
+        PlayerShoot = 1,
+        PlayerCollision = 2,
+        PlayerDamage = 3,
+        PlayerDestroyed = 4,
+        AsteroidCollisionBig = 5,
+        AsteroidCollisionMedium = 6,
+        AsteroidCollisionSmall = 7,
+        AsteroidDestroyedBig = 8,
+        AsteroidDestroyedMedium = 9,
+        AsteroidDestroyedSmall = 10,
+        MisileHit = 11,
+        PickShield = 12,
+        PickWeapon = 13,
+        PickBomb = 14,
+        PickHealth = 15,
+        LoseShield = 16,
+        PlayerStopMove = 17,
+    }
 }

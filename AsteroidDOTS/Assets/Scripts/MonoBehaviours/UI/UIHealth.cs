@@ -12,7 +12,7 @@ namespace Asteroids.UI
 
         protected virtual void Start()
         {
-            PlayerStats_System.OnHealthUpdate += PlayerStats_System_OnHealthUpdate;
+            ShipStats_System.OnHealthUpdate += PlayerStats_System_OnHealthUpdate;
         }
 
         protected void PlayerStats_System_OnHealthUpdate(int value, int maxValue)

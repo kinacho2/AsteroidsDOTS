@@ -5,13 +5,14 @@ using Unity.Entities;
 using UnityEngine;
 using System.Linq;
 using Asteroids.Setup;
+using Unity.Transforms;
 
 public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] PlayerDataSO PlayerData;
 
-    private Entity entityPrefab;
+    private Entity shipPrefab;
     private World defaultWorld;
     private EntityManager entityManager;
     void Start()
@@ -22,9 +23,10 @@ public class PlayerSpawner : MonoBehaviour
         InitializeLineShape();
 
         var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
-        entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(PlayerPrefab, settings);
+        shipPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(PlayerPrefab, settings);
 
         InstantiatePlayerEntity();
+        InstantiateEnemyEntity();
     }
 
     private void InitializeLineShape()
@@ -42,15 +44,39 @@ public class PlayerSpawner : MonoBehaviour
 
     private void InstantiatePlayerEntity()
     {
-        var entity = entityManager.Instantiate(entityPrefab);
+        var entity = InstantiateShipEntity();
+        entityManager.AddComponent<PlayerComponent>(entity);
+        var weaponData = Configs.WeaponDB.Get(0);
+        entityManager.AddComponentData(entity, new PlayerWeaponComponent
+        {
+            misileAmount = weaponData.misileAmount,
+            misileSpeed = weaponData.misileSpeed,
+            misileLifeTime = weaponData.misileLifeTime,
+            range = weaponData.range,
+            type = 0,
+        });
+    }
+
+    private void InstantiateEnemyEntity()
+    {
+        var entity = InstantiateShipEntity();
+        entityManager.AddComponent<EnemyComponent>(entity);
+        var pos = Configs.GetRandomPositionOutOfScreen();
+        entityManager.SetComponentData(entity, new Translation { Value = pos.ToFloat3() });
+    }
+
+    protected Entity InstantiateShipEntity()
+    {
+        var entity = entityManager.Instantiate(shipPrefab);
         entityManager.AddComponent<LimitCheckComponent>(entity);
-        entityManager.AddComponentData(entity, new PlayerStatsComponent
+        entityManager.AddComponent<ShipInputComponent>(entity);
+        entityManager.AddComponentData(entity, new ShipStatsComponent
         {
             stunnedTimer = 0,
             health = PlayerData.health,
             shieldHealth = 0,
         });
-        entityManager.AddComponentData(entity, new PlayerDataComponent
+        entityManager.AddComponentData(entity, new ShipDataComponent
         {
             maxHealth = PlayerData.health,
             shieldHealth = PlayerData.shieldHealth,
@@ -62,15 +88,7 @@ public class PlayerSpawner : MonoBehaviour
             invTime = PlayerData.invTime,
             shootCooldown = PlayerData.shootCooldown,
         });
-        var weaponData = Configs.WeaponDB.Get(0);
-        entityManager.AddComponentData(entity, new PlayerWeaponComponent
-        {
-            misileAmount = weaponData.misileAmount,
-            misileSpeed = weaponData.misileSpeed,
-            misileLifeTime = weaponData.misileLifeTime,
-            range = weaponData.range,
-            type = 0,
-        });
+        return entity;
     }
 
 }

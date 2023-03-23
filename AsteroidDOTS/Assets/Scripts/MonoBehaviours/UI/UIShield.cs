@@ -9,7 +9,7 @@ namespace Asteroids.UI
         // Start is called before the first frame update
         protected override void Start()
         {
-            PlayerStats_System.OnShieldUpdate += PlayerStats_System_OnHealthUpdate;
+            ShipStats_System.OnShieldUpdate += PlayerStats_System_OnHealthUpdate;
         }
 
 

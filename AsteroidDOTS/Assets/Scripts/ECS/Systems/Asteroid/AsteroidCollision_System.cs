@@ -111,6 +111,7 @@ namespace Asteroids.ECS.Systems
                                     Linear = linear1
                                 });
 
+                                //change translation on collision prevent another collision in the next frame
                                 var tr2 = otherTranslation.Value + linear2.ToFloat3() * deltaTime;
                                 var tr1 = tr.Value + linear1.ToFloat3() * deltaTime;
                                 cmdBuffer.SetComponent(hitEntity, new Translation
@@ -122,17 +123,17 @@ namespace Asteroids.ECS.Systems
                                     Value = tr1
                                 });
 
-                                //asteroid health reduction with each collision (can cause chain reaction)
+                                //tiny asteroids destruction when hit a medium or big asteroid
                                 
                                 var thisAsteroid = asteroid;
-
-                                if (thisAsteroid.type == (int)AsteroidType.Tiny)
+                                var tinyType = (int)AsteroidType.Tiny;
+                                if (thisAsteroid.type == tinyType && otherAsteroid.type < tinyType - 1)
                                 {
                                     thisAsteroid.health -= 1;
                                     thisAsteroid.explodeDirection = dir.ToFloat2();
                                     cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
                                 }
-                                if (otherAsteroid.type == (int)AsteroidType.Tiny)
+                                if (otherAsteroid.type == tinyType && thisAsteroid.type < tinyType - 1)
                                 {
                                     otherAsteroid.health -= 1;
                                     otherAsteroid.explodeDirection = dir.ToFloat2();
@@ -145,12 +146,8 @@ namespace Asteroids.ECS.Systems
                                     position = thisAsteroid.type > otherAsteroid.type? tr.Value : otherTranslation.Value
                                     
                                 });
-
-                                /**/
                             }
                         }
-
-
                     }
 
                     allHits.Dispose();

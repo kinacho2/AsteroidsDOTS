@@ -1,3 +1,4 @@
+using Asteroids.Audio;
 using Asteroids.Data;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,9 +14,21 @@ namespace Asteroids.Setup
         [SerializeField] PowerDataSO PowerDB;
         [SerializeField] WeaponDataSO WeaponDB;
         [SerializeField] AudioDataSO AudioDB;
+        [SerializeField] ShipDataSO PlayerData;
+        [SerializeField] ShipDataSO EnemyData;
+        [SerializeField] SoundManager SoundManager;
+
+#if UNITY_EDITOR
+        [SerializeField] bool DebugMode;
+#endif
         void Awake()
         {
-            Configs.InitializeConfigs(Camera, AsteroidDB, PowerDB, WeaponDB, AudioDB);
+            Configs.InitializeConfigs(Camera, SoundManager, PlayerData, EnemyData, AsteroidDB, PowerDB, WeaponDB, AudioDB);
+
+#if UNITY_EDITOR
+            Configs.DebugMode = DebugMode;
+#endif
+
             Destroy(gameObject);
         }
 
