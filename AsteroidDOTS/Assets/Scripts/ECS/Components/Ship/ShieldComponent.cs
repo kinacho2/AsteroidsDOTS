@@ -10,5 +10,6 @@ namespace Asteroids.ECS.Components
     public struct ShieldComponent : IComponentData
     {
         public bool enabled;
+        public bool firstDisabled;
     }
 }

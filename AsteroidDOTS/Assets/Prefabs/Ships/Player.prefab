@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enabled: 1
+  firstDisabled: 1
 --- !u!1 &6216514982384367654
 GameObject:
   m_ObjectHideFlags: 0

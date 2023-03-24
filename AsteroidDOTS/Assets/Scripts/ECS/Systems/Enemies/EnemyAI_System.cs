@@ -25,6 +25,11 @@ namespace Asteroids.ECS.Systems
         }
         protected override void OnUpdate()
         {
+            //check Game state
+            var gameState = GetEntityQuery(typeof(GameStateComponent)).GetSingleton<GameStateComponent>();
+            if (gameState.state == GameState.Finished)
+                return;
+
             EntityQuery query = GetEntityQuery(typeof(PlayerComponent), ComponentType.ReadOnly<Translation>());
             var playerTr = EntityManager.GetComponentData<Translation>(query.GetSingletonEntity());
 

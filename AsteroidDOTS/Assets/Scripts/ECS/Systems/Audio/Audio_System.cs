@@ -141,7 +141,6 @@ namespace Asteroids.ECS.Systems
             int index = (int)type;
             if (publisher.TryGetEvent(_consumers[index], out var eventData))
             {
-                
                 PlaySound(type, loop);
             }
         }

@@ -54,8 +54,12 @@ namespace Asteroids.ECS.Systems
                         if (shield.enabled)
                         {
                             shield.enabled = false;
+                            
+                            if(!shield.firstDisabled)
+                                Events_System.OnPlayerLoseShield.PostEvent(new Events.PlayerLoseShield());
+                            shield.firstDisabled = false;
+
                             cmdBuffer.SetComponent(rendererRef.ShieldEntity, shield);
-                            Events_System.OnPlayerLoseShield.PostEvent(new Events.PlayerLoseShield());
                         }
                     }
                     else
@@ -70,7 +74,8 @@ namespace Asteroids.ECS.Systems
                 //health
                 if (health.health <= 0)
                 {
-                    cmdBuffer.DestroyEntity(ship);
+                    if(stats.entityType == Data.EntityType.Enemy)
+                        cmdBuffer.DestroyEntity(ship);
                     Events_System.OnEntityDestroyed.PostEvent(new Events.EntityDestroyed() { position = tr.Value, entityType = stats.entityType, size = 1 });
                     return;
                 }
