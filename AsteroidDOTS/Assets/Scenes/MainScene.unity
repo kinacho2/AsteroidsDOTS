@@ -2286,7 +2286,7 @@ MonoBehaviour:
   PlayerData: {fileID: 11400000, guid: 9baefa752f29f3d4984ed004a15fcd86, type: 2}
   EnemyData: {fileID: 11400000, guid: 70909c104d6c9e34b8479bd4833523ee, type: 2}
   SoundManager: {fileID: 1165311643}
-  DebugMode: 0
+  DebugMode: 1
 --- !u!4 &1805921231
 Transform:
   m_ObjectHideFlags: 0

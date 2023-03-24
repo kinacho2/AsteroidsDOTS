@@ -1,15 +1,15 @@
-
+using Asteroids.Data;
+using Asteroids.ECS.Components;
+using Asteroids.ECS.Events;
 using Asteroids.Setup;
-using Unity.Collections;
-using Unity.Entities;
-using Random = Unity.Mathematics.Random;
-using UnityEngine;
-using Unity.Mathematics;
 using Asteroids.Tools;
 using System.Linq;
-using Asteroids.ECS.Components;
+using Unity.Collections;
+using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
-using Asteroids.Data;
+using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace Asteroids.ECS.Systems
 {
@@ -17,7 +17,7 @@ namespace Asteroids.ECS.Systems
     {
         //public static NativeQueue<float3> SpawnQueue;
         protected Entity[] entityPrefabs;
-        private int _eventConsumer;
+        private EventConsumer _eventConsumer;
 
         Random Random;
         protected override void OnCreate()
@@ -49,7 +49,7 @@ namespace Asteroids.ECS.Systems
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
 
-            for (int i=0; i< powerDB.Count; i++)
+            for (int i = 0; i < powerDB.Count; i++)
             {
                 var powerData = powerDB.Get(i);
                 meshFilter.sharedMesh = new Mesh();
@@ -72,7 +72,7 @@ namespace Asteroids.ECS.Systems
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-            if(Events_System.OnAsteroidDestroyed.TryGetEvent(_eventConsumer, out var asteroidEvent))
+            if (Events_System.OnAsteroidDestroyed.TryGetEvent(_eventConsumer, out var asteroidEvent))
             {
                 if (asteroidEvent.type < AsteroidType.Small)
                 {
@@ -90,7 +90,7 @@ namespace Asteroids.ECS.Systems
         private void InstantiatePower(Entity entityPrefab, PowerType type, float3 position, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(entityPrefab);
-            cmdBuffer.AddComponent(entity, new PowerComponent { type = type});
+            cmdBuffer.AddComponent(entity, new PowerComponent { type = type });
             cmdBuffer.AddComponent(entity, new Translation { Value = position });
         }
 

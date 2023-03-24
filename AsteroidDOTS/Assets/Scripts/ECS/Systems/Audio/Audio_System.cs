@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using UnityEngine;
+using Asteroids.ECS.Events;
 //using Unity.Tiny.Audio;
 //using AudioSource = Unity.Tiny.Audio.AudioSource;
 //using AudioListener = Unity.Tiny.Audio.AudioListener;
@@ -17,7 +17,7 @@ namespace Asteroids.ECS.Systems
     public class Audio_System : SystemBase
     {
         //AudioType[] Sounds;
-        private NativeArray<int> _consumers;
+        private NativeArray<EventConsumer> _consumers;
         private Entity AudioListener;
         private bool _initialized = false;
         private SoundManager SoundManager;
@@ -33,7 +33,7 @@ namespace Asteroids.ECS.Systems
             if (!audioDB) return;
             SoundManager = Configs.SoundManager;
 
-            _consumers = new NativeArray<int>(audioDB.Sounds.Length + 1, Allocator.Persistent);
+            _consumers = new NativeArray<EventConsumer>(audioDB.Sounds.Length + 1, Allocator.Persistent);
 
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
@@ -145,7 +145,7 @@ namespace Asteroids.ECS.Systems
             }
         }
 
-        protected bool GetEvent<T>(int consumer, ref EventPublisher<T> publisher, out T eventData) where T : struct
+        protected bool GetEvent<T>(EventConsumer consumer, ref EventPublisher<T> publisher, out T eventData) where T : struct
         {
             return publisher.TryGetEvent(consumer, out eventData);
         }

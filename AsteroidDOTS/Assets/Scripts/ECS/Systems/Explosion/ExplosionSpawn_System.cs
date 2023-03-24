@@ -1,6 +1,6 @@
 using Asteroids.Data;
 using Asteroids.ECS.Components;
-using Asteroids.ECS.Systems;
+using Asteroids.ECS.Events;
 using Asteroids.Setup;
 using Asteroids.Tools;
 using Unity.Collections;
@@ -14,8 +14,8 @@ namespace Asteroids.ECS.Systems
     public class ExplosionSpawn_System : SystemBase
     {
         protected Entity entityPrefab;
-        private int _shipConsumer;
-        private int _asteroidConsumer;
+        private EventConsumer _shipConsumer;
+        private EventConsumer _asteroidConsumer;
         protected override void OnCreate()
         {
             base.OnCreate();

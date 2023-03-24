@@ -8,12 +8,13 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using Asteroids.ECS.Events;
 using Random = Unity.Mathematics.Random;
 public class BombSpawn_System : SystemBase
 {
     protected Entity entityPrefab;
     Random Random;
-    private int _eventConsumer;
+    private EventConsumer _eventConsumer;
     protected override void OnCreate()
     {
         base.OnCreate();

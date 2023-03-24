@@ -1,13 +1,15 @@
 using Asteroids.Data;
 using Asteroids.ECS.Components;
+using Asteroids.ECS.Events;
 using Asteroids.Setup;
 using Unity.Collections;
 using Unity.Entities;
+
 namespace Asteroids.ECS.Systems
 {
     public class GameState_System : SystemBase
     {
-        private int _eventConsumer;
+        private EventConsumer _eventConsumer;
         protected override void OnCreate()
         {
             base.OnCreate();
