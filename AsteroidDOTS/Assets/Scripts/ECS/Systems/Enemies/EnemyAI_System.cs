@@ -161,10 +161,12 @@ namespace Asteroids.ECS.Systems
 
         private void EnemyAttackingState(ref EnemyComponent enemyAI, ref ShipStatsComponent stats, ref ShipInputComponent input, in Translation tr, in ShipDataComponent data, in Translation playerTr)
         {
-            Debug.DrawLine(tr.Value.ToVector3(), playerTr.Value.ToVector3(), enemyAI.debugColor, 0.5f);
             input.shoot = true;
             stats.shootTimer = data.shootCooldown;
             enemyAI.AIState = EnemyAIState.Aggro;
+#if UNITY_EDITOR
+            Debug.DrawLine(tr.Value.ToVector3(), playerTr.Value.ToVector3(), enemyAI.debugColor, 0.5f);
+#endif
         }
 
         private bool CheckForEvade(ref EnemyComponent enemyAI, ref ShipInputComponent input, in Translation tr, in Rotation rot, in ShipDataComponent data)
