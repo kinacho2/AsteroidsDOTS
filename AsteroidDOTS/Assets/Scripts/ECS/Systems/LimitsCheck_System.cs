@@ -8,7 +8,7 @@ namespace Asteroids.ECS.Systems
 {
     public class LimitsCheck_System : SystemBase
     {
-        private float2 CameraLimits;
+        private static float2 CameraLimits;
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -23,20 +23,19 @@ namespace Asteroids.ECS.Systems
 
         protected override void OnUpdate()
         {
-            Entities.WithAny<LimitCheckComponent>()
-                   .WithoutBurst()
-                   .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation) =>
+            Entities.WithAll<LimitCheckComponent>()
+                   .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, in LimitCheckComponent check) =>
                    {
 
                        //check camera limits
                        ref var tr = ref translation.Value;
-                       var cameraLimits = Configs.CameraLimits;
+                       var cameraLimits = check.cameraLimits;
                        if (math.abs(tr.x) > cameraLimits.x)
                            tr.x = -math.sign(tr.x) * cameraLimits.x;
                        if (math.abs(tr.y) > cameraLimits.y)
                            tr.y = -math.sign(tr.y) * cameraLimits.y;
                    })
-                   .Run();
+                   .ScheduleParallel();
 
         }
     }

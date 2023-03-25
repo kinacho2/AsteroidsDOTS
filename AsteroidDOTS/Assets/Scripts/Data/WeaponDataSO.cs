@@ -8,7 +8,10 @@ namespace Asteroids.Data
         [field: SerializeField] public GameObject BombPrefab { get; protected set; }
         [field: SerializeField] public GameObject MisilePrefab { get; protected set; }
         [field: SerializeField] public WeaponData[] Weapons { get; protected set; }
+        
         [field: SerializeField] public float[] MisileAngleDeg;
+
+        [field: SerializeField] public Vector2[] MisileShape { get; protected set; }
         public WeaponData Get(int range)
         {
             return Weapons[range];

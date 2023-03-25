@@ -154,7 +154,7 @@ namespace Asteroids.ECS.Systems
         private void InstantiateChildAsteroid(Entity entityPrefab, float2 position, float2 velocity, float angular, AsteroidData data, AsteroidComponent parentAsteroid, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(entityPrefab);
-            cmdBuffer.AddComponent<LimitCheckComponent>(entity);
+            cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
             cmdBuffer.AddComponent(entity, new AsteroidComponent
             {
                 type = data.type,
@@ -188,7 +188,7 @@ namespace Asteroids.ECS.Systems
             var angular = math.radians(Random.NextFloat(0, math.PI));
 
             var entity = EntityManager.Instantiate(entityPrefab);
-            EntityManager.AddComponent<LimitCheckComponent>(entity);
+            EntityManager.AddComponentData(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
             EntityManager.AddComponentData(entity, new AsteroidComponent
             {
                 type = type,

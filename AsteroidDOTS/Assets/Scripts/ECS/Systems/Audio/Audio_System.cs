@@ -17,7 +17,6 @@ namespace Asteroids.ECS.Systems
 {
     public class Audio_System : SystemBase
     {
-        //AudioType[] Sounds;
         private NativeArray<EventConsumer> _consumers;
 
         private bool _initialized = false;

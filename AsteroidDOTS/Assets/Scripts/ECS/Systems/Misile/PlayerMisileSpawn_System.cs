@@ -36,10 +36,10 @@ namespace Asteroids.ECS.Systems
 
 
             var MisilePrefab = weaponsDB.MisilePrefab;
-            var polygonCollider = MisilePrefab.GetComponent<PolygonCollider2D>();
+            var points = weaponsDB.MisileShape;
             var meshFilter = MisilePrefab.GetComponentInChildren<MeshFilter>();
             meshFilter.sharedMesh = new Mesh();
-            AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, MisilePrefab.transform.localScale, meshFilter.sharedMesh);
+            AMeshTools.CreateMeshWithMassCenter(points, MisilePrefab.transform.localScale, meshFilter.sharedMesh);
 
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
             misileEntityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(MisilePrefab, settings);
@@ -102,7 +102,7 @@ namespace Asteroids.ECS.Systems
         public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(misileEntityPrefab);
-            cmdBuffer.AddComponent<LimitCheckComponent>(entity);
+            cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
             cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range });
             cmdBuffer.SetComponent(entity, new Translation { Value = position });
             cmdBuffer.SetComponent(entity, new Rotation { Value = rotation });

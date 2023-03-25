@@ -6,6 +6,7 @@ using Unity.Entities;
 using UnityEngine;
 using System.Linq;
 using Asteroids.ECS.Components;
+using Asteroids.Setup;
 
 namespace Asteroids.ECS.Systems
 {
@@ -44,7 +45,7 @@ namespace Asteroids.ECS.Systems
         protected Entity InstantiateShipEntity(EntityManager entityManager, Entity shipPrefab, ShipData data, WeaponData weapon, EntityType type)
         {
             var entity = entityManager.Instantiate(shipPrefab);
-            entityManager.AddComponent<LimitCheckComponent>(entity);
+            entityManager.AddComponentData(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
             entityManager.AddComponent<ShipInputComponent>(entity);
             entityManager.AddComponentData(entity, new ShipStatsComponent
             {
