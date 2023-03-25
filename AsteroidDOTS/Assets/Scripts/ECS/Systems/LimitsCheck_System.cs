@@ -8,6 +8,19 @@ namespace Asteroids.ECS.Systems
 {
     public class LimitsCheck_System : SystemBase
     {
+        private float2 CameraLimits;
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            Configs.OnInitializedConfig += Configs_OnInitializedConfig;
+        }
+
+        private void Configs_OnInitializedConfig()
+        {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+            CameraLimits = Configs.CameraLimits;
+        }
+
         protected override void OnUpdate()
         {
             Entities.WithAny<LimitCheckComponent>()

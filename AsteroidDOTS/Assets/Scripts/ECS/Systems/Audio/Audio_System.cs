@@ -11,6 +11,7 @@ using Asteroids.ECS.Events;
 
 using AudioType = Asteroids.Data.AudioType;
 using Asteroids.Audio;
+using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
@@ -18,7 +19,7 @@ namespace Asteroids.ECS.Systems
     {
         //AudioType[] Sounds;
         private NativeArray<EventConsumer> _consumers;
-        private Entity AudioListener;
+
         private bool _initialized = false;
         private SoundManager SoundManager;
         protected override void OnCreate()
@@ -33,7 +34,7 @@ namespace Asteroids.ECS.Systems
             if (!audioDB) return;
             SoundManager = Configs.SoundManager;
 
-            _consumers = new NativeArray<EventConsumer>(audioDB.Sounds.Length + 1, Allocator.Persistent);
+            _consumers = new NativeArray<EventConsumer>(audioDB.Sounds.Length + 2, Allocator.Persistent);
 
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
@@ -50,7 +51,7 @@ namespace Asteroids.ECS.Systems
 
             _consumers[((int)AudioType.AsteroidCollisionBig)] = 
             _consumers[((int)AudioType.AsteroidCollisionMedium)] =
-            _consumers[((int)AudioType.AsteroidCollisionSmall)] = Events_System.OnAsteroidsCollision.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.AsteroidCollisionSmall)] = Events_System.OnAsteroidsCollision.Subscribe(2);
 
             _consumers[((int)AudioType.AsteroidDestroyedBig)] =
             _consumers[((int)AudioType.AsteroidDestroyedMedium)] =
@@ -65,6 +66,9 @@ namespace Asteroids.ECS.Systems
 
             _consumers[((int)AudioType.LoseShield)] = Events_System.OnPlayerLoseShield.Subscribe(Configs.EVENTS_QUEUE_COUNT);
 
+            _consumers[((int)AudioType.WarpJump)] = Events_System.OnHyperspaceTravelStart.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.WarpJumpStop)] = Events_System.OnHyperspaceTravelStop.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+
             _initialized = true;
         }
 
@@ -73,7 +77,6 @@ namespace Asteroids.ECS.Systems
             if (!_initialized) return;
             CheckEvent(AudioType.PlayerShoot, ref Events_System.OnEntityShoot);
             CheckEvent(AudioType.PlayerCollision, ref Events_System.OnPlayerCollision);
-            CheckEvent(AudioType.PlayerDestroyed, ref Events_System.OnEntityDestroyed);
             CheckEvent(AudioType.MisileHit, ref Events_System.OnMisileHit);
             CheckEvent(AudioType.LoseShield, ref Events_System.OnPlayerLoseShield);
 
@@ -98,6 +101,7 @@ namespace Asteroids.ECS.Systems
 
             if (GetEvent(_consumers[(int)AudioType.AsteroidDestroyedBig], ref Events_System.OnAsteroidDestroyed, out var asteroidDestroyed))
             {
+                
                 switch (asteroidDestroyed.type)
                 {
                     case AsteroidType.Bigger:
@@ -134,6 +138,21 @@ namespace Asteroids.ECS.Systems
             CheckEvent(AudioType.PlayerStartMove, ref Events_System.OnPlayerStartMove, true);
             if (GetEvent(_consumers[(int)AudioType.PlayerStopMove], ref Events_System.OnPlayerStopMove, out var stopMove))
                 StopSound(AudioType.PlayerStartMove);
+
+            CheckEvent(AudioType.WarpJump, ref Events_System.OnHyperspaceTravelStart, true);
+            if (GetEvent(_consumers[(int)AudioType.WarpJumpStop], ref Events_System.OnHyperspaceTravelStop, out var stopJump))
+                StopSound(AudioType.WarpJump);
+
+            if (GetEvent(_consumers[(int)AudioType.PlayerDestroyed], ref Events_System.OnEntityDestroyed, out var destoyEvent))
+            {
+                PlaySound(AudioType.PlayerDestroyed);
+                if (destoyEvent.entityType == EntityType.Player)
+                {
+                    StopSound(AudioType.WarpJump);
+                    StopSound(AudioType.PlayerStartMove);
+                }
+            }
+
         }
 
         protected void CheckEvent<T>(AudioType type, ref EventPublisher<T> publisher, bool loop = false) where T : struct

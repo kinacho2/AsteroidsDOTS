@@ -63,8 +63,12 @@ namespace Asteroids.ECS.Systems {
                                 if (stats.invTime <= 0)
                                 {
                                     stats.invTime = data.invTime;
+                                    if (stats.shieldHealth > 0)
+                                        stats.shieldHealth--;
+                                    else
+                                        health.health--;
                                     cmdBuffer.SetComponent(hitEntity, stats);
-                                    health.health--;
+
                                 }
                             }
                             else health.health--;

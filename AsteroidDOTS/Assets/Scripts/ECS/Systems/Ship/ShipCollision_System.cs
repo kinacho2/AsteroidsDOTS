@@ -112,15 +112,10 @@ namespace Asteroids.ECS.Systems
                                 if (!HasComponent<EnemyComponent>(ship))
                                 {
                                     stats.invTime = data.invTime + stats.stunnedTimer;
-                                    if (stats.shieldHealth <= 0)
-                                    {
-                                        health.health -= 1;
-                                    }
+                                    if (stats.shieldHealth > 0)
+                                        stats.shieldHealth--;
                                     else
-                                    {
-                                        stats.shieldHealth -= 1;
-                                    }
-                                    //SetStats(ship, ref cmdBuffer, stats, health, data, deltaTime);
+                                        health.health--;
 
                                 }
                                 Events_System.OnPlayerCollision.PostEvent(new Events.PlayerCollision { position = tr.Value, shield = stats.shieldHealth > 0 });
@@ -157,14 +152,10 @@ namespace Asteroids.ECS.Systems
                 if (!HasComponent<EnemyComponent>(entity))
                 {
                     stats.invTime = data.invTime + stats.stunnedTimer;
-                    if (stats.shieldHealth <= 0)
-                    {
-                        health.health -= 1;
-                    }
+                    if (stats.shieldHealth > 0)
+                        stats.shieldHealth--;
                     else
-                    {
-                        stats.shieldHealth -= 1;
-                    }
+                        health.health--;
                     cmdBuffer.SetComponent(entity, health);
 
                 }

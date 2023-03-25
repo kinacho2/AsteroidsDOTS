@@ -39,12 +39,17 @@ namespace Asteroids.ECS.Systems
             var enemyDataSo = Configs.EnemyDB;
             EnemiesDB = enemyDataSo.Ships;
             Enemies = new NativeArray<Entity>(EnemiesDB.Length, Allocator.Persistent);
+            var spawnData = Configs.GameData.EnemiesSpawnData;
+
+            _enemyCounter = spawnData.entityCount;
+            _spawnTime = spawnData.spawnSeconds;
 
             for (int i = 0; i < EnemiesDB.Length; i++)
             {
                 var data = EnemiesDB[i];
                 Enemies[i] = CreateShipPrefab(enemyDataSo.ShipPrefab, data);
             }
+
 #if UNITY_EDITOR
             _debugColors = new Color[EnemiesDB.Length];
             _debugColors[0] = Color.blue;
@@ -52,7 +57,8 @@ namespace Asteroids.ECS.Systems
             _debugColors[2] = Color.white;
             _debugColors[3] = Color.magenta;
 #endif
-            for (int i=0; i < Enemies.Length; i++)
+
+            for (int i=0; i < spawnData.initialEntityCount; i++)
             {
                 SpawnRandomEnemy(EntityManager);
                 _enemyCounter--;
@@ -93,7 +99,7 @@ namespace Asteroids.ECS.Systems
                 debugColor = _debugColors[index]
 #endif
             });
-            var pos = Configs.GetRandomPositionOutOfScreen();
+            var pos = Configs.GetRandomPositionOutOfScreen(ref Random);
             entityManager.SetComponentData(entity, new Translation { Value = pos.ToFloat3() });
             var rot = quaternion.RotateZ(math.radians(Random.NextFloat(0, math.PI * 2)));
             entityManager.SetComponentData(entity, new Rotation { Value = rot });

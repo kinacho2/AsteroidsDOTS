@@ -6,8 +6,28 @@ using UnityEngine;
 public class GameDataSO : ScriptableObject
 {
     [field: SerializeField]
-    public int EnemyCount { get; private set; }
+    public SpawnData EnemiesSpawnData { get; private set; }
 
     [field: SerializeField]
-    public int AsteroidCount { get; private set; }
+    public SpawnData AsteroidsSpawnData { get; private set; }
+
+    [field: SerializeField]
+    public HyperspaceTravelData HyperspaceTravelData { get; private set; }
+
+}
+
+[System.Serializable]
+public struct SpawnData
+{
+    public int initialEntityCount;
+    public int entityCount;
+    public float spawnSeconds;
+}
+
+[System.Serializable]
+public struct HyperspaceTravelData
+{
+    public float timeBeforeTravel;
+    public float timeAfterTravel;
+    public float timeReloading;
 }

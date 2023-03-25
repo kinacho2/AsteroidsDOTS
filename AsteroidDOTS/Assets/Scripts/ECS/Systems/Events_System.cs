@@ -35,6 +35,14 @@ namespace Asteroids.ECS.Systems
         private static EventPublisher<MisileHit> _onMisileHit;
         public static ref EventPublisher<MisileHit> OnMisileHit => ref _onMisileHit;
 
+        private static EventPublisher<PlayerMove> _onHyperspaceTravelStart;
+        public static ref EventPublisher<PlayerMove> OnHyperspaceTravelStart => ref _onHyperspaceTravelStart;
+
+        private static EventPublisher<PlayerMove> _onHyperspaceTravelStop;
+        public static ref EventPublisher<PlayerMove> OnHyperspaceTravelStop => ref _onHyperspaceTravelStop;
+
+        private static EventPublisher<PlayerMove> _onHyperspaceTravel;
+        public static ref EventPublisher<PlayerMove> OnHyperspaceTravel => ref _onHyperspaceTravel;
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -49,6 +57,10 @@ namespace Asteroids.ECS.Systems
             _onPickPower = new EventPublisher<PickPower>(20);
             _onMisileHit = new EventPublisher<MisileHit>(20);
 
+            _onHyperspaceTravelStart = new EventPublisher<PlayerMove>(20);
+            _onHyperspaceTravelStop = new EventPublisher<PlayerMove>(20);
+            _onHyperspaceTravel = new EventPublisher<PlayerMove>(20);
+            
         }
 
         protected override void OnUpdate()
@@ -68,6 +80,9 @@ namespace Asteroids.ECS.Systems
             _onPickPower.Dispose();
             _onMisileHit.Dispose();
             _onPlayerStoptMove.Dispose();
+            _onHyperspaceTravelStart.Dispose();
+            _onHyperspaceTravelStop.Dispose();
+            _onHyperspaceTravel.Dispose();
             base.OnDestroy();
 
         }

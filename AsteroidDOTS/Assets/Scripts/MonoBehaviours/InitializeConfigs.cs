@@ -10,6 +10,7 @@ namespace Asteroids.Setup
     {
         [SerializeField] Camera Camera;
         [SerializeField] GameObject MisilePrefab;
+        [SerializeField] GameDataSO GameData;
         [SerializeField] AsteroidDataSO AsteroidDB;
         [SerializeField] PowerDataSO PowerDB;
         [SerializeField] AudioDataSO AudioDB;
@@ -22,7 +23,7 @@ namespace Asteroids.Setup
 #endif
         void Awake()
         {
-            Configs.InitializeConfigs(Camera, SoundManager, PlayerData, EnemyData, AsteroidDB, PowerDB, AudioDB);
+            Configs.InitializeConfigs(Camera, SoundManager, GameData, PlayerData, EnemyData, AsteroidDB, PowerDB, AudioDB);
 
 #if UNITY_EDITOR
             Configs.DebugMode = DebugMode;

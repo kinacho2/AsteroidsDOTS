@@ -15,7 +15,7 @@ MonoBehaviour:
   <AudioSourcePrefab>k__BackingField: {fileID: 7762378999014293158, guid: 2d0a2ca1d5f5e4c4f940951c295eb7d8, type: 3}
   <Sounds>k__BackingField:
   - type: 0
-    clip: {fileID: 8300000, guid: f6dc89030feca204ca10294c823f820b, type: 3}
+    clip: {fileID: 8300000, guid: 2eb0e98c2ad2f124694626566e9e2e9b, type: 3}
   - type: 1
     clip: {fileID: 8300000, guid: 9e9a12e3de875284482e0c35ff6da8a1, type: 3}
   - type: 2
@@ -47,4 +47,6 @@ MonoBehaviour:
   - type: 15
     clip: {fileID: 8300000, guid: 7e1af142c8c09d2409f55737ad3e6d6c, type: 3}
   - type: 16
-    clip: {fileID: 8300000, guid: 653cdd493b2a6ae40bd827bd1fe3c643, type: 3}
+    clip: {fileID: 8300000, guid: bd4a60cbeeabc40418c98268758ec585, type: 3}
+  - type: 17
+    clip: {fileID: 8300000, guid: 7bd551ca049f2fc46bf561fc784e62d0, type: 3}

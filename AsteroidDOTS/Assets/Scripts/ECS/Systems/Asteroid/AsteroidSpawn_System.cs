@@ -22,11 +22,16 @@ namespace Asteroids.ECS.Systems
 
         Random Random;
         protected float2 CameraLimits;
-        protected float distance;
+        private float _distance;
+
+        private float _spawnTime = 30;
+        private float _spawnTimer;
+        private int _asteroidCounter = 8;
+
         protected override void OnCreate()
         {
             base.OnCreate();
-            Random = new Random(0x6E624EB2u);
+            Random = new Random(0x6E624E92u);
             Configs.OnInitializedConfig += Configs_OnInitializedConfig;
         }
 
@@ -34,10 +39,14 @@ namespace Asteroids.ECS.Systems
         {
             Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
             CameraLimits = Configs.CameraLimits;
-            distance = math.length(CameraLimits + new float2(1, 1));
+            _distance = math.length(CameraLimits + new float2(1, 1));
             var asteroidDB = Configs.AsteroidDB;
             entityPrefabs = new Entity[asteroidDB.ShapesCount()];
             data = new AsteroidData[asteroidDB.DataCount];
+
+            var spawnData = Configs.GameData.AsteroidsSpawnData;
+            _asteroidCounter = spawnData.entityCount;
+            _spawnTime = spawnData.spawnSeconds;
 
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
@@ -58,7 +67,7 @@ namespace Asteroids.ECS.Systems
                 }
             }
 
-            InstantiateFirstAsteroids(asteroidDB.InitialCount);
+            InstantiateFirstAsteroids(spawnData.initialEntityCount);
         }
 
         protected void SetParameters(GameObject prefab, int shapeIndex, ref AsteroidData asteroidData)
@@ -71,6 +80,7 @@ namespace Asteroids.ECS.Systems
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
+            
             Entities
                 .WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex,
@@ -87,19 +97,9 @@ namespace Asteroids.ECS.Systems
                         int type = ((int)asteroid.type);
                         if (asteroid.type < AsteroidType.Tiny)
                         {
-                            InstantiateAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f/3f), asteroid, ref cmdBuffer);
-                            InstantiateAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f/3f), asteroid, ref cmdBuffer);
-                            InstantiateAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2), asteroid, ref cmdBuffer);
-                            //InstantiateAsteroid(asteroid.type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 1.75f), asteroid.size, ref cmdBuffer);
-                        }
-                        if(asteroid.type < AsteroidType.Small)
-                        {
-                            //power ups
-                            //var rand = Random.NextUInt(0, 10);
-                            //if (rand < 9)
-                            {
-                                //PowerSpawn_System.SpawnQueue.Enqueue(tr.Value);
-                            }
+                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f/3f), asteroid, ref cmdBuffer);
+                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f/3f), asteroid, ref cmdBuffer);
+                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2), asteroid, ref cmdBuffer);
                         }
                     }
                 })
@@ -107,15 +107,41 @@ namespace Asteroids.ECS.Systems
 
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
+
+            CheckForSpawn();
         }
 
-        private void InstantiateAsteroid(int type, float currentSpeed, float3 position, float2 direction, AsteroidComponent parentAsteroid, ref EntityCommandBuffer cmdBuffer)
+        private void CheckForSpawn()
+        {
+            if (_asteroidCounter <= 0) return;
+            if (_spawnTimer > _spawnTime)
+            {
+                var query = GetEntityQuery(typeof(AsteroidComponent));
+                var array = query.ToComponentDataArray<AsteroidComponent>(Allocator.Temp);
+                float size = 0;
+                foreach(var asteroid in array)
+                {
+                    size += asteroid.size;
+                }
+                if (size < 6)
+                {
+                    InstantiateBigRandomAsteroid();
+                    _asteroidCounter--;
+                    _spawnTimer = 0;
+                }
+                array.Dispose();
+            }
+            _spawnTimer += Time.DeltaTime;
+
+        }
+
+        private void InstantiateChildAsteroid(int type, float currentSpeed, float3 position, float2 direction, AsteroidComponent parentAsteroid, ref EntityCommandBuffer cmdBuffer)
         {
             int startIdx = GetFirstEntityPrefabIndex(type);
 
             var randIdx = Random.NextUInt() % data[type].shapes.Length + startIdx;
 
-            InstantiateAsteroid(
+            InstantiateChildAsteroid(
                 entityPrefabs[randIdx],
                 GetPerpendicularPosition(parentAsteroid.size * 0.5f, position.ToFloat2(), direction),
                 GetPerpendicularVelocity(currentSpeed, data[type].maxSpeed, 25, direction),
@@ -125,7 +151,7 @@ namespace Asteroids.ECS.Systems
                 );
         }
 
-        private void InstantiateAsteroid(Entity entityPrefab, float2 position, float2 velocity, float angular, AsteroidData data, AsteroidComponent parentAsteroid, ref EntityCommandBuffer cmdBuffer)
+        private void InstantiateChildAsteroid(Entity entityPrefab, float2 position, float2 velocity, float angular, AsteroidData data, AsteroidComponent parentAsteroid, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(entityPrefab);
             cmdBuffer.AddComponent<LimitCheckComponent>(entity);
@@ -146,34 +172,36 @@ namespace Asteroids.ECS.Systems
 
         private void InstantiateFirstAsteroids(int count)
         {
-            var asteroidData = data[0];
-            var type = asteroidData.type;
-
             for (int i = 0; i < count; i++)
             {
-
-                var entityPrefab = entityPrefabs[Random.NextInt(0, asteroidData.shapes.Length) % asteroidData.shapes.Length];
-                var position = GetRandomPositionOutOfScreen() * 0.5f;
-                var velocity = GetRandomVelocity(asteroidData.maxSpeed);
-                var angular = math.radians(Random.NextFloat(0, math.PI));
-
-                var entity = EntityManager.Instantiate(entityPrefab);
-                EntityManager.AddComponent<LimitCheckComponent>(entity);
-                EntityManager.AddComponentData(entity, new AsteroidComponent 
-                {
-                    type = type, 
-                    size = asteroidData.size,
-                    maxSpeed = asteroidData.maxSpeed,
-                });
-                EntityManager.AddComponentData(entity, new HealthComponent
-                {
-                    health = asteroidData.health,
-                });
-                EntityManager.AddComponentData(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
-                EntityManager.AddComponentData(entity, new Translation { Value = position.ToFloat3() });
+                InstantiateBigRandomAsteroid();
             }
         }
 
+        private void InstantiateBigRandomAsteroid()
+        {
+            var asteroidData = data[0];
+            var type = asteroidData.type;
+            var entityPrefab = entityPrefabs[Random.NextInt(0, asteroidData.shapes.Length) % asteroidData.shapes.Length];
+            var position = GetRandomPositionOutOfScreen();
+            var velocity = GetRandomVelocity(asteroidData.maxSpeed);
+            var angular = math.radians(Random.NextFloat(0, math.PI));
+
+            var entity = EntityManager.Instantiate(entityPrefab);
+            EntityManager.AddComponent<LimitCheckComponent>(entity);
+            EntityManager.AddComponentData(entity, new AsteroidComponent
+            {
+                type = type,
+                size = asteroidData.size,
+                maxSpeed = asteroidData.maxSpeed,
+            });
+            EntityManager.AddComponentData(entity, new HealthComponent
+            {
+                health = asteroidData.health,
+            });
+            EntityManager.AddComponentData(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
+            EntityManager.AddComponentData(entity, new Translation { Value = position.ToFloat3() });
+        }
         private int GetFirstEntityPrefabIndex(int type)
         {
             int index = 0;
@@ -187,7 +215,7 @@ namespace Asteroids.ECS.Systems
         private float2 GetRandomPositionOutOfScreen()
         {
             var dir = AGeometry.RotateZ(math.right().ToFloat2(), Random.NextFloat(0, PI2));
-            return dir * distance;
+            return dir * _distance;
         }
 
         private float2 GetRandomVelocity(float maxSpeed)

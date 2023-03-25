@@ -51,6 +51,9 @@ namespace Asteroids.Data
         PickBomb = 14,
         PickHealth = 15,
         LoseShield = 16,
-        PlayerStopMove = 17,
+        WarpJump = 17,
+        PlayerStopMove = 18,
+        WarpJumpStop = 18,
+
     }
 }

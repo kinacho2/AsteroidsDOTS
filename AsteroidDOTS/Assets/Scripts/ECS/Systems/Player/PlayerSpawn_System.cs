@@ -34,10 +34,17 @@ namespace Asteroids.ECS.Systems
         private void InstantiatePlayerEntity(EntityManager entityManager, Entity entityPrefab, ShipData data)
         {
             var weapon = Configs.PlayerData.WeaponsDB.Get(0);
-
             var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon, EntityType.Player);
             entityManager.AddComponent<PlayerComponent>(entity);
-            
+            entityManager.AddComponentData(entity, new HyperspaceTravelComponent
+            {
+                state = HyperspaceTravelState.Enabled,
+                chargeTimer = 0,
+                timeAfterTravel = 2,
+                timeReloading = 4,
+                timeBeforeTravel = 4,
+                chargingPressed = false,
+            });
         }
 
     }

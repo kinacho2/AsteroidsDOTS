@@ -16,12 +16,15 @@ namespace Asteroids.ECS.Systems
             float tr = Input.GetAxis("Vertical");
             float rot = Input.GetAxis("Horizontal");
             bool shoot = Input.GetKey(KeyCode.Space);
+            bool charging = Input.GetKey(KeyCode.E);
 
             Entities.WithAll<ShipInputComponent, ShipStatsComponent, PlayerComponent>()
                     .WithoutBurst()
                     .ForEach((Entity entity, int entityInQueryIndex, 
                         ref ShipInputComponent input, 
-                        ref ShipStatsComponent stats) =>
+                        ref ShipStatsComponent stats,
+                        ref HyperspaceTravelComponent travel
+                        ) =>
                     {
                         ref var dir = ref input.direction;
 
@@ -37,6 +40,9 @@ namespace Asteroids.ECS.Systems
                         dir.y = tr;
                         dir.x = -rot;
                         input.shoot = shoot;
+
+                        travel.chargingPressed = charging;
+                            
                     })
                     .Run();
 
