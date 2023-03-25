@@ -44,7 +44,7 @@ namespace Asteroids.ECS.Systems {
                         out var hit))
                     {
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
-                        if (HasComponent<HealthComponent>(hitEntity))
+                        if (hitEntity != misile.owner && HasComponent<HealthComponent>(hitEntity))
                         {
                             var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
                             var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
@@ -68,7 +68,6 @@ namespace Asteroids.ECS.Systems {
                                     else
                                         health.health--;
                                     cmdBuffer.SetComponent(hitEntity, stats);
-
                                 }
                             }
                             else health.health--;
@@ -78,7 +77,6 @@ namespace Asteroids.ECS.Systems {
                             Events_System.OnMisileHit.PostEvent(new Events.MisileHit { position = tr.Value });
     
                         }
-                    //cmdBuffer.DestroyEntity(misile);
                 }
                 })
                 .Run();

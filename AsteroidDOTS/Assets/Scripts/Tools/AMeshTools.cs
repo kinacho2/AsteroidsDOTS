@@ -181,5 +181,32 @@ namespace Asteroids.Tools
             mesh.uv = uvs;
             mesh.triangles = indices;
         }
+
+        public static Mesh GetAim(Vector3 init, Vector3 end, float width, Mesh mesh)
+        {
+            if(mesh == null)
+                mesh = new Mesh();
+            init.z = end.z = 0;
+            var dir = (end - init).normalized;
+            var perpendicular = new Vector3(dir.y, dir.x, 0);
+
+            Vector3[] vertices = new Vector3[4]
+            {
+                init + perpendicular * width,
+                init - perpendicular * width,
+                end + perpendicular * width,
+                end - perpendicular * width,
+            };
+            int[] triangles = new int[6]
+            {
+                0,1,2,
+                1,2,3
+            };
+
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            
+            return mesh;
+        }
     }
 }

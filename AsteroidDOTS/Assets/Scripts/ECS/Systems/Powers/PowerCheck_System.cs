@@ -83,29 +83,12 @@ namespace Asteroids.ECS.Systems {
                                     case PowerType.Health:
                                         health.health = math.min(health.health + 2, data.maxHealth);
                                         break;
-                                    case PowerType.Bomb:
-                                        
-                                        //BombSpawn_System.SpawnQueue.Enqueue(powerTr.Value);
-                                        break;
                                 }
 
                                 cmdBuffer.DestroyEntity(hitEntity);
 
-                                Events_System.OnPickPower.PostEvent(new Events.PickPower { position = tr.Value, type = power.type });
+                                Events_System.OnPickPower.PostEvent(new Events.PickPower { position = tr.Value, type = power.type, player = player });
                             }
-                        //var shield = EntityManager.GetComponentData<ShieldComponent>(shieldRef.ShieldEntity);
-                        /*
-                        if (!shield.enabled && enableShield)
-                        {
-                            shield.enabled = true;
-                            cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
-                        }
-                        if(shield.enabled && !enableShield)
-                        {
-                            shield.enabled = false;
-                            cmdBuffer.SetComponent(shieldRef.ShieldEntity, shield);
-                        }/**/
-                        //cmdBuffer.SetComponent(shieldRef.ShieldEntity, tr);
                     }
                     })
                     .Run();

@@ -15,15 +15,13 @@ namespace Asteroids.ECS.Systems
 {
     public class PowerSpawn_System : SystemBase
     {
-        //public static NativeQueue<float3> SpawnQueue;
         protected Entity[] entityPrefabs;
-        private EventConsumer _eventConsumer;
-
+        private EventConsumer _asteroidEventConsumer;
+        private EventConsumer _enemyEventConsumer;
         Random Random;
         protected override void OnCreate()
         {
             base.OnCreate();
-            //SpawnQueue = new NativeQueue<float3>(Allocator.Persistent);
             Random = new Random(0x6E622EA2u);
             Configs.OnInitializedConfig += Configs_OnInitializedConfig;
         }
@@ -65,21 +63,30 @@ namespace Asteroids.ECS.Systems
                 entityPrefabs[i] = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
             }
 
-            _eventConsumer = Events_System.OnAsteroidDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _asteroidEventConsumer = Events_System.OnAsteroidDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _enemyEventConsumer = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
         }
 
 
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-            if (Events_System.OnAsteroidDestroyed.TryGetEvent(_eventConsumer, out var asteroidEvent))
+            if (Events_System.OnAsteroidDestroyed.TryGetEvent(_asteroidEventConsumer, out var asteroidEvent))
             {
                 if (asteroidEvent.type < AsteroidType.Small)
                 {
                     var type = Random.NextInt(0, entityPrefabs.Length) % entityPrefabs.Length;
-                    //type = 0;
                     var entityPrefab = entityPrefabs[type];
                     InstantiatePower(entityPrefab, (PowerType)type, asteroidEvent.position, ref cmdBuffer);
+                }
+            }
+            if (Events_System.OnEntityDestroyed.TryGetEvent(_asteroidEventConsumer, out var entity))
+            {
+                if (entity.entityType != EntityType.Player)
+                {
+                    var type = Random.NextInt(0, entityPrefabs.Length) % entityPrefabs.Length;
+                    var entityPrefab = entityPrefabs[type];
+                    InstantiatePower(entityPrefab, (PowerType)type, entity.position, ref cmdBuffer);
                 }
             }
 

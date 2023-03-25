@@ -57,13 +57,14 @@ namespace Asteroids.ECS.Systems
                         if (HasComponent<AsteroidComponent>(hitEntity) && hitEntity.Index != asteroidEntity.Index)
                         {
                             var otherVelocity = EntityManager.GetComponentData<PhysicsVelocity>(hitEntity);
+                            var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
 
                             var len1 = math.length(velocity.Linear);
                             var len2 = math.length(otherVelocity.Linear);
-
-                            if (len1 > len2)
+                            var dist1 = math.length(tr.Value);
+                            var dist2 = math.length(otherTranslation.Value);
+                            if (len1 > len2 || (len1 == len2 && dist1 > dist2))
                             {
-                                var otherTranslation = EntityManager.GetComponentData<Translation>(hitEntity);
                                 var otherAsteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
                                 var otherMass = EntityManager.GetComponentData<PhysicsMass>(hitEntity);
                                 var mass = EntityManager.GetComponentData<PhysicsMass>(asteroidEntity);
@@ -127,7 +128,7 @@ namespace Asteroids.ECS.Systems
                                 //tiny asteroids destruction when hit a medium or big asteroid
                                 
                                 var thisAsteroid = asteroid;
-                                if (thisAsteroid.type == AsteroidType.Tiny && otherAsteroid.type < AsteroidType.Tiny - 1)
+                                if (thisAsteroid.type == AsteroidType.Tiny && otherAsteroid.type < AsteroidType.Tiny - 2)
                                 {
                                     var thisHealth = health;
                                     thisHealth.health -= 1;
@@ -135,7 +136,7 @@ namespace Asteroids.ECS.Systems
                                     cmdBuffer.SetComponent(asteroidEntity, thisHealth);
                                     cmdBuffer.SetComponent(asteroidEntity, thisAsteroid);
                                 }
-                                if (otherAsteroid.type == AsteroidType.Tiny && thisAsteroid.type < AsteroidType.Tiny - 1)
+                                if (otherAsteroid.type == AsteroidType.Tiny && thisAsteroid.type < AsteroidType.Tiny - 2)
                                 {
                                     var otherHealth = EntityManager.GetComponentData<HealthComponent>(hitEntity);
                                     otherHealth.health -= 1;

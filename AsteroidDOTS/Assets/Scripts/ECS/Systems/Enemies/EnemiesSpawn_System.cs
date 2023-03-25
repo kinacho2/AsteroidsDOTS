@@ -99,10 +99,15 @@ namespace Asteroids.ECS.Systems
                 debugColor = _debugColors[index]
 #endif
             });
+            entityManager.AddComponentData(entity, new AimComponent { aimWidth = 0.03f, timeAming = 0.05f });
+
             var pos = Configs.GetRandomPositionOutOfScreen(ref Random);
             entityManager.SetComponentData(entity, new Translation { Value = pos.ToFloat3() });
             var rot = quaternion.RotateZ(math.radians(Random.NextFloat(0, math.PI * 2)));
             entityManager.SetComponentData(entity, new Rotation { Value = rot });
+            
+            var renderRef = entityManager.GetComponentData<ShipRendererComponent>(entity);
+            entityManager.RemoveComponent<Scale>(renderRef.ShieldEntity);
         }
 
 

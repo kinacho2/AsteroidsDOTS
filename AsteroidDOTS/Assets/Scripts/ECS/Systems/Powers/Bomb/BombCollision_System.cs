@@ -56,20 +56,28 @@ public class BombCollision_System : SystemBase
                     foreach (var hit in allHits)
                     {
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
-                        if (HasComponent<AsteroidComponent>(hitEntity))
+                        if (hitEntity != bomb.owner && HasComponent<HealthComponent>(hitEntity))
                         {
-                            var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
-                            var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
-                            var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
-                            if (asteroid.lastBombID != bomb.ID)
-                            {
-                                health.health = 0;
-                                asteroid.lastBombID = bomb.ID;
-                                asteroid.explodeDirection = math.normalize(asteroidTr.Value - tr.Value).ToFloat2();
-                                cmdBuffer.SetComponent(hitEntity, asteroid);
-                                cmdBuffer.SetComponent(hitEntity, health);
-                            }
 
+                            var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
+                            
+
+                            if (HasComponent<AsteroidComponent>(hitEntity))
+                            {
+                                var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
+                                var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
+                                if (asteroid.lastBombID != bomb.ID)
+                                {
+                                    health.health = 0;
+                                    asteroid.lastBombID = bomb.ID;
+                                    asteroid.explodeDirection = math.normalize(asteroidTr.Value - tr.Value).ToFloat2();
+                                    cmdBuffer.SetComponent(hitEntity, asteroid);
+                                }
+                            }
+                            else 
+                                health.health = 0;//is an enemy
+
+                            cmdBuffer.SetComponent(hitEntity, health);
                         }
                     }
                 }

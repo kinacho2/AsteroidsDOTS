@@ -1,11 +1,6 @@
 ﻿using Asteroids.ECS.Components;
 using Asteroids.Setup;
 using Asteroids.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -50,11 +45,11 @@ namespace Asteroids.ECS.Systems
                         ) =>
                     {
                         ref var dir = ref input.direction;
-                        
+
                         switch (enemyAI.AIState)
                         {
                             case EnemyAIState.Idle:
-                                EnemyIdleState(ref enemyAI, ref input, tr, rot, data, playerTr); 
+                                EnemyIdleState(ref enemyAI, ref input, tr, rot, data, playerTr);
                                 break;
                             case EnemyAIState.Aggro:
                                 EnemyAggroState(ref enemyAI, ref input, ref stats, tr, rot, data, playerTr);
@@ -66,9 +61,6 @@ namespace Asteroids.ECS.Systems
                                 EnemyEvadingState(ref enemyAI, ref input);
                                 break;
                         }
-
-                        //dir.x = math.abs(math.cos(((float)Time.ElapsedTime) / math.radians(data.rotationSpeedDeg) * data.maxSpeed));
-                        //dir.y = 1 / data.acceleration * math.sin(((float)Time.ElapsedTime) / math.radians(data.rotationSpeedDeg) * data.maxSpeed);
                     })
                     .Run();
 
@@ -102,7 +94,7 @@ namespace Asteroids.ECS.Systems
             ref var dir = ref input.direction;
 
             var viewDst = enemyAI.viewDistance;
-            
+
             if (CheckForEvade(ref enemyAI, ref input, tr, rot, data))
                 return;
 
@@ -126,7 +118,7 @@ namespace Asteroids.ECS.Systems
         private void EnemyEvadingState(ref EnemyComponent enemyAI, ref ShipInputComponent input)
         {
             enemyAI.stateTimer -= Time.DeltaTime;
-            if(enemyAI.stateTimer <= 0)
+            if (enemyAI.stateTimer <= 0)
             {
                 enemyAI.AIState = EnemyAIState.Idle;
                 return;
@@ -148,7 +140,7 @@ namespace Asteroids.ECS.Systems
             {
                 inputDir.x = -math.sign(dot);
             }
-            else if(stats.shootTimer <= 0)
+            else if (stats.shootTimer <= 0)
             {
                 enemyAI.AIState = EnemyAIState.Attacking;
                 return;

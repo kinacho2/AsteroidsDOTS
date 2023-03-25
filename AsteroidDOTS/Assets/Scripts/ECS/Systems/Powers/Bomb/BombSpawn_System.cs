@@ -45,19 +45,19 @@ public class BombSpawn_System : SystemBase
         if (Events_System.OnPickPower.TryGetEvent(_eventConsumer, out var power))        
         {
             if(power.type == PowerType.Bomb)
-                InstantiateBomb(entityPrefab, power.position, ref cmdBuffer);
+                InstantiateBomb(entityPrefab, power.position, power.player, ref cmdBuffer);
         }
 
         cmdBuffer.Playback(EntityManager);
         cmdBuffer.Dispose();
     }
 
-    private void InstantiateBomb(Entity entityPrefab, float3 position, ref EntityCommandBuffer cmdBuffer)
+    private void InstantiateBomb(Entity entityPrefab, float3 position, Entity player, ref EntityCommandBuffer cmdBuffer)
     {
         var radius = 0.1f;
 
         var entity = cmdBuffer.Instantiate(entityPrefab);
-        cmdBuffer.AddComponent(entity, new BombComponent { radius = radius, expansionSpeed = 3, lifeTime = 3, ID = Random.NextUInt() });
+        cmdBuffer.AddComponent(entity, new BombComponent { owner = player, radius = radius, expansionSpeed = 3, lifeTime = 3, ID = Random.NextUInt() });
         cmdBuffer.AddComponent(entity, new Translation { Value = position });
         cmdBuffer.AddComponent(entity, new Scale { Value = radius });
     }

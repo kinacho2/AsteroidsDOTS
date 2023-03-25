@@ -23,7 +23,7 @@ namespace Asteroids.ECS.Systems
             var data = playerDataSO.Ships[0];
             EntityPrefab = CreateShipPrefab(playerDataSO.ShipPrefab, data);
 
-            InstantiatePlayerEntity(EntityManager, EntityPrefab, data);
+            InstantiatePlayerEntity(EntityManager, EntityPrefab, data, Configs.GameData.HyperspaceTravelData);
         }
 
         protected override void OnUpdate()
@@ -31,7 +31,7 @@ namespace Asteroids.ECS.Systems
             
         }
 
-        private void InstantiatePlayerEntity(EntityManager entityManager, Entity entityPrefab, ShipData data)
+        private void InstantiatePlayerEntity(EntityManager entityManager, Entity entityPrefab, ShipData data, HyperspaceTravelData travelData)
         {
             var weapon = Configs.PlayerData.WeaponsDB.Get(0);
             var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon, EntityType.Player);
@@ -40,9 +40,9 @@ namespace Asteroids.ECS.Systems
             {
                 state = HyperspaceTravelState.Enabled,
                 chargeTimer = 0,
-                timeAfterTravel = 2,
-                timeReloading = 4,
-                timeBeforeTravel = 4,
+                timeAfterTravel = travelData.timeAfterTravel,
+                timeReloading = travelData.timeReloading,
+                timeBeforeTravel = travelData.timeBeforeTravel,
                 chargingPressed = false,
             });
         }

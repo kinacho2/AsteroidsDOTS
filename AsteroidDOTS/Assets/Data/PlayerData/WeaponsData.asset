@@ -28,8 +28,8 @@ MonoBehaviour:
     misileLifeTime: 0.9
     range: 0.3
   - misileAmount: 10
-    misileSpeed: 11
-    misileLifeTime: 1
+    misileSpeed: 9
+    misileLifeTime: 0.9
     range: 0.3
   <MisileAngleDeg>k__BackingField:
   - 0

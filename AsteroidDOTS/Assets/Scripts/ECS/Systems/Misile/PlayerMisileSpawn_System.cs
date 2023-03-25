@@ -82,7 +82,7 @@ namespace Asteroids.ECS.Systems
                                 {
                                     velocity += fordward * math.dot(fordward, physics.Linear / len) * len;
                                 }
-                                InstantiateMisile(translation.Value, rot, math.length(velocity), weapon, ref cmdBuffer);
+                                InstantiateMisile(translation.Value, rot, math.length(velocity), weapon, ship, ref cmdBuffer);
                             }
 
                             Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.type, position = translation.Value });
@@ -99,11 +99,11 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.Dispose();
         }
 
-        public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, ref EntityCommandBuffer cmdBuffer)
+        public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, Entity owner, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(misileEntityPrefab);
             cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
-            cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range });
+            cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range, owner = owner });
             cmdBuffer.SetComponent(entity, new Translation { Value = position });
             cmdBuffer.SetComponent(entity, new Rotation { Value = rotation });
         }

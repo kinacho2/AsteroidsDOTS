@@ -1,4 +1,5 @@
 using Asteroids.Data;
+using Unity.Entities;
 using Unity.Mathematics;
 
 namespace Asteroids.ECS.Events
@@ -47,6 +48,7 @@ namespace Asteroids.ECS.Events
 
     public struct PickPower
     {
+        public Entity player;
         public PowerType type;
         public float3 position;
     }

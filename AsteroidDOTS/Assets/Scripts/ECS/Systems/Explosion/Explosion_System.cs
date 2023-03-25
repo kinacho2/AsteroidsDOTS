@@ -12,13 +12,11 @@ namespace Asteroids.ECS.Systems
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
             float deltaTime = Time.DeltaTime;
-
-            Entities
-                .WithoutBurst()
+            
+            var parallelWriter = cmdBuffer.AsParallelWriter();
+            Entities.WithAll<ExplosionComponent>()
                 .ForEach((Entity entity, int entityInQueryIndex,
                     ref ExplosionComponent explosion,
-                    ref Translation tr,
-                    ref Rotation rot,
                     ref Scale scale) =>
                 {
 
@@ -27,10 +25,12 @@ namespace Asteroids.ECS.Systems
                     explosion.lifeTime -= deltaTime;
 
                     if (explosion.lifeTime <= 0)
-                        cmdBuffer.DestroyEntity(entity);
+                        parallelWriter.DestroyEntity(entityInQueryIndex, entity);
+                    //EntityManager.DestroyEntity(entity);
 
-                }).Run();
+                }).ScheduleParallel();
 
+            Dependency.Complete();
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
         }
