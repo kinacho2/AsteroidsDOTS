@@ -37,12 +37,14 @@ namespace Asteroids.ECS.Systems
             var circleCollider = prefab.GetComponent<CircleCollider2D>();
             circleCollider.radius = powerDB.CatchRadius;
 
-            var meshFilter = prefab.GetComponentInChildren<MeshFilter>();
-            var shieldMeshFilter = prefab.GetComponentsInChildren<MeshFilter>().Where((x) => x.tag == "Shield").FirstOrDefault();
+            var meshes = prefab.GetComponentsInChildren<MeshFilter>();
+            var meshFilter = meshes.Where((x) => x.tag != "Shield").FirstOrDefault();
+            var shieldMeshFilter = meshes.Where((x) => x.tag == "Shield").FirstOrDefault();
             meshFilter.sharedMesh = new Mesh();
 
-            var meshRenderer = prefab.GetComponentInChildren<MeshRenderer>();
-            var shieldMeshRenderer = prefab.GetComponentsInChildren<MeshRenderer>().Where((x) => x.tag == "Shield").FirstOrDefault();
+            var renderers = prefab.GetComponentsInChildren<MeshRenderer>();
+            var meshRenderer = renderers.Where((x) => x.tag != "Shield").FirstOrDefault();
+            var shieldMeshRenderer = renderers.Where((x) => x.tag == "Shield").FirstOrDefault();
 
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
