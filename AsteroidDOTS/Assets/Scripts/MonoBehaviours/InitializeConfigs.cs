@@ -1,7 +1,5 @@
 using Asteroids.Audio;
 using Asteroids.Data;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Asteroids.Setup
@@ -17,18 +15,16 @@ namespace Asteroids.Setup
         [SerializeField] ShipDataSO PlayerData;
         [SerializeField] ShipDataSO EnemyData;
         [SerializeField] SoundManager SoundManager;
-
 #if UNITY_EDITOR
         [SerializeField] bool DebugMode;
 #endif
+
         void Awake()
         {
             Configs.InitializeConfigs(Camera, SoundManager, GameData, PlayerData, EnemyData, AsteroidDB, PowerDB, AudioDB);
-
 #if UNITY_EDITOR
             Configs.DebugMode = DebugMode;
 #endif
-
             Destroy(gameObject);
         }
 

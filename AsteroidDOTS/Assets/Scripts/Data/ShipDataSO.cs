@@ -3,7 +3,6 @@ using UnityEngine;
 namespace Asteroids.Data
 {
     [CreateAssetMenu(menuName = "Asteroids/Ship Data", fileName = "ShipData.asset", order = 0)]
-
     public class ShipDataSO : ScriptableObject
     {
         [field: SerializeField]
@@ -15,7 +14,6 @@ namespace Asteroids.Data
         [field: SerializeField]
         public ShipData[] Ships { get; protected set; }
     }
-
 
     [System.Serializable]
     public struct ShipData

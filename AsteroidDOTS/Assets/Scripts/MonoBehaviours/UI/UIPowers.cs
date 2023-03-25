@@ -1,3 +1,4 @@
+using Asteroids.Data;
 using Asteroids.ECS.Events;
 using Asteroids.ECS.Systems;
 using Asteroids.Setup;
@@ -17,7 +18,6 @@ namespace Asteroids.UI
 
         float _timer;
         float _time;
-        
 
         private void Start()
         {
@@ -26,7 +26,6 @@ namespace Asteroids.UI
 
             _time = _timer = TravelData.timeReloading;
         }
-
 
         private void Update()
         {

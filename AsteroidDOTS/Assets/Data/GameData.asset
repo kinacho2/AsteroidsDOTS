@@ -15,7 +15,7 @@ MonoBehaviour:
   <EnemiesSpawnData>k__BackingField:
     initialEntityCount: 3
     entityCount: 8
-    spawnSeconds: 30
+    spawnSeconds: 90
   <AsteroidsSpawnData>k__BackingField:
     initialEntityCount: 3
     entityCount: 6

@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Asteroids.Data
 {
     [CreateAssetMenu(menuName = "Asteroids/Audio Data", fileName = "AudiioData.asset", order = 0)]
-
     public class AudioDataSO : ScriptableObject
     {
         [field: SerializeField]
@@ -54,6 +51,5 @@ namespace Asteroids.Data
         WarpJump = 17,
         PlayerStopMove = 18,
         WarpJumpStop = 18,
-
     }
 }

@@ -24,7 +24,7 @@ namespace Asteroids.ECS.Systems
         {
             base.OnCreate();
             //SpawnQueue = new NativeQueue<float3>(Allocator.Persistent);
-            Random = new Random(0x6E622EB2u);
+            Random = new Random(0x6E622EA2u);
             Configs.OnInitializedConfig += Configs_OnInitializedConfig;
         }
 

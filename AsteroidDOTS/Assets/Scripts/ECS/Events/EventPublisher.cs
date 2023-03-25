@@ -3,13 +3,13 @@ using Unity.Collections;
 
 namespace Asteroids.ECS.Events
 {
-
     public struct EventPublisher<T> : IDisposable where T : struct
     {
         private NativeArray<T>[] Streams;
         private int[] writeIndex;
         private int[] readIndex;
         private int index;
+
         public EventPublisher(int capacity)
         {
             Streams = new NativeArray<T>[capacity];
@@ -17,6 +17,7 @@ namespace Asteroids.ECS.Events
             readIndex = new int[capacity];
             index = 0;
         }
+
         public void Dispose()
         {
             for (int i = 0; i < index; i++)

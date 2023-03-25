@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
-
 
 namespace Asteroids.ECS.Components
 {
@@ -12,11 +8,8 @@ namespace Asteroids.ECS.Components
         public float timeBeforeTravel;
         public float timeAfterTravel;
         public float timeReloading;
-
         public float chargeTimer;
-
         public bool chargingPressed;
-
     }
 
     public enum HyperspaceTravelState

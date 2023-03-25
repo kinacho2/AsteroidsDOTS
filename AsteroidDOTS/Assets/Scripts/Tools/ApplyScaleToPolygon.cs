@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ApplyScaleToPolygon : MonoBehaviour
+namespace Asteroids.Tools
 {
-    PolygonCollider2D PolygonCollider;
-
-
-    private void Start()
+    public class ApplyScaleToPolygon : MonoBehaviour
     {
-        PolygonCollider = GetComponent<PolygonCollider2D>();
-        var points = PolygonCollider.points;
-        for(int i=0; i< points.Length; i++)
+        private void Start()
         {
-            points[i] = points[i] * transform.localScale;
+            var polygonCollider = GetComponent<PolygonCollider2D>();
+            var points = polygonCollider.points;
+            for (int i = 0; i < points.Length; i++)
+            {
+                points[i] = points[i] * transform.localScale;
+            }
+            polygonCollider.points = points;
         }
-        PolygonCollider.points = points;
     }
 }

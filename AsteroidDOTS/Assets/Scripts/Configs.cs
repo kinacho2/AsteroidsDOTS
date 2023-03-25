@@ -1,8 +1,6 @@
 using Asteroids.Audio;
 using Asteroids.Data;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
@@ -20,10 +18,8 @@ namespace Asteroids.Setup
 #if UNITY_EDITOR
         public static bool DebugMode { get; set; }
 #endif
-
         public static bool IsInitialized { get; private set; } = false;
         public static float2 CameraLimits { get; private set; }
-        //public static GameObject MisilePrefab { get; private set; }
         public static GameDataSO GameData { get; private set; }
         public static ShipDataSO PlayerData { get; private set; }
         public static ShipDataSO EnemyDB { get; private set; }
@@ -33,13 +29,13 @@ namespace Asteroids.Setup
         public static AudioDataSO AudioDB { get; private set; }
         public static SoundManager SoundManager { get; private set; }
 
-        public static void InitializeConfigs(Camera camera, 
+        public static void InitializeConfigs(Camera camera,
             SoundManager soundManager,
             GameDataSO gameData,
             ShipDataSO playerData,
             ShipDataSO enemyDB,
             AsteroidDataSO asteroidDB,
-            PowerDataSO powerDB, 
+            PowerDataSO powerDB,
             AudioDataSO audioDB)
         {
             GameData = gameData;
@@ -48,13 +44,13 @@ namespace Asteroids.Setup
             AsteroidDB = asteroidDB;
             PowerDB = powerDB;
             AudioDB = audioDB;
-
             SoundManager = soundManager;
             soundManager.Initialize(AudioDB);
 
             var worldPoint = camera.ViewportToWorldPoint(Vector2.one);
             CameraLimits = new float2(worldPoint.y * camera.pixelWidth / camera.pixelHeight, worldPoint.y);
             CameraLimits += new float2(0.5f, 0.5f);
+
             OnInitializedConfig?.Invoke();
             IsInitialized = true;
         }

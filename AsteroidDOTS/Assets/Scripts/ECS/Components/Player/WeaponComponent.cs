@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Asteroids.ECS.Components
 {
@@ -12,6 +9,5 @@ namespace Asteroids.ECS.Components
         public float misileLifeTime;
         public float range;
         public int misileAmount;
-
     }
 }

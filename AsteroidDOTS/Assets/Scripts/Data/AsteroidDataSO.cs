@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Asteroids.Data
 {
     [CreateAssetMenu(menuName = "Asteroids/Asteroid Data", fileName = "AsteroidData.asset", order = 0)]
-
     public class AsteroidDataSO : ScriptableObject
     {
         [field: SerializeField]
@@ -16,7 +13,6 @@ namespace Asteroids.Data
 
         [SerializeField]
         private AsteroidData[] Asteroids;
-
 
         public int DataCount => Asteroids.Length;
 
@@ -29,7 +25,7 @@ namespace Asteroids.Data
         public int ShapesCount()
         {
             int n = 0;
-            foreach(var data in Asteroids)
+            foreach (var data in Asteroids)
             {
                 n += data.shapes.Length;
             }
@@ -37,7 +33,7 @@ namespace Asteroids.Data
         }
     }
 
-    [System.Serializable] 
+    [System.Serializable]
     public struct AsteroidData
     {
         public AsteroidType type;
@@ -61,7 +57,4 @@ namespace Asteroids.Data
         Small = 2,
         Tiny = 3,
     }
-
-    
-
 }

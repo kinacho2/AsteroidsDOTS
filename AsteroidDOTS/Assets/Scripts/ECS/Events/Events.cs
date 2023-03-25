@@ -1,4 +1,3 @@
-
 using Asteroids.Data;
 using Unity.Mathematics;
 
@@ -56,5 +55,4 @@ namespace Asteroids.ECS.Events
     {
         public float3 position;
     }
-
 }

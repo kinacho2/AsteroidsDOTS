@@ -1,19 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 namespace Asteroids.Data
 {
     [CreateAssetMenu(menuName = "Asteroids/Power Data", fileName = "PowerData.asset", order = 0)]
-
     public class PowerDataSO : ScriptableObject
     {
         [field: SerializeField]
         public GameObject Prefab { get; protected set; }
-        [field: SerializeField] 
+
+        [field: SerializeField]
         public float CatchRadius { get; protected set; }
 
         [field: SerializeField]
         public Material PowerMaterial { get; protected set; }
+
         [field: SerializeField]
         public Material CircleMaterial { get; protected set; }
 

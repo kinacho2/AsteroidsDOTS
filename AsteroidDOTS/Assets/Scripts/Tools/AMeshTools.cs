@@ -1,8 +1,4 @@
-using Asteroids.Setup;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
-using Unity.U2D.Entities.Physics;
 using UnityEngine;
 
 namespace Asteroids.Tools
@@ -18,7 +14,7 @@ namespace Asteroids.Tools
                 return;
             }
             polygonCollider.points = points;
-            
+
             var meshFilter = Prefab.GetComponentInChildren<MeshFilter>();
             if (!meshFilter)
             {
@@ -28,6 +24,7 @@ namespace Asteroids.Tools
             meshFilter.sharedMesh = new Mesh();
             AMeshTools.CreateMeshWithMassCenter(polygonCollider.points, Prefab.transform.localScale, meshFilter.sharedMesh);
         }
+
         public static void InitializeMeshShape(GameObject Prefab)
         {
             var polygonCollider = Prefab.GetComponent<PolygonCollider2D>();
@@ -106,9 +103,6 @@ namespace Asteroids.Tools
 
             for (int i = 0; i < points.Length; i++)
             {
-                //int idx0 = i * 3;
-                //int idx1 = i * 3 + 1;
-                //int idx2 = i * 3 + 2;
                 indices[i * 3] = i;
                 indices[i * 3 + 1] = points.Length + i;
                 indices[i * 3 + 2] = (i + 1) % points.Length;
@@ -137,9 +131,6 @@ namespace Asteroids.Tools
             {
                 vertices[i] = points[i];
 
-                var point1 = points[i];
-                var point2 = points[(i + 1) % points.Length];
-
                 vertices[points.Length + i] = pointsCenter[i];
 
                 uvs[i] = Vector2.zero;
@@ -148,9 +139,6 @@ namespace Asteroids.Tools
 
             for (int i = 0; i < points.Length; i++)
             {
-                //int idx0 = i * 3;
-                //int idx1 = i * 3 + 1;
-                //int idx2 = i * 3 + 2;
                 indices[i * 3] = i;
                 indices[i * 3 + 1] = points.Length + i;
                 indices[i * 3 + 2] = (i + 1) % points.Length;
@@ -193,8 +181,5 @@ namespace Asteroids.Tools
             mesh.uv = uvs;
             mesh.triangles = indices;
         }
-
     }
-
-    
 }

@@ -1,12 +1,9 @@
 using Asteroids.Data;
 using Asteroids.Setup;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using AudioType = Asteroids.Data.AudioType;
 
-namespace Asteroids.Audio 
+namespace Asteroids.Audio
 {
     public class SoundManager : MonoBehaviour
     {
@@ -14,12 +11,12 @@ namespace Asteroids.Audio
         private int _index;
         private AudioDataSO AudioDB;
         private AudioSource[] Loopeables;
-        // Start is called before the first frame update
+
         public void Initialize(AudioDataSO audioDB)
         {
             Pool = new AudioSource[Configs.AUDIO_PLAY_COUNT];
-            
-            for (int i = 0; i< Pool.Length; i++)
+
+            for (int i = 0; i < Pool.Length; i++)
             {
                 Pool[i] = InstantiateAudioSource(i);
             }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -58,5 +56,4 @@ namespace Asteroids.Tools
             return new Vector3(vector.x, vector.y, 0);
         }
     }
-
 }
