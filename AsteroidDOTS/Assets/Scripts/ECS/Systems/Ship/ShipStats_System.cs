@@ -30,7 +30,6 @@ namespace Asteroids.ECS.Systems
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
-
             Entities
             .WithoutBurst()
             .ForEach((Entity ship, int entityInQueryIndex,
@@ -54,8 +53,8 @@ namespace Asteroids.ECS.Systems
                         if (shield.enabled)
                         {
                             shield.enabled = false;
-                            
-                            if(!shield.firstDisabled)
+
+                            if (!shield.firstDisabled)
                                 Events_System.OnPlayerLoseShield.PostEvent(new Events.PlayerLoseShield());
                             shield.firstDisabled = false;
 
@@ -74,14 +73,14 @@ namespace Asteroids.ECS.Systems
                 //health
                 if (health.health <= 0)
                 {
-                    if(stats.entityType == Data.EntityType.Enemy)
+                    if (stats.entityType == Data.EntityType.Enemy)
                         cmdBuffer.DestroyEntity(ship);
                     Events_System.OnEntityDestroyed.PostEvent(new Events.EntityDestroyed() { position = tr.Value, entityType = stats.entityType, size = 1 });
                     return;
                 }
 
                 //invTime
-                if(stats.invTime > 0)
+                if (stats.invTime > 0)
                 {
                     int value = (int)(stats.invTime * 10);
                     if (value % 2 == 0)
@@ -95,8 +94,6 @@ namespace Asteroids.ECS.Systems
                 {
                     cmdBuffer.RemoveComponent<Disabled>(rendererRef.Renderer);
                 }
-
-
             })
             .Run();
 
@@ -117,8 +114,6 @@ namespace Asteroids.ECS.Systems
                 _lastPlayerStats.shieldHealth = _currentPlayerStats.shieldHealth;
                 OnShieldUpdate?.Invoke(_currentPlayerStats.shieldHealth, _playerData.shieldHealth);
             }
-
         }
-
     }
 }

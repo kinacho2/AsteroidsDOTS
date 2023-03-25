@@ -1,23 +1,23 @@
 using Asteroids.ECS.Components;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.U2D.Entities.Physics;
-//using UnityEngine;
 
-namespace Asteroids.ECS.Systems {
+namespace Asteroids.ECS.Systems
+{
     public class MisileCollision_System : SystemBase
     {
         private PhysicsWorldSystem physicsWorldSystem;
+
         protected override void OnCreate()
         {
             base.OnCreate();
             physicsWorldSystem = World.GetExistingSystem<PhysicsWorldSystem>();
         }
+
         protected override void OnUpdate()
         {
             var physicsWorld = physicsWorldSystem.PhysicsWorld;
@@ -48,7 +48,7 @@ namespace Asteroids.ECS.Systems {
                         {
                             var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
                             var asteroidTr = EntityManager.GetComponentData<Translation>(hitEntity);
-                            
+
                             if (HasComponent<AsteroidComponent>(hitEntity))
                             {
                                 var asteroid = EntityManager.GetComponentData<AsteroidComponent>(hitEntity);
@@ -75,9 +75,8 @@ namespace Asteroids.ECS.Systems {
                             cmdBuffer.SetComponent(hitEntity, health);
 
                             Events_System.OnMisileHit.PostEvent(new Events.MisileHit { position = tr.Value });
-    
                         }
-                }
+                    }
                 })
                 .Run();
 

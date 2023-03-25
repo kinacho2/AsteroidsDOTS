@@ -31,7 +31,6 @@ namespace Asteroids.ECS.Systems
 
             AMeshTools.CreateCircleMesh(prefab.GetComponent<MeshFilter>(), 0.3f, 20);
 
-
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
             entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
@@ -47,17 +46,16 @@ namespace Asteroids.ECS.Systems
             {
                 var explosion = new ExplosionComponent { radius = 0.1f, expansionSpeed = 4, lifeTime = 0.7f };
                 InstantiateExplosion(entityPrefab, destroy.position, ref cmdBuffer, explosion);
-                
+
             }
             if (Events_System.OnAsteroidDestroyed.TryGetEvent(_asteroidConsumer, out var asteroid))
             {
                 if (asteroid.type < AsteroidType.Tiny)
                 {
-                    var explosion = new ExplosionComponent { radius = 0.1f, expansionSpeed = 4, lifeTime = 0.6f*asteroid.size };
+                    var explosion = new ExplosionComponent { radius = 0.1f, expansionSpeed = 4, lifeTime = 0.6f * asteroid.size };
                     InstantiateExplosion(entityPrefab, asteroid.position, ref cmdBuffer, explosion);
                 }
             }
-
 
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
@@ -70,6 +68,5 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.AddComponent(entity, new Translation { Value = position });
             cmdBuffer.AddComponent(entity, new Scale { Value = explosion.radius });
         }
-
     }
 }

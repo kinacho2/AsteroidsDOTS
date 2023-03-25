@@ -1,17 +1,10 @@
-using Asteroids.Setup;
+using Asteroids.Audio;
 using Asteroids.Data;
-using System.Collections;
-using System.Collections.Generic;
+using Asteroids.ECS.Events;
+using Asteroids.Setup;
 using Unity.Collections;
 using Unity.Entities;
-using Asteroids.ECS.Events;
-//using Unity.Tiny.Audio;
-//using AudioSource = Unity.Tiny.Audio.AudioSource;
-//using AudioListener = Unity.Tiny.Audio.AudioListener;
-
 using AudioType = Asteroids.Data.AudioType;
-using Asteroids.Audio;
-using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
@@ -39,16 +32,14 @@ namespace Asteroids.ECS.Systems
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
             settings.DebugConversionName = "AudioSource";
 
-
             _consumers[((int)AudioType.PlayerStartMove)] = Events_System.OnPlayerStartMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             _consumers[((int)AudioType.PlayerStopMove)] = Events_System.OnPlayerStopMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
 
             _consumers[((int)AudioType.PlayerShoot)] = Events_System.OnEntityShoot.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             _consumers[((int)AudioType.PlayerCollision)] = Events_System.OnPlayerCollision.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            //_consumers[((int)AudioType.PlayerDamage)] = Events_System.OnPlayerDamage.Subscribe(Configs.EVENTS_QUEUE_COUNT);
             _consumers[((int)AudioType.PlayerDestroyed)] = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
 
-            _consumers[((int)AudioType.AsteroidCollisionBig)] = 
+            _consumers[((int)AudioType.AsteroidCollisionBig)] =
             _consumers[((int)AudioType.AsteroidCollisionMedium)] =
             _consumers[((int)AudioType.AsteroidCollisionSmall)] = Events_System.OnAsteroidsCollision.Subscribe(2);
 
@@ -100,7 +91,7 @@ namespace Asteroids.ECS.Systems
 
             if (GetEvent(_consumers[(int)AudioType.AsteroidDestroyedBig], ref Events_System.OnAsteroidDestroyed, out var asteroidDestroyed))
             {
-                
+
                 switch (asteroidDestroyed.type)
                 {
                     case AsteroidType.Bigger:

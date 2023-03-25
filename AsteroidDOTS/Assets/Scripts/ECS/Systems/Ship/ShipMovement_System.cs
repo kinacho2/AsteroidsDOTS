@@ -10,18 +10,15 @@ namespace Asteroids.ECS.Systems
 {
     public class ShipMovement_System : SystemBase
     {
-
         protected override void OnUpdate()
         {
 
             float deltaTime = Time.DeltaTime;
             Entities
-                //.WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex,
                     ref ShipStatsComponent stats,
-                    ref Translation translation,
-                    ref Rotation rotation,
                     ref PhysicsVelocity physics,
+                    in Rotation rotation,
                     in ShipDataComponent data,
                     in ShipInputComponent input) =>
                 {
@@ -43,7 +40,6 @@ namespace Asteroids.ECS.Systems
                         velocity = velocity / len * math.clamp(len, 0, data.maxSpeed);
                         physics.Linear = velocity;
                     }
-
                 })
                 .Run();
         }

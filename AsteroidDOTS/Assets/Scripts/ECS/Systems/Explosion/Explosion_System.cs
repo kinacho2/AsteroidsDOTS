@@ -14,7 +14,8 @@ namespace Asteroids.ECS.Systems
             float deltaTime = Time.DeltaTime;
             
             var parallelWriter = cmdBuffer.AsParallelWriter();
-            Entities.WithAll<ExplosionComponent>()
+            Entities
+                .WithAll<ExplosionComponent>()
                 .ForEach((Entity entity, int entityInQueryIndex,
                     ref ExplosionComponent explosion,
                     ref Scale scale) =>
@@ -26,7 +27,6 @@ namespace Asteroids.ECS.Systems
 
                     if (explosion.lifeTime <= 0)
                         parallelWriter.DestroyEntity(entityInQueryIndex, entity);
-                    //EntityManager.DestroyEntity(entity);
 
                 }).ScheduleParallel();
 

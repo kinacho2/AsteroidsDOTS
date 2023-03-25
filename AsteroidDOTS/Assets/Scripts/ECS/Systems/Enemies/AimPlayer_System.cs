@@ -1,11 +1,8 @@
 using Asteroids.ECS.Components;
-using Asteroids.Tools;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Rendering;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {

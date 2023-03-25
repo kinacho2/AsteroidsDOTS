@@ -47,11 +47,12 @@ namespace Asteroids.ECS.Systems
                         var hit = allHits[0];
                         if (physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity.Index == ship.Index)
                         {
-                            if (allHits.Length > 1) 
+                            if (allHits.Length > 1)
                                 hit = allHits[1];
                             else skip = true;
                         }
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
+
                         //here avoid hascomponent call using skip bool if there is no other collider
                         if (!skip && HasComponent<PhysicsMass>(hitEntity))
                         {
@@ -119,9 +120,8 @@ namespace Asteroids.ECS.Systems
 
                                 }
                                 Events_System.OnPlayerCollision.PostEvent(new Events.PlayerCollision { position = tr.Value, shield = stats.shieldHealth > 0 });
-
                             }
-                            
+
                             if (HasComponent<ShipDataComponent>(hitEntity))
                             {
                                 var otherStats = EntityManager.GetComponentData<ShipStatsComponent>(hitEntity);
@@ -164,9 +164,8 @@ namespace Asteroids.ECS.Systems
 
                 cmdBuffer.SetComponent(entity, stats);
             }
-            
         }
     }
 
-    
+
 }

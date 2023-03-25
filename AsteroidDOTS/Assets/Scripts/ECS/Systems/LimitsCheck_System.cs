@@ -8,17 +8,9 @@ namespace Asteroids.ECS.Systems
 {
     public class LimitsCheck_System : SystemBase
     {
-        private static float2 CameraLimits;
         protected override void OnCreate()
         {
             base.OnCreate();
-            Configs.OnInitializedConfig += Configs_OnInitializedConfig;
-        }
-
-        private void Configs_OnInitializedConfig()
-        {
-            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
-            CameraLimits = Configs.CameraLimits;
         }
 
         protected override void OnUpdate()
@@ -26,7 +18,6 @@ namespace Asteroids.ECS.Systems
             Entities.WithAll<LimitCheckComponent>()
                    .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, in LimitCheckComponent check) =>
                    {
-
                        //check camera limits
                        ref var tr = ref translation.Value;
                        var cameraLimits = check.cameraLimits;

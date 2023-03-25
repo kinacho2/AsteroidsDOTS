@@ -25,7 +25,6 @@ namespace Asteroids.ECS.Systems
             if (gameState.state == GameState.Finished)
             {
                 return;
-
             }
 
             EntityQuery query = GetEntityQuery(typeof(PlayerComponent), ComponentType.ReadOnly<Translation>());
@@ -33,36 +32,37 @@ namespace Asteroids.ECS.Systems
 
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
-            Entities.WithAll<ShipInputComponent, ShipStatsComponent, EnemyComponent>()
-                    .WithoutBurst()
-                    .ForEach((Entity entity, int entityInQueryIndex,
-                        ref ShipInputComponent input,
-                        ref ShipStatsComponent stats,
-                        ref EnemyComponent enemyAI,
-                        ref Translation tr,
-                        ref Rotation rot,
-                        in ShipDataComponent data
-                        ) =>
-                    {
-                        ref var dir = ref input.direction;
+            Entities
+                .WithAll<ShipInputComponent, ShipStatsComponent, EnemyComponent>()
+                .WithoutBurst()
+                .ForEach((Entity entity, int entityInQueryIndex,
+                    ref ShipInputComponent input,
+                    ref ShipStatsComponent stats,
+                    ref EnemyComponent enemyAI,
+                    ref Translation tr,
+                    ref Rotation rot,
+                    in ShipDataComponent data
+                    ) =>
+                {
+                    ref var dir = ref input.direction;
 
-                        switch (enemyAI.AIState)
-                        {
-                            case EnemyAIState.Idle:
-                                EnemyIdleState(ref enemyAI, ref input, tr, rot, data, playerTr);
-                                break;
-                            case EnemyAIState.Aggro:
-                                EnemyAggroState(ref enemyAI, ref input, ref stats, tr, rot, data, playerTr);
-                                break;
-                            case EnemyAIState.Attacking:
-                                EnemyAttackingState(ref enemyAI, ref stats, ref input, tr, data, playerTr);
-                                break;
-                            case EnemyAIState.Evading:
-                                EnemyEvadingState(ref enemyAI, ref input);
-                                break;
-                        }
-                    })
-                    .Run();
+                    switch (enemyAI.AIState)
+                    {
+                        case EnemyAIState.Idle:
+                            EnemyIdleState(ref enemyAI, ref input, tr, rot, data, playerTr);
+                            break;
+                        case EnemyAIState.Aggro:
+                            EnemyAggroState(ref enemyAI, ref input, ref stats, tr, rot, data, playerTr);
+                            break;
+                        case EnemyAIState.Attacking:
+                            EnemyAttackingState(ref enemyAI, ref stats, ref input, tr, data, playerTr);
+                            break;
+                        case EnemyAIState.Evading:
+                            EnemyEvadingState(ref enemyAI, ref input);
+                            break;
+                    }
+                })
+                .Run();
 
 #if UNITY_EDITOR
             if (Configs.DebugMode)
@@ -113,7 +113,6 @@ namespace Asteroids.ECS.Systems
             dir.y = 1;
             dir.x = 0;
         }
-
 
         private void EnemyEvadingState(ref EnemyComponent enemyAI, ref ShipInputComponent input)
         {
@@ -167,7 +166,6 @@ namespace Asteroids.ECS.Systems
             stats.shootTimer = data.shootCooldown;
             enemyAI.AIState = EnemyAIState.Aggro;
         }
-
 
         private bool CheckForEvade(ref EnemyComponent enemyAI, ref ShipInputComponent input, in Translation tr, in Rotation rot, in ShipDataComponent data)
         {

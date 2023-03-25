@@ -9,8 +9,8 @@ using Unity.Transforms;
 using Unity.U2D.Entities.Physics;
 using UnityEngine;
 
-namespace Asteroids.ECS.Systems 
-{ 
+namespace Asteroids.ECS.Systems
+{
     public class PlayerMisileSpawn_System : SystemBase
     {
         private Entity misileEntityPrefab;
@@ -49,17 +49,18 @@ namespace Asteroids.ECS.Systems
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
             var deltaTime = Time.DeltaTime;
-                Entities.WithAll<PlayerComponent>()
-                    .WithoutBurst()
-                    .ForEach((Entity ship, int entityInQueryIndex,
-                        ref ShipInputComponent input,
-                        ref ShipStatsComponent stats,
-                        in Translation translation,
-                        in Rotation rotation,
-                        in PhysicsVelocity physics,
-                        in ShipDataComponent data
-                        ) =>
-                    {
+            Entities
+                .WithAll<PlayerComponent>()
+                .WithoutBurst()
+                .ForEach((Entity ship, int entityInQueryIndex,
+                    ref ShipInputComponent input,
+                    ref ShipStatsComponent stats,
+                    in Translation translation,
+                    in Rotation rotation,
+                    in PhysicsVelocity physics,
+                    in ShipDataComponent data
+                    ) =>
+                {
                     if (stats.shootTimer <= 0)
                     {
                         if (stats.stunnedTimer <= 0 && input.shoot)
@@ -92,9 +93,8 @@ namespace Asteroids.ECS.Systems
                     {
                         stats.shootTimer -= deltaTime;
                     }
-
                 })
-                .Run();
+            .Run();
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
         }

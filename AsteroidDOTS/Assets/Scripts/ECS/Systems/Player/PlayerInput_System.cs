@@ -1,5 +1,4 @@
 using Asteroids.ECS.Components;
-using Asteroids.Setup;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -18,34 +17,34 @@ namespace Asteroids.ECS.Systems
             bool shoot = Input.GetKey(KeyCode.Space);
             bool charging = Input.GetKey(KeyCode.E);
 
-            Entities.WithAll<ShipInputComponent, ShipStatsComponent, PlayerComponent>()
-                    .WithoutBurst()
-                    .ForEach((Entity entity, int entityInQueryIndex, 
-                        ref ShipInputComponent input, 
-                        ref ShipStatsComponent stats,
-                        ref HyperspaceTravelComponent travel
-                        ) =>
+            //TODO(Need to change this code with SingletonEntity)
+            Entities
+                .WithAll<ShipInputComponent, ShipStatsComponent, PlayerComponent>()
+                .WithoutBurst()
+                .ForEach((Entity entity, int entityInQueryIndex,
+                    ref ShipInputComponent input,
+                    ref ShipStatsComponent stats,
+                    ref HyperspaceTravelComponent travel
+                    ) =>
+                {
+                    ref var dir = ref input.direction;
+
+                    if (dir.y != tr)
                     {
-                        ref var dir = ref input.direction;
+                        if (math.abs(tr) > math.abs(dir.y))
+                            Events_System.OnPlayerStartMove.PostEvent(new Events.PlayerMove());
+                        else if (math.abs(tr) < math.abs(dir.y))
+                            Events_System.OnPlayerStopMove.PostEvent(new Events.PlayerMove());
 
-                        if (dir.y != tr)
-                        {
-                            if (math.abs(tr) > math.abs(dir.y))
-                                Events_System.OnPlayerStartMove.PostEvent(new Events.PlayerMove());
-                            else if(math.abs(tr) < math.abs(dir.y))
-                                Events_System.OnPlayerStopMove.PostEvent(new Events.PlayerMove());
+                    }
 
-                        }
+                    dir.y = tr;
+                    dir.x = -rot;
+                    input.shoot = shoot;
 
-                        dir.y = tr;
-                        dir.x = -rot;
-                        input.shoot = shoot;
-
-                        travel.chargingPressed = charging;
-                            
-                    })
-                    .Run();
-
+                    travel.chargingPressed = charging;
+                })
+                .Run();
         }
     }
 }

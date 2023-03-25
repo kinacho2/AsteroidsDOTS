@@ -67,7 +67,6 @@ namespace Asteroids.ECS.Systems
             _enemyEventConsumer = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
         }
 
-
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
@@ -101,10 +100,8 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.AddComponent(entity, new Translation { Value = position });
         }
 
-
         protected override void OnDestroy()
         {
-            //SpawnQueue.Dispose();
             base.OnDestroy();
         }
     }

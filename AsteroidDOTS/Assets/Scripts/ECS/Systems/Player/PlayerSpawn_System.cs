@@ -1,10 +1,7 @@
 using Asteroids.Data;
 using Asteroids.ECS.Components;
 using Asteroids.Setup;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
@@ -28,7 +25,7 @@ namespace Asteroids.ECS.Systems
 
         protected override void OnUpdate()
         {
-            
+
         }
 
         private void InstantiatePlayerEntity(EntityManager entityManager, Entity entityPrefab, ShipData data, HyperspaceTravelData travelData)

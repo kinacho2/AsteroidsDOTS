@@ -1,5 +1,6 @@
 using Asteroids.Data;
 using Asteroids.ECS.Components;
+using Asteroids.ECS.Events;
 using Asteroids.ECS.Systems;
 using Asteroids.Setup;
 using Asteroids.Tools;
@@ -8,7 +9,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using Asteroids.ECS.Events;
 using Random = Unity.Mathematics.Random;
 public class BombSpawn_System : SystemBase
 {
@@ -42,9 +42,9 @@ public class BombSpawn_System : SystemBase
     protected override void OnUpdate()
     {
         var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-        if (Events_System.OnPickPower.TryGetEvent(_eventConsumer, out var power))        
+        if (Events_System.OnPickPower.TryGetEvent(_eventConsumer, out var power))
         {
-            if(power.type == PowerType.Bomb)
+            if (power.type == PowerType.Bomb)
                 InstantiateBomb(entityPrefab, power.position, power.player, ref cmdBuffer);
         }
 

@@ -1,28 +1,20 @@
 using Asteroids.Data;
-using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Entities;
-using UnityEngine;
-using System.Linq;
 using Asteroids.ECS.Components;
 using Asteroids.Setup;
+using Asteroids.Tools;
+using System.Linq;
+using Unity.Entities;
+using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
     public abstract class ShipSpawn_System : SystemBase
     {
-        //protected Entity _shipPrefab;
-        //protected ShipData[] ShipDB;
-
         protected Entity CreateShipPrefab(GameObject prefab, ShipData data)
         {
-
             InitializeLineShape(prefab, data);
-
             var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
             return GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
-
         }
 
         protected void InitializeLineShape(GameObject prefab, ShipData data)
@@ -41,7 +33,6 @@ namespace Asteroids.ECS.Systems
                 AMeshTools.CreateCircleMesh(shieldMeshFilter, 0.5f, 20);
         }
 
-
         protected Entity InstantiateShipEntity(EntityManager entityManager, Entity shipPrefab, ShipData data, WeaponData weapon, EntityType type)
         {
             var entity = entityManager.Instantiate(shipPrefab);
@@ -57,7 +48,6 @@ namespace Asteroids.ECS.Systems
             {
                 health = data.health
             });
-            
             entityManager.AddComponentData(entity, new ShipDataComponent
             {
                 maxHealth = data.health,
@@ -70,7 +60,6 @@ namespace Asteroids.ECS.Systems
                 invTime = data.invTime,
                 shootCooldown = data.shootCooldown,
             });
-
             entityManager.AddComponentData(entity, new WeaponComponent
             {
                 misileAmount = weapon.misileAmount,
@@ -82,7 +71,5 @@ namespace Asteroids.ECS.Systems
 
             return entity;
         }
-
-
     }
 }

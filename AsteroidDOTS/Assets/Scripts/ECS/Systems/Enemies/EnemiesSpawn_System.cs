@@ -2,8 +2,6 @@ using Asteroids.Data;
 using Asteroids.ECS.Components;
 using Asteroids.Setup;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -30,7 +28,6 @@ namespace Asteroids.ECS.Systems
         {
             base.OnCreate();
             Random = new Random(0x6E0219B6u);
-
             Configs.OnInitializedConfig += Configs_OnInitializedConfig;
         }
 
@@ -58,7 +55,7 @@ namespace Asteroids.ECS.Systems
             _debugColors[3] = Color.magenta;
 #endif
 
-            for (int i=0; i < spawnData.initialEntityCount; i++)
+            for (int i = 0; i < spawnData.initialEntityCount; i++)
             {
                 SpawnRandomEnemy(EntityManager);
                 _enemyCounter--;
@@ -72,7 +69,7 @@ namespace Asteroids.ECS.Systems
             {
                 var query = GetEntityQuery(typeof(EnemyComponent));
                 var array = query.ToEntityArray(Allocator.Temp);
-                if(array.Length < 3)
+                if (array.Length < 3)
                 {
                     SpawnRandomEnemy(EntityManager);
                     _enemyCounter--;
@@ -94,7 +91,11 @@ namespace Asteroids.ECS.Systems
         {
             var weapon = Configs.EnemyDB.WeaponsDB.Get(index);
             var entity = InstantiateShipEntity(entityManager, entityPrefab, data, weapon, EntityType.Enemy);
-            entityManager.AddComponentData(entity, new EnemyComponent { AIState = EnemyAIState.Idle, stateTimer = 0, viewDistance = 5,
+            entityManager.AddComponentData(entity, new EnemyComponent
+            {
+                AIState = EnemyAIState.Idle,
+                stateTimer = 0,
+                viewDistance = 5,
 #if UNITY_EDITOR
                 debugColor = _debugColors[index]
 #endif
@@ -105,7 +106,7 @@ namespace Asteroids.ECS.Systems
             entityManager.SetComponentData(entity, new Translation { Value = pos.ToFloat3() });
             var rot = quaternion.RotateZ(math.radians(Random.NextFloat(0, math.PI * 2)));
             entityManager.SetComponentData(entity, new Rotation { Value = rot });
-            
+
             var renderRef = entityManager.GetComponentData<ShipRendererComponent>(entity);
             entityManager.RemoveComponent<Scale>(renderRef.ShieldEntity);
         }

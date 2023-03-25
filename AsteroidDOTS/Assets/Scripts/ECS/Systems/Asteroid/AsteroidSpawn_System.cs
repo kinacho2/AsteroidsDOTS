@@ -12,18 +12,14 @@ using Random = Unity.Mathematics.Random;
 
 namespace Asteroids.ECS.Systems
 {
-
     public class AsteroidSpawn_System : SystemBase
     {
         protected const float PI2 = math.PI * 2;
         protected Entity[] entityPrefabs;
         protected AsteroidData[] data;
-        //protected EntityManager entityManager;
-
         Random Random;
         protected float2 CameraLimits;
         private float _distance;
-
         private float _spawnTime = 30;
         private float _spawnTimer;
         private int _asteroidCounter = 8;
@@ -61,7 +57,6 @@ namespace Asteroids.ECS.Systems
                 for (int j = 0; j < asteroidData.shapes.Length; j++)
                 {
                     SetParameters(Configs.AsteroidDB.Prefab, j, ref asteroidData);
-                    //var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
                     entityPrefabs[k] = GameObjectConversionUtility.ConvertGameObjectHierarchy(Configs.AsteroidDB.Prefab, settings);
                     k++;
                 }
@@ -74,13 +69,12 @@ namespace Asteroids.ECS.Systems
         {
             AMeshTools.InitializePolygonShape(Configs.AsteroidDB.Prefab, asteroidData.shapes[shapeIndex].points);
             prefab.GetComponent<Rigidbody2D>().mass = asteroidData.mass;
-
         }
 
         protected override void OnUpdate()
         {
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
-            
+
             Entities
                 .WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex,
@@ -97,8 +91,8 @@ namespace Asteroids.ECS.Systems
                         int type = ((int)asteroid.type);
                         if (asteroid.type < AsteroidType.Tiny)
                         {
-                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f/3f), asteroid, ref cmdBuffer);
-                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f/3f), asteroid, ref cmdBuffer);
+                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2f / 3f), asteroid, ref cmdBuffer);
+                            InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 4f / 3f), asteroid, ref cmdBuffer);
                             InstantiateChildAsteroid(type + 1, math.length(vel.Linear), tr.Value, AGeometry.RotateZ(asteroid.explodeDirection, math.PI * 2), asteroid, ref cmdBuffer);
                         }
                     }
@@ -119,7 +113,7 @@ namespace Asteroids.ECS.Systems
                 var query = GetEntityQuery(typeof(AsteroidComponent));
                 var array = query.ToComponentDataArray<AsteroidComponent>(Allocator.Temp);
                 float size = 0;
-                foreach(var asteroid in array)
+                foreach (var asteroid in array)
                 {
                     size += asteroid.size;
                 }
@@ -236,7 +230,5 @@ namespace Asteroids.ECS.Systems
         {
             return position + AGeometry.RotateZ(direction, math.PI * 0.5f) * dist;
         }
-
-
     }
 }

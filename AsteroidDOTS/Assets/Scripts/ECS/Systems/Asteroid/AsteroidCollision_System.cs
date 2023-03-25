@@ -19,11 +19,10 @@ namespace Asteroids.ECS.Systems
         }
         protected override void OnUpdate()
         {
-            //if (true) return;
             var physicsWorld = physicsWorldSystem.PhysicsWorld;
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
             var deltaTime = Time.DeltaTime;
-            
+
             Entities
                 .WithoutBurst()
                 .ForEach((Entity asteroidEntity, int entityInQueryIndex,
@@ -80,13 +79,11 @@ namespace Asteroids.ECS.Systems
 
                                 var dir = math.normalize(otherTranslation.Value - tr.Value);
 
-
                                 var v1len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
                                 var v2len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
                                 var linear1 = math.normalize(v1 - dir.ToFloat2() * len1 * 0.5f) * math.length(v1);
                                 var linear2 = math.normalize(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
 
-                                
                                 var w1 = velocity.Angular;
                                 var w2 = otherVelocity.Angular;
 
@@ -126,7 +123,7 @@ namespace Asteroids.ECS.Systems
                                 });
 
                                 //tiny asteroids destruction when hit a medium or big asteroid
-                                
+
                                 var thisAsteroid = asteroid;
                                 if (thisAsteroid.type == AsteroidType.Tiny && otherAsteroid.type < AsteroidType.Tiny - 2)
                                 {
@@ -148,8 +145,8 @@ namespace Asteroids.ECS.Systems
                                 Events_System.OnAsteroidsCollision.PostEvent(new Events.AsteroidsCollision
                                 {
                                     type = (AsteroidType)math.max((int)thisAsteroid.type, (int)otherAsteroid.type),
-                                    position = thisAsteroid.type > otherAsteroid.type? tr.Value : otherTranslation.Value
-                                    
+                                    position = thisAsteroid.type > otherAsteroid.type ? tr.Value : otherTranslation.Value
+
                                 });
                             }
                         }
@@ -158,7 +155,7 @@ namespace Asteroids.ECS.Systems
                     allHits.Dispose();
                 })
                 .Run();
-            
+
             cmdBuffer.Playback(EntityManager);
             cmdBuffer.Dispose();
         }

@@ -2,17 +2,14 @@ using Asteroids.ECS.Components;
 using Asteroids.ECS.Events;
 using Asteroids.Setup;
 using Asteroids.Tools;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Transforms;
-using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
-namespace Asteroids.ECS.Systems {
+namespace Asteroids.ECS.Systems
+{
     public class HyperspaceTravel_System : SystemBase
     {
-
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -20,7 +17,8 @@ namespace Asteroids.ECS.Systems {
         protected override void OnUpdate()
         {
             var deltaTime = Time.DeltaTime;
-            Entities.WithAll<HyperspaceTravelComponent>()
+            Entities
+                .WithAll<HyperspaceTravelComponent>()
                 .WithoutBurst()
                 .ForEach((Entity ship, int entityInQueryIndex,
                     ref Translation tr,
@@ -72,8 +70,7 @@ namespace Asteroids.ECS.Systems {
                             }
                             break;
                     }
-                }
-                ).Run();
+                }).Run();
         }
     }
 }

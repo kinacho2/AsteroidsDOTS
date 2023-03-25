@@ -9,15 +9,14 @@ using Unity.Transforms;
 using Unity.U2D.Entities.Physics;
 using UnityEngine;
 
-namespace Asteroids.ECS.Systems 
-{ 
-    public class EnemyMisileSpawn_System: SystemBase
+namespace Asteroids.ECS.Systems
+{
+    public class EnemyMisileSpawn_System : SystemBase
     {
         private Entity misileEntityPrefab;
         private World defaultWorld;
-
         private NativeArray<float> MisileAngles;
-        //GameObject MisilePrefab;
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -45,7 +44,7 @@ namespace Asteroids.ECS.Systems
         }
 
         protected override void OnUpdate()
-        {            
+        {
             //check Game state
             var gameState = GetEntityQuery(typeof(GameStateComponent)).GetSingleton<GameStateComponent>();
             if (gameState.state == GameState.Finished)
@@ -56,7 +55,8 @@ namespace Asteroids.ECS.Systems
 
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
             var deltaTime = Time.DeltaTime;
-            Entities.WithAll<EnemyComponent>()
+            Entities
+                .WithAll<EnemyComponent>()
                 .WithoutBurst()
                 .ForEach((Entity ship, int entityInQueryIndex,
                     ref ShipInputComponent input,
@@ -78,20 +78,18 @@ namespace Asteroids.ECS.Systems
 
                             //var angle = math.radians(MisileAngles[i]);
                             var fordward = math.normalize((playerTr.Value - tr.Value).ToFloat2());
-                            
-                            var rot = math.atan2(fordward.y,fordward.x);
+
+                            var rot = math.atan2(fordward.y, fordward.x);
 
                             var velocity = fordward * weapon.misileSpeed;
 
                             InstantiateMisile(tr.Value, quaternion.RotateZ(rot), math.length(velocity), weapon, ref cmdBuffer);
-                            
+
                             Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.type, position = tr.Value });
                         }
                     }
                     else
-                    {
                         stats.shootTimer -= deltaTime;
-                    }
 
                 })
                 .Run();

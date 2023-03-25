@@ -30,7 +30,6 @@ public class BombCollision_System : SystemBase
                 ref Scale scale,
                 in PhysicsColliderBlob collider) =>
             {
-
                 bomb.radius += bomb.expansionSpeed * deltaTime;
                 scale.Value = bomb.radius;
                 bomb.lifeTime -= deltaTime;
@@ -52,15 +51,12 @@ public class BombCollision_System : SystemBase
                     },
                     ref allHits))
                 {
-                    //Debug.Log("collision");
                     foreach (var hit in allHits)
                     {
                         var hitEntity = physicsWorld.AllBodies[hit.PhysicsBodyIndex].Entity;
                         if (hitEntity != bomb.owner && HasComponent<HealthComponent>(hitEntity))
                         {
-
                             var health = EntityManager.GetComponentData<HealthComponent>(hitEntity);
-                            
 
                             if (HasComponent<AsteroidComponent>(hitEntity))
                             {
@@ -74,19 +70,17 @@ public class BombCollision_System : SystemBase
                                     cmdBuffer.SetComponent(hitEntity, asteroid);
                                 }
                             }
-                            else 
+                            else
                                 health.health = 0;//is an enemy
 
                             cmdBuffer.SetComponent(hitEntity, health);
                         }
                     }
                 }
-
                 allHits.Dispose();
 
                 if (bomb.lifeTime <= 0)
                     cmdBuffer.DestroyEntity(entity);
-
             }).Run();
 
         cmdBuffer.Playback(EntityManager);

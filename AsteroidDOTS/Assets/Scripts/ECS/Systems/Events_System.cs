@@ -19,10 +19,10 @@ namespace Asteroids.ECS.Systems
 
         private static EventPublisher<EntityDestroyed> _onPlayerDestroyed;
         public static ref EventPublisher<EntityDestroyed> OnEntityDestroyed => ref _onPlayerDestroyed;
-        
+
         private static EventPublisher<PlayerLoseShield> _onPlayerLoseShield;
         public static ref EventPublisher<PlayerLoseShield> OnPlayerLoseShield => ref _onPlayerLoseShield;
-        
+
         private static EventPublisher<AsteroidsCollision> _onAsteroidsCollision;
         public static ref EventPublisher<AsteroidsCollision> OnAsteroidsCollision => ref _onAsteroidsCollision;
 
@@ -56,16 +56,14 @@ namespace Asteroids.ECS.Systems
             _onAsteroidDestroyed = new EventPublisher<AsteroidDestroyed>(20);
             _onPickPower = new EventPublisher<PickPower>(20);
             _onMisileHit = new EventPublisher<MisileHit>(20);
-
             _onHyperspaceTravelStart = new EventPublisher<PlayerMove>(20);
             _onHyperspaceTravelStop = new EventPublisher<PlayerMove>(20);
             _onHyperspaceTravel = new EventPublisher<PlayerMove>(20);
-            
         }
 
         protected override void OnUpdate()
         {
-            
+
         }
 
         protected override void OnDestroy()
@@ -84,7 +82,6 @@ namespace Asteroids.ECS.Systems
             _onHyperspaceTravelStop.Dispose();
             _onHyperspaceTravel.Dispose();
             base.OnDestroy();
-
         }
     }
 }
