@@ -22,9 +22,10 @@ namespace Asteroids.ECS.Systems
 
             var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
+            var parallelWriter = cmdBuffer.AsParallelWriter();
+            var deltaTime = Time.DeltaTime;
             Entities
                 .WithAll<ShipInputComponent, ShipStatsComponent, EnemyComponent>()
-                .WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex,
                     ref AimComponent aim,
                     in EnemyComponent enemyAI,
@@ -33,18 +34,6 @@ namespace Asteroids.ECS.Systems
                     in ShipRendererComponent renderRef
                     ) =>
                 {
-                    var dir = (playerTr.Value - tr.Value);
-                    float dist = math.length(dir);
-                    dir = math.normalize(dir);
-                    var forward = math.mul(rot.Value, math.down());
-                    var angle = math.atan2(dir.y, dir.x) - math.atan2(forward.y, forward.x);
-                    var quat = quaternion.RotateZ(angle);
-                    var pos = math.mul(quat, math.down());
-                    cmdBuffer.SetComponent(renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });
-
-                    cmdBuffer.AddComponent(renderRef.ShieldEntity, new NonUniformScale { Value = new float3(aim.aimWidth, dist, 1) });
-                    cmdBuffer.SetComponent(renderRef.ShieldEntity, new Rotation { Value = quat });
-                    cmdBuffer.SetComponent(renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });
                     if (enemyAI.AIState == EnemyAIState.Attacking)
                     {
                         aim.aimTimer = aim.timeAming;
@@ -52,12 +41,27 @@ namespace Asteroids.ECS.Systems
                     else
                     {
                         if (aim.aimTimer <= 0)
-                            cmdBuffer.AddComponent(renderRef.ShieldEntity, new NonUniformScale { Value = new float3(0, 0, 1) });
-                        else aim.aimTimer -= Time.DeltaTime;
+                            parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new NonUniformScale { Value = new float3(0, 0, 1) });
+                        else 
+                            aim.aimTimer -= deltaTime;
                     }
+                    if(aim.aimTimer > 0)
+                    {
+                        var dir = (playerTr.Value - tr.Value);
+                        float dist = math.length(dir);
+                        dir = math.normalize(dir);
+                        var forward = math.mul(rot.Value, math.down());
+                        var angle = math.atan2(dir.y, dir.x) - math.atan2(forward.y, forward.x);
+                        var quat = quaternion.RotateZ(angle);
+                        var pos = math.mul(quat, math.down());
 
+                        parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });
+                        parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new NonUniformScale { Value = new float3(aim.aimWidth, dist, 1) });
+                        parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Rotation { Value = quat });
+                        parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });
+                    }
                 })
-                .Run();
+                .ScheduleParallel();
 
             Dependency.Complete();
 

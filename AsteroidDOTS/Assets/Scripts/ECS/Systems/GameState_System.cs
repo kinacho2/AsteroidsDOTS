@@ -19,7 +19,6 @@ namespace Asteroids.ECS.Systems
         private void Configs_OnInitializedConfig()
         {
             var entity = EntityManager.CreateEntity();
-            //EntityManager.SetName(entity, "Game State");
             EntityManager.AddComponentData(entity, new GameStateComponent { state = GameState.Running });
             _eventConsumer = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
         }

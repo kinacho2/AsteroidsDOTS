@@ -81,7 +81,7 @@ namespace Asteroids.ECS.Systems
                     InstantiatePower(entityPrefab, (PowerType)type, asteroidEvent.position, ref cmdBuffer);
                 }
             }
-            if (Events_System.OnEntityDestroyed.TryGetEvent(_asteroidEventConsumer, out var entity))
+            if (Events_System.OnEntityDestroyed.TryGetEvent(_enemyEventConsumer, out var entity))
             {
                 if (entity.entityType != EntityType.Player)
                 {

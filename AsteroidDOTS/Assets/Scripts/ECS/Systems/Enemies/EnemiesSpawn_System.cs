@@ -13,16 +13,15 @@ namespace Asteroids.ECS.Systems
 {
     public class EnemiesSpawn_System : ShipSpawn_System
     {
-        private NativeArray<Entity> Enemies;
-        private ShipData[] EnemiesDB;
+        private static NativeArray<Entity> Enemies;
+        private static ShipData[] EnemiesDB;
 #if UNITY_EDITOR
-        private Color[] _debugColors;
+        private static Color[] _debugColors;
 #endif
-        private Random Random;
+        private static Random Random;
 
-        private float _spawnTime = 30;
-        private float _spawnTimer;
-        private int _enemyCounter = 8;
+        private static SpawnData SpawnData;
+        private static float _spawnTimer;
 
         protected override void OnCreate()
         {
@@ -36,10 +35,8 @@ namespace Asteroids.ECS.Systems
             var enemyDataSo = Configs.EnemyDB;
             EnemiesDB = enemyDataSo.Ships;
             Enemies = new NativeArray<Entity>(EnemiesDB.Length, Allocator.Persistent);
-            var spawnData = Configs.GameData.EnemiesSpawnData;
-
-            _enemyCounter = spawnData.entityCount;
-            _spawnTime = spawnData.spawnSeconds;
+            SpawnData = Configs.GameData.EnemiesSpawnData;
+            _spawnTimer = 0;
 
             for (int i = 0; i < EnemiesDB.Length; i++)
             {
@@ -55,31 +52,30 @@ namespace Asteroids.ECS.Systems
             _debugColors[3] = Color.magenta;
 #endif
 
-            for (int i = 0; i < spawnData.initialEntityCount; i++)
+            for (int i = 0; i < SpawnData.initialEntityCount; i++)
             {
                 SpawnRandomEnemy(EntityManager);
-                _enemyCounter--;
+                SpawnData.entityCount--;
             }
         }
 
         protected override void OnUpdate()
         {
-            if (_enemyCounter <= 0) return;
-            if (_spawnTimer > _spawnTime)
+            if (SpawnData.entityCount <= 0) return;
+            if (_spawnTimer > SpawnData.spawnSeconds)
             {
                 var query = GetEntityQuery(typeof(EnemyComponent));
                 var array = query.ToEntityArray(Allocator.Temp);
                 if (array.Length < 3)
                 {
                     SpawnRandomEnemy(EntityManager);
-                    _enemyCounter--;
+                    SpawnData.entityCount--;
                     _spawnTimer = 0;
                 }
                 array.Dispose();
             }
             _spawnTimer += Time.DeltaTime;
         }
-
 
         private void SpawnRandomEnemy(EntityManager entityManager)
         {
@@ -109,8 +105,8 @@ namespace Asteroids.ECS.Systems
 
             var renderRef = entityManager.GetComponentData<ShipRendererComponent>(entity);
             entityManager.RemoveComponent<Scale>(renderRef.ShieldEntity);
+            entityManager.AddComponentData(renderRef.ShieldEntity, new NonUniformScale { Value = new float3(0, 0, 1) });
         }
-
 
         protected override void OnDestroy()
         {
