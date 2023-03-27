@@ -11,6 +11,7 @@ namespace Asteroids.Setup
     public static class Configs
     {
         public const int EVENTS_QUEUE_COUNT = 10;
+        public const int EVENTS_STREAM_CAPACITY = 10;
         public const int AUDIO_PLAY_COUNT = 15;
 
         public static event InitializedConfigs OnInitializedConfig;

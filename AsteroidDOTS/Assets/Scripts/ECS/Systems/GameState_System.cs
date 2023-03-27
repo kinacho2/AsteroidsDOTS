@@ -20,7 +20,7 @@ namespace Asteroids.ECS.Systems
         {
             var entity = EntityManager.CreateEntity();
             EntityManager.AddComponentData(entity, new GameStateComponent { state = GameState.Running });
-            _eventConsumer = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _eventConsumer = Events_System.OnEntityDestroyed.Subscribe();
         }
 
         protected override void OnUpdate()

@@ -1,4 +1,5 @@
 using Asteroids.ECS.Events;
+using Asteroids.Setup;
 using Unity.Entities;
 
 namespace Asteroids.ECS.Systems
@@ -46,19 +47,19 @@ namespace Asteroids.ECS.Systems
         protected override void OnCreate()
         {
             base.OnCreate();
-            _onPlayerStartMove = new EventPublisher<PlayerMove>(20);
-            _onPlayerStoptMove = new EventPublisher<PlayerMove>(20);
-            _onPlayerShoot = new EventPublisher<EntityShoot>(20);
-            _onPlayerCollision = new EventPublisher<PlayerCollision>(20);
-            _onPlayerDestroyed = new EventPublisher<EntityDestroyed>(20);
-            _onPlayerLoseShield = new EventPublisher<PlayerLoseShield>(20);
-            _onAsteroidsCollision = new EventPublisher<AsteroidsCollision>(20);
-            _onAsteroidDestroyed = new EventPublisher<AsteroidDestroyed>(20);
-            _onPickPower = new EventPublisher<PickPower>(20);
-            _onMisileHit = new EventPublisher<MisileHit>(20);
-            _onHyperspaceTravelStart = new EventPublisher<PlayerMove>(20);
-            _onHyperspaceTravelStop = new EventPublisher<PlayerMove>(20);
-            _onHyperspaceTravel = new EventPublisher<PlayerMove>(20);
+            _onPlayerStartMove = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onPlayerStoptMove = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onPlayerShoot = new EventPublisher<EntityShoot>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onPlayerCollision = new EventPublisher<PlayerCollision>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onPlayerDestroyed = new EventPublisher<EntityDestroyed>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onPlayerLoseShield = new EventPublisher<PlayerLoseShield>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onAsteroidsCollision = new EventPublisher<AsteroidsCollision>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onAsteroidDestroyed = new EventPublisher<AsteroidDestroyed>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onPickPower = new EventPublisher<PickPower>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onMisileHit = new EventPublisher<MisileHit>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onHyperspaceTravelStart = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onHyperspaceTravelStop = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onHyperspaceTravel = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
         }
 
         protected override void OnUpdate()

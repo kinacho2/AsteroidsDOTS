@@ -32,32 +32,32 @@ namespace Asteroids.ECS.Systems
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
             settings.DebugConversionName = "AudioSource";
 
-            _consumers[((int)AudioType.PlayerStartMove)] = Events_System.OnPlayerStartMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _consumers[((int)AudioType.PlayerStopMove)] = Events_System.OnPlayerStopMove.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PlayerStartMove)] = Events_System.OnPlayerStartMove.Subscribe();
+            _consumers[((int)AudioType.PlayerStopMove)] = Events_System.OnPlayerStopMove.Subscribe();
 
-            _consumers[((int)AudioType.PlayerShoot)] = Events_System.OnEntityShoot.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _consumers[((int)AudioType.PlayerCollision)] = Events_System.OnPlayerCollision.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _consumers[((int)AudioType.PlayerDestroyed)] = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PlayerShoot)] = Events_System.OnEntityShoot.Subscribe();
+            _consumers[((int)AudioType.PlayerCollision)] = Events_System.OnPlayerCollision.Subscribe();
+            _consumers[((int)AudioType.PlayerDestroyed)] = Events_System.OnEntityDestroyed.Subscribe();
 
             _consumers[((int)AudioType.AsteroidCollisionBig)] =
             _consumers[((int)AudioType.AsteroidCollisionMedium)] =
-            _consumers[((int)AudioType.AsteroidCollisionSmall)] = Events_System.OnAsteroidsCollision.Subscribe(2);
+            _consumers[((int)AudioType.AsteroidCollisionSmall)] = Events_System.OnAsteroidsCollision.Subscribe();
 
             _consumers[((int)AudioType.AsteroidDestroyedBig)] =
             _consumers[((int)AudioType.AsteroidDestroyedMedium)] =
-            _consumers[((int)AudioType.AsteroidDestroyedSmall)] = Events_System.OnAsteroidDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.AsteroidDestroyedSmall)] = Events_System.OnAsteroidDestroyed.Subscribe();
 
-            _consumers[((int)AudioType.MisileHit)] = Events_System.OnMisileHit.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.MisileHit)] = Events_System.OnMisileHit.Subscribe();
 
             _consumers[((int)AudioType.PickShield)] =
             _consumers[((int)AudioType.PickWeapon)] =
             _consumers[((int)AudioType.PickBomb)] =
-            _consumers[((int)AudioType.PickHealth)] = Events_System.OnPickPower.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.PickHealth)] = Events_System.OnPickPower.Subscribe();
 
-            _consumers[((int)AudioType.LoseShield)] = Events_System.OnPlayerLoseShield.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.LoseShield)] = Events_System.OnPlayerLoseShield.Subscribe();
 
-            _consumers[((int)AudioType.WarpJump)] = Events_System.OnHyperspaceTravelStart.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _consumers[((int)AudioType.WarpJumpStop)] = Events_System.OnHyperspaceTravelStop.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumers[((int)AudioType.WarpJump)] = Events_System.OnHyperspaceTravelStart.Subscribe();
+            _consumers[((int)AudioType.WarpJumpStop)] = Events_System.OnHyperspaceTravelStop.Subscribe();
 
             _initialized = true;
         }

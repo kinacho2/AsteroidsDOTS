@@ -20,7 +20,7 @@ namespace Asteroids.UI
             _weaponIndex = 0;
             EnableImages();
 
-            _consumer = Events_System.OnPickPower.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumer = Events_System.OnPickPower.Subscribe();
         }
 
         private void EnableImages()

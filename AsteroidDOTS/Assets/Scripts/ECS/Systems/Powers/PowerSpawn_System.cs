@@ -65,8 +65,8 @@ namespace Asteroids.ECS.Systems
                 entityPrefabs[i] = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
             }
 
-            _asteroidEventConsumer = Events_System.OnAsteroidDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _enemyEventConsumer = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _asteroidEventConsumer = Events_System.OnAsteroidDestroyed.Subscribe();
+            _enemyEventConsumer = Events_System.OnEntityDestroyed.Subscribe();
         }
 
         protected override void OnUpdate()

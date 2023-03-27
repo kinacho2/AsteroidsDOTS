@@ -35,8 +35,8 @@ namespace Asteroids.ECS.Systems
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
             entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
 
-            _shipConsumer = Events_System.OnEntityDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
-            _asteroidConsumer = Events_System.OnAsteroidDestroyed.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _shipConsumer = Events_System.OnEntityDestroyed.Subscribe();
+            _asteroidConsumer = Events_System.OnAsteroidDestroyed.Subscribe();
         }
 
         protected override void OnUpdate()

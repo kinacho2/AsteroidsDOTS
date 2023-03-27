@@ -21,7 +21,7 @@ namespace Asteroids.UI
 
         private void Start()
         {
-            _consumerTravel = Events_System.OnHyperspaceTravel.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+            _consumerTravel = Events_System.OnHyperspaceTravel.Subscribe();
             TravelData = Configs.GameData.HyperspaceTravelData;
 
             _time = _timer = TravelData.timeReloading;

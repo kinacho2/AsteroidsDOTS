@@ -36,7 +36,7 @@ public class BombSpawn_System : SystemBase
         var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
         entityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(prefab, settings);
 
-        _eventConsumer = Events_System.OnPickPower.Subscribe(Configs.EVENTS_QUEUE_COUNT);
+        _eventConsumer = Events_System.OnPickPower.Subscribe();
     }
 
     protected override void OnUpdate()
