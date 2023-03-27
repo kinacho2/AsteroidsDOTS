@@ -18,6 +18,8 @@ namespace Asteroids.ECS.Systems
 
         private void Configs_OnInitializedConfig()
         {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+
             var entity = EntityManager.CreateEntity();
             EntityManager.AddComponentData(entity, new GameStateComponent { state = GameState.Running });
             _eventConsumer = Events_System.OnEntityDestroyed.Subscribe();

@@ -17,7 +17,6 @@ namespace Asteroids.ECS.Systems
         private World defaultWorld;
 
         private NativeArray<float> MisileAngles;
-        //GameObject MisilePrefab;
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -102,7 +101,7 @@ namespace Asteroids.ECS.Systems
         public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, Entity owner, ref EntityCommandBuffer cmdBuffer)
         {
             var entity = cmdBuffer.Instantiate(misileEntityPrefab);
-            cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
+            //cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
             cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range, owner = owner });
             cmdBuffer.SetComponent(entity, new Translation { Value = position });
             cmdBuffer.SetComponent(entity, new Rotation { Value = rotation });

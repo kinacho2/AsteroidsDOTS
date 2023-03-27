@@ -21,6 +21,7 @@ namespace Asteroids.Data
     {
         public int initialEntityCount;
         public int entityCount;
+        public int screenEntityCount;
         public float spawnSeconds;
     }
 

@@ -16,6 +16,8 @@ namespace Asteroids.ECS.Systems
 
         private void Configs_OnInitializedConfig()
         {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+
             var playerDataSO = Configs.PlayerData;
             var data = playerDataSO.Ships[0];
             EntityPrefab = CreateShipPrefab(playerDataSO.ShipPrefab, data);

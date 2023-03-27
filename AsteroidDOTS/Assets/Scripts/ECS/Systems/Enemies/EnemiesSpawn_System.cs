@@ -32,6 +32,8 @@ namespace Asteroids.ECS.Systems
 
         private void Configs_OnInitializedConfig()
         {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+
             var enemyDataSo = Configs.EnemyDB;
             EnemiesDB = enemyDataSo.Ships;
             Enemies = new NativeArray<Entity>(EnemiesDB.Length, Allocator.Persistent);
@@ -66,7 +68,7 @@ namespace Asteroids.ECS.Systems
             {
                 var query = GetEntityQuery(typeof(EnemyComponent));
                 var array = query.ToEntityArray(Allocator.Temp);
-                if (array.Length < 3)
+                if (array.Length < SpawnData.screenEntityCount)
                 {
                     SpawnRandomEnemy(EntityManager);
                     SpawnData.entityCount--;

@@ -22,15 +22,13 @@ namespace Asteroids.ECS.Systems
 
         private void Configs_OnInitializedConfig()
         {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+
             var audioDB = Configs.AudioDB;
             if (!audioDB) return;
             SoundManager = Configs.SoundManager;
 
             _consumers = new NativeArray<EventConsumer>(audioDB.Sounds.Length + 2, Allocator.Persistent);
-
-            var defaultWorld = World.DefaultGameObjectInjectionWorld;
-            var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
-            settings.DebugConversionName = "AudioSource";
 
             _consumers[((int)AudioType.PlayerStartMove)] = Events_System.OnPlayerStartMove.Subscribe();
             _consumers[((int)AudioType.PlayerStopMove)] = Events_System.OnPlayerStopMove.Subscribe();

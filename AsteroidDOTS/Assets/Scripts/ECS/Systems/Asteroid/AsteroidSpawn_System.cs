@@ -16,14 +16,13 @@ namespace Asteroids.ECS.Systems
     {
         protected const float PI2 = math.PI * 2;
         protected Entity[] entityPrefabs;
-        protected AsteroidData[] data;
+        protected AsteroidData[] dataArray;
         Random Random;
         protected float2 CameraLimits;
         private float _distance;
-        private float _spawnTime = 30;
+        private SpawnData SpawnData;
         private float _spawnTimer;
-        private int _asteroidCounter = 8;
-
+        
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -38,12 +37,10 @@ namespace Asteroids.ECS.Systems
             _distance = math.length(CameraLimits + new float2(1, 1));
             var asteroidDB = Configs.AsteroidDB;
             entityPrefabs = new Entity[asteroidDB.ShapesCount()];
-            data = new AsteroidData[asteroidDB.DataCount];
+            dataArray = new AsteroidData[asteroidDB.DataCount];
 
-            var spawnData = Configs.GameData.AsteroidsSpawnData;
-            _asteroidCounter = spawnData.entityCount;
-            _spawnTime = spawnData.spawnSeconds;
-
+            SpawnData = Configs.GameData.AsteroidsSpawnData;
+            
             var defaultWorld = World.DefaultGameObjectInjectionWorld;
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
 
@@ -52,7 +49,7 @@ namespace Asteroids.ECS.Systems
             {
                 var asteroidData = Configs.AsteroidDB.Get((AsteroidType)i);
 
-                data[i] = asteroidData;
+                dataArray[i] = asteroidData;
 
                 for (int j = 0; j < asteroidData.shapes.Length; j++)
                 {
@@ -62,7 +59,10 @@ namespace Asteroids.ECS.Systems
                 }
             }
 
-            InstantiateFirstAsteroids(spawnData.initialEntityCount);
+            for (int i = 0; i < SpawnData.initialEntityCount; i++)
+            {
+                InstantiateBigRandomAsteroid();
+            }
         }
 
         protected void SetParameters(GameObject prefab, int shapeIndex, ref AsteroidData asteroidData)
@@ -107,8 +107,8 @@ namespace Asteroids.ECS.Systems
 
         private void CheckForSpawn()
         {
-            if (_asteroidCounter <= 0) return;
-            if (_spawnTimer > _spawnTime)
+            if (SpawnData.entityCount <= 0) return;
+            if (_spawnTimer > SpawnData.spawnSeconds)
             {
                 var query = GetEntityQuery(typeof(AsteroidComponent));
                 var array = query.ToComponentDataArray<AsteroidComponent>(Allocator.Temp);
@@ -117,10 +117,10 @@ namespace Asteroids.ECS.Systems
                 {
                     size += asteroid.size;
                 }
-                if (size < 6)
+                if (size < SpawnData.screenEntityCount)
                 {
                     InstantiateBigRandomAsteroid();
-                    _asteroidCounter--;
+                    SpawnData.entityCount--;
                     _spawnTimer = 0;
                 }
                 array.Dispose();
@@ -133,20 +133,11 @@ namespace Asteroids.ECS.Systems
         {
             int startIdx = GetFirstEntityPrefabIndex(type);
 
-            var randIdx = Random.NextUInt() % data[type].shapes.Length + startIdx;
+            var randIdx = Random.NextUInt() % dataArray[type].shapes.Length + startIdx;
 
-            InstantiateChildAsteroid(
-                entityPrefabs[randIdx],
-                GetPerpendicularPosition(parentAsteroid.size * 0.5f, position.ToFloat2(), direction),
-                GetPerpendicularVelocity(currentSpeed, data[type].maxSpeed, 25, direction),
-                math.radians(Random.NextFloat(0, math.PI)),
-                data[type], parentAsteroid,
-                ref cmdBuffer
-                );
-        }
+            var entityPrefab = entityPrefabs[randIdx];
+            var data = dataArray[type];
 
-        private void InstantiateChildAsteroid(Entity entityPrefab, float2 position, float2 velocity, float angular, AsteroidData data, AsteroidComponent parentAsteroid, ref EntityCommandBuffer cmdBuffer)
-        {
             var entity = cmdBuffer.Instantiate(entityPrefab);
             cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
             cmdBuffer.AddComponent(entity, new AsteroidComponent
@@ -160,21 +151,21 @@ namespace Asteroids.ECS.Systems
             {
                 health = data.health,
             });
-            cmdBuffer.AddComponent(entity, new PhysicsVelocity { Angular = angular, Linear = velocity });
-            cmdBuffer.AddComponent(entity, new Translation { Value = position.ToFloat3() });
-        }
+            cmdBuffer.AddComponent(entity, new PhysicsVelocity 
+            { 
+                Angular = math.radians(Random.NextFloat(0, math.PI)), 
+                Linear = GetPerpendicularVelocity(currentSpeed, dataArray[type].maxSpeed, 25, direction)
+            });
+            cmdBuffer.AddComponent(entity, new Translation 
+            { 
+                Value = GetPerpendicularPosition(parentAsteroid.size * 0.25f, position.ToFloat2(), direction).ToFloat3() 
+            });
 
-        private void InstantiateFirstAsteroids(int count)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                InstantiateBigRandomAsteroid();
-            }
         }
 
         private void InstantiateBigRandomAsteroid()
         {
-            var asteroidData = data[0];
+            var asteroidData = dataArray[0];
             var type = asteroidData.type;
             var entityPrefab = entityPrefabs[Random.NextInt(0, asteroidData.shapes.Length) % asteroidData.shapes.Length];
             var position = GetRandomPositionOutOfScreen();
@@ -201,7 +192,7 @@ namespace Asteroids.ECS.Systems
             int index = 0;
             for (int i = 0; i < type; i++)
             {
-                index += data[i].shapes.Length;
+                index += dataArray[i].shapes.Length;
             }
             return index;
         }

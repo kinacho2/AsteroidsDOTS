@@ -19,7 +19,7 @@ namespace Asteroids.Setup
         [SerializeField] bool DebugMode;
 #endif
 
-        void Awake()
+        void Start()
         {
             Configs.InitializeConfigs(Camera, SoundManager, GameData, PlayerData, EnemyData, AsteroidDB, PowerDB, AudioDB);
 #if UNITY_EDITOR

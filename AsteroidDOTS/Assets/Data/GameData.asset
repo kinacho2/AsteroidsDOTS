@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <EnemiesSpawnData>k__BackingField:
     initialEntityCount: 3
-    entityCount: 8
-    spawnSeconds: 90
+    entityCount: 20
+    screenEntityCount: 3
+    spawnSeconds: 40
   <AsteroidsSpawnData>k__BackingField:
     initialEntityCount: 3
-    entityCount: 6
-    spawnSeconds: 60
+    entityCount: 15
+    screenEntityCount: 6
+    spawnSeconds: 30
   <HyperspaceTravelData>k__BackingField:
     timeBeforeTravel: 4
     timeAfterTravel: 2

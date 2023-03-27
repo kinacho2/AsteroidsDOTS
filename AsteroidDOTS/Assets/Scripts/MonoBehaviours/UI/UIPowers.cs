@@ -19,8 +19,16 @@ namespace Asteroids.UI
         float _timer;
         float _time;
 
-        private void Start()
+        private void Awake()
         {
+            Configs.OnInitializedConfig += Configs_OnInitializedConfig;
+            
+        }
+
+        private void Configs_OnInitializedConfig()
+        {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+             
             _consumerTravel = Events_System.OnHyperspaceTravel.Subscribe();
             TravelData = Configs.GameData.HyperspaceTravelData;
 

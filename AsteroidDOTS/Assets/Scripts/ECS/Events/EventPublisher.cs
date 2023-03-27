@@ -10,7 +10,7 @@ namespace Asteroids.ECS.Events
         private NativeArray<int> readIndex;
 
         private int index;
-        private long hash;
+        private int hash;
 
         private int events;
         public EventPublisher(int capacity, int events)
@@ -19,7 +19,7 @@ namespace Asteroids.ECS.Events
             writeIndex = new NativeArray<int>(capacity, Allocator.Persistent);
             readIndex = new NativeArray<int>(capacity, Allocator.Persistent);
             index = 0;
-            hash = ((long)typeof(T).GetHashCode()) + ((long)new Random().Next());
+            hash = typeof(T).GetHashCode();
 
             this.events = events;
         }
@@ -76,9 +76,9 @@ namespace Asteroids.ECS.Events
     public struct EventConsumer
     {
         public int id { get; private set; }
-        public long hash { get; private set; }
+        public int hash { get; private set; }
 
-        public EventConsumer(int id, long hash)
+        public EventConsumer(int id, int hash)
         {
             this.id = id;
             this.hash = hash;

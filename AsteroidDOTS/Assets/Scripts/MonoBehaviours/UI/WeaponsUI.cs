@@ -14,8 +14,16 @@ namespace Asteroids.UI
         private EventConsumer _consumer;
         private int _weaponIndex;
 
-        void Start()
+        void Awake()
         {
+            Configs.OnInitializedConfig += Configs_OnInitializedConfig;
+            
+        }
+
+        private void Configs_OnInitializedConfig()
+        {
+            Configs.OnInitializedConfig -= Configs_OnInitializedConfig;
+
             WeaponsDB = Configs.PlayerData.WeaponsDB;
             _weaponIndex = 0;
             EnableImages();
