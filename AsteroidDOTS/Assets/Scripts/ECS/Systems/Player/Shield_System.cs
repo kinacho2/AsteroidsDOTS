@@ -1,4 +1,5 @@
 using Asteroids.ECS.Components;
+using Asteroids.ECS.Systems;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -8,7 +9,6 @@ public class Shield_System : SystemBase
     {
         var cmdBuffer = new EntityCommandBuffer(Allocator.TempJob);
 
-        //TODO(Need to change this code with SingletonEntity)
         Entities
             .WithEntityQueryOptions(EntityQueryOptions.IncludeDisabled)
             .ForEach((Entity entity, int entityInQueryIndex,

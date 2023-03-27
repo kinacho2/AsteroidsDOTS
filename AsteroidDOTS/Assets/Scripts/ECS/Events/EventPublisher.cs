@@ -9,13 +9,14 @@ namespace Asteroids.ECS.Events
         private int[] writeIndex;
         private int[] readIndex;
         private int index;
-
+        private int hash;
         public EventPublisher(int capacity)
         {
             Streams = new NativeArray<T>[capacity];
             writeIndex = new int[capacity];
             readIndex = new int[capacity];
             index = 0;
+            hash = typeof(T).GetHashCode() + new Random().Next();
         }
 
         public void Dispose()
@@ -24,7 +25,6 @@ namespace Asteroids.ECS.Events
             {
                 Streams[i].Dispose();
             }
-
         }
 
         public void PostEvent(T eventData)
@@ -45,11 +45,13 @@ namespace Asteroids.ECS.Events
             writeIndex[index] = 0;
             readIndex[index] = 0;
             index++;
-            return new EventConsumer(idx);
+            return new EventConsumer(idx, hash);
         }
 
         public bool TryGetEvent(EventConsumer consumer, out T eventData)
         {
+            if (consumer.hash != hash)
+                throw new ArgumentException("Invalid consumer hash, did you use the right consumer?");
             int id = consumer.id;
             var reader = readIndex[id];
             var write = writeIndex[id];
@@ -72,9 +74,12 @@ namespace Asteroids.ECS.Events
     public struct EventConsumer
     {
         public int id { get; private set; }
-        public EventConsumer(int id)
+        public int hash { get; private set; }
+
+        public EventConsumer(int id, int hash)
         {
             this.id = id;
+            this.hash = hash;
         }
     }
 }
