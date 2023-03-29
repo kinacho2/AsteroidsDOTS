@@ -79,8 +79,8 @@ namespace Asteroids.ECS.Systems
 
                                 var dir = math.normalize(otherTranslation.Value - tr.Value);
 
-                                var v1len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
-                                var v2len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
+                                //var v1len = math.clamp(math.length(v1), 0, asteroid.maxSpeed);
+                                //var v2len = math.clamp(math.length(v2), 0, otherAsteroid.maxSpeed);
                                 var linear1 = math.normalize(v1 - dir.ToFloat2() * len1 * 0.5f) * math.length(v1);
                                 var linear2 = math.normalize(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
 
@@ -96,8 +96,10 @@ namespace Asteroids.ECS.Systems
                                     var cross = math.cross(fordward.ToFloat3(), dir);
                                     var asin = math.asin(cross.z);
 
-                                    w1 = 2 * m2 * asin * math.length(v0_1) * invMass;
-                                    w2 = 2 * m1 * asin * math.length(v0_2) * invMass;
+                                    asin = 2 * asin * math.length(v0_1) * invMass;
+
+                                    w1 = m2 * asin;
+                                    w2 = m1 * asin;
                                 }
                                 cmdBuffer.SetComponent(hitEntity, new PhysicsVelocity
                                 {

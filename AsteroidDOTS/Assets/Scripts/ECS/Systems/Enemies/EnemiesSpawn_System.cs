@@ -63,7 +63,19 @@ namespace Asteroids.ECS.Systems
 
         protected override void OnUpdate()
         {
-            if (SpawnData.entityCount <= 0) return;
+            if (SpawnData.entityCount <= 0)
+            {
+                Debug.Log("" + SpawnData.entityCount);
+                Enabled = false;
+            }
+
+            //Avoid System stops when there are no enemies alive
+            var gameState = GetEntityQuery(typeof(GameStateComponent)).GetSingleton<GameStateComponent>();
+            if (gameState.state == GameState.Finished)
+            {
+                return;
+            }
+
             if (_spawnTimer > SpawnData.spawnSeconds)
             {
                 var query = GetEntityQuery(typeof(EnemyComponent));
@@ -82,7 +94,7 @@ namespace Asteroids.ECS.Systems
         private void SpawnRandomEnemy(EntityManager entityManager)
         {
             var rand = Random.NextInt(0, Enemies.Length) % Enemies.Length;
-            InstantiateEnemyEntity(EntityManager, Enemies[rand], EnemiesDB[rand], rand);
+            InstantiateEnemyEntity(entityManager, Enemies[rand], EnemiesDB[rand], rand);
         }
 
         private void InstantiateEnemyEntity(EntityManager entityManager, Entity entityPrefab, ShipData data, int index)

@@ -69,13 +69,13 @@ namespace Asteroids.ECS.Systems
                                     break;
                                 case PowerType.Weapon:
                                     var weapon = EntityManager.GetComponentData<WeaponComponent>(player);
-                                    if (weapon.type + 1 < Weapons.Length)
+                                    if (weapon.level + 1 < Weapons.Length)
                                     {
-                                        weapon.type++;
-                                        weapon.misileAmount = Weapons[weapon.type].misileAmount;
-                                        weapon.misileLifeTime = Weapons[weapon.type].misileLifeTime;
-                                        weapon.misileSpeed = Weapons[weapon.type].misileSpeed;
-                                        weapon.range = Weapons[weapon.type].range;
+                                        weapon.level++;
+                                        weapon.misileAmount = Weapons[weapon.level].misileAmount;
+                                        weapon.misileLifeTime = Weapons[weapon.level].misileLifeTime;
+                                        weapon.misileSpeed = Weapons[weapon.level].misileSpeed;
+                                        weapon.range = Weapons[weapon.level].range;
                                         cmdBuffer.SetComponent(player, weapon);
                                     }
                                     break;

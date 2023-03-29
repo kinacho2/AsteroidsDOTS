@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <EnemiesSpawnData>k__BackingField:
     initialEntityCount: 3
-    entityCount: 20
+    entityCount: 40
     screenEntityCount: 3
-    spawnSeconds: 40
+    spawnSeconds: 10
   <AsteroidsSpawnData>k__BackingField:
     initialEntityCount: 3
     entityCount: 15

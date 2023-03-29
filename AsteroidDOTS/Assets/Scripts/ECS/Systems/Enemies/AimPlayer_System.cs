@@ -41,7 +41,11 @@ namespace Asteroids.ECS.Systems
                     else
                     {
                         if (aim.aimTimer <= 0)
-                            parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new NonUniformScale { Value = new float3(0, 0, 1) });
+                            parallelWriter.SetComponent(
+                                entityInQueryIndex, 
+                                renderRef.ShieldEntity, 
+                                new NonUniformScale { Value = new float3(0, 0, 1) }
+                                );
                         else 
                             aim.aimTimer -= deltaTime;
                     }
@@ -55,7 +59,7 @@ namespace Asteroids.ECS.Systems
                         var quat = quaternion.RotateZ(angle);
                         var pos = math.mul(quat, math.down());
 
-                        parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });
+                        //parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });
                         parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new NonUniformScale { Value = new float3(aim.aimWidth, dist, 1) });
                         parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Rotation { Value = quat });
                         parallelWriter.SetComponent(entityInQueryIndex, renderRef.ShieldEntity, new Translation { Value = pos * dist * 0.5f });

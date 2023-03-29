@@ -78,7 +78,7 @@ namespace Asteroids.ECS.Systems
 
                             var dir = math.normalizesafe(otherTranslation.Value - tr.Value);
 
-                            var linear1 = math.normalizesafe(v1 - dir.ToFloat2() * len1 * 1 / data.restitution) * math.length(v1);
+                            var linear1 = math.normalizesafe(v1 - dir.ToFloat2() * len1 * 0.5f) * math.length(v1);
                             var linear2 = math.normalizesafe(v2 + dir.ToFloat2() * len2 * 0.5f) * math.length(v2);
 
                             var w1 = velocity.Angular;
@@ -91,8 +91,10 @@ namespace Asteroids.ECS.Systems
                                 var cross = math.cross(fordward.ToFloat3(), dir);
                                 var asin = math.asin(cross.z);
 
-                                w1 = 2 * m2 * asin * math.length(v0_1) * invMass * data.restitution;
-                                w2 = 2 * m1 * asin * math.length(v0_2) * invMass;
+                                asin = 2 * asin * math.length(v0_1) * invMass;
+
+                                w1 = m2 * asin * data.restitution;
+                                w2 = m1 * asin;
 
                                 velocity.Angular = w1;
                             }

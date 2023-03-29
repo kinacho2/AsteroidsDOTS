@@ -4,9 +4,9 @@ namespace Asteroids.ECS.Components
 {
     public struct EnemyComponent : IComponentData
     {
-        public float viewDistance;
         public EnemyAIState AIState;
         public float stateTimer;
+        public float viewDistance;
 #if UNITY_EDITOR
         public UnityEngine.Color debugColor;
 #endif

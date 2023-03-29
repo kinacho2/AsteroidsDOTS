@@ -107,7 +107,9 @@ namespace Asteroids.ECS.Systems
 
         private void CheckForSpawn()
         {
-            if (SpawnData.entityCount <= 0) return;
+            if (SpawnData.entityCount <= 0)
+                Enabled = false;
+
             if (_spawnTimer > SpawnData.spawnSeconds)
             {
                 var query = GetEntityQuery(typeof(AsteroidComponent));

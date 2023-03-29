@@ -4,7 +4,7 @@ namespace Asteroids.ECS.Components
 {
     public struct WeaponComponent : IComponentData
     {
-        public int type;
+        public int level;
         public float misileSpeed;
         public float misileLifeTime;
         public float range;

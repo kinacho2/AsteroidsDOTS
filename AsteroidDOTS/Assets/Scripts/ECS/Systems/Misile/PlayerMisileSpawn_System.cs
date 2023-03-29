@@ -85,7 +85,7 @@ namespace Asteroids.ECS.Systems
                                 InstantiateMisile(translation.Value, rot, math.length(velocity), weapon, ship, ref cmdBuffer);
                             }
 
-                            Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.type, position = translation.Value });
+                            Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.level, position = translation.Value });
                         }
                     }
                     else

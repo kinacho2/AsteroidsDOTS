@@ -66,7 +66,7 @@ namespace Asteroids.ECS.Systems
                 misileSpeed = weapon.misileSpeed,
                 misileLifeTime = weapon.misileLifeTime,
                 range = weapon.range,
-                type = 0,
+                level = 0,
             });
 
             return entity;

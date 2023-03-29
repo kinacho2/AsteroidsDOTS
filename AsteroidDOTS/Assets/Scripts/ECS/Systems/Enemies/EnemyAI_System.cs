@@ -44,6 +44,7 @@ namespace Asteroids.ECS.Systems
                     in ShipDataComponent data
                     ) =>
                 {
+                    if (stats.stunnedTimer > 0) return;
                     ref var dir = ref input.direction;
 
                     switch (enemyAI.AIState)
