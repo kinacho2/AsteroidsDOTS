@@ -42,7 +42,7 @@ namespace Asteroids.Data
         AsteroidDestroyedBig = 8,
         AsteroidDestroyedMedium = 9,
         AsteroidDestroyedSmall = 10,
-        MisileHit = 11,
+        MissileHit = 11,
         PickShield = 12,
         PickWeapon = 13,
         PickBomb = 14,

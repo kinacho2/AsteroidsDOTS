@@ -8,8 +8,6 @@ namespace Asteroids.ECS.Systems
 {
     public class PlayerInput_System : SystemBase
     {
-        private const float INPUT_THRESHOLD = 0.001f;
-
         protected override void OnUpdate()
         {
             var gameState = GetEntityQuery(typeof(GameStateComponent)).GetSingleton<GameStateComponent>();

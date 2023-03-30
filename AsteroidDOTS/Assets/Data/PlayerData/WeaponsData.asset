@@ -13,25 +13,25 @@ MonoBehaviour:
   m_Name: WeaponsData
   m_EditorClassIdentifier: 
   <BombPrefab>k__BackingField: {fileID: 7454336349755648338, guid: 34b051fe184f8bf4d8bc11e3a2b2d9a9, type: 3}
-  <MisilePrefab>k__BackingField: {fileID: 4608512767964900769, guid: 2e37481f58f3c654bb43fbcb966ba858, type: 3}
+  <MissilePrefab>k__BackingField: {fileID: 4608512767964900769, guid: 2e37481f58f3c654bb43fbcb966ba858, type: 3}
   <Weapons>k__BackingField:
-  - misileAmount: 1
-    misileSpeed: 5
-    misileLifeTime: 0.7
+  - missileAmount: 1
+    missileSpeed: 5
+    missileLifeTime: 0.7
     range: 0.3
-  - misileAmount: 3
-    misileSpeed: 7
-    misileLifeTime: 0.8
+  - missileAmount: 3
+    missileSpeed: 7
+    missileLifeTime: 0.8
     range: 0.3
-  - misileAmount: 6
-    misileSpeed: 9
-    misileLifeTime: 0.9
+  - missileAmount: 6
+    missileSpeed: 9
+    missileLifeTime: 0.9
     range: 0.3
-  - misileAmount: 10
-    misileSpeed: 9
-    misileLifeTime: 0.9
+  - missileAmount: 10
+    missileSpeed: 9
+    missileLifeTime: 0.9
     range: 0.3
-  <MisileAngleDeg>k__BackingField:
+  <MissileAngleDeg>k__BackingField:
   - 0
   - 25
   - -25
@@ -42,7 +42,7 @@ MonoBehaviour:
   - 65
   - -65
   - -115
-  <MisileShape>k__BackingField:
+  <MissileShape>k__BackingField:
   - {x: 0.10628505, y: 0.018913034}
   - {x: -0.027017355, y: 0.034121126}
   - {x: -0.03830862, y: 0.0565017}

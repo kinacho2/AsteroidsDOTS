@@ -34,8 +34,8 @@ namespace Asteroids.ECS.Systems
         private static EventPublisher<PickPower> _onPickPower;
         public static ref EventPublisher<PickPower> OnPickPower => ref _onPickPower;
 
-        private static EventPublisher<MisileHit> _onMisileHit;
-        public static ref EventPublisher<MisileHit> OnMisileHit => ref _onMisileHit;
+        private static EventPublisher<MissileHit> _onMissileHit;
+        public static ref EventPublisher<MissileHit> OnMissileHit => ref _onMissileHit;
 
         private static EventPublisher<PlayerMove> _onHyperspaceTravelStart;
         public static ref EventPublisher<PlayerMove> OnHyperspaceTravelStart => ref _onHyperspaceTravelStart;
@@ -57,7 +57,7 @@ namespace Asteroids.ECS.Systems
             _onAsteroidsCollision = new EventPublisher<AsteroidsCollision>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
             _onAsteroidDestroyed = new EventPublisher<AsteroidDestroyed>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
             _onPickPower = new EventPublisher<PickPower>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
-            _onMisileHit = new EventPublisher<MisileHit>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
+            _onMissileHit = new EventPublisher<MissileHit>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
             _onHyperspaceTravelStart = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
             _onHyperspaceTravelStop = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
             _onHyperspaceTravel = new EventPublisher<PlayerMove>(Configs.EVENTS_STREAM_CAPACITY, Configs.EVENTS_QUEUE_COUNT);
@@ -78,7 +78,7 @@ namespace Asteroids.ECS.Systems
             _onAsteroidsCollision.Dispose();
             _onAsteroidDestroyed.Dispose();
             _onPickPower.Dispose();
-            _onMisileHit.Dispose();
+            _onMissileHit.Dispose();
             _onPlayerStoptMove.Dispose();
             _onHyperspaceTravelStart.Dispose();
             _onHyperspaceTravelStop.Dispose();

@@ -45,7 +45,7 @@ namespace Asteroids.ECS.Systems
             _consumers[((int)AudioType.AsteroidDestroyedMedium)] =
             _consumers[((int)AudioType.AsteroidDestroyedSmall)] = Events_System.OnAsteroidDestroyed.Subscribe();
 
-            _consumers[((int)AudioType.MisileHit)] = Events_System.OnMisileHit.Subscribe();
+            _consumers[((int)AudioType.MissileHit)] = Events_System.OnMissileHit.Subscribe();
 
             _consumers[((int)AudioType.PickShield)] =
             _consumers[((int)AudioType.PickWeapon)] =
@@ -65,7 +65,7 @@ namespace Asteroids.ECS.Systems
             if (!_initialized) return;
             CheckEvent(AudioType.PlayerShoot, ref Events_System.OnEntityShoot);
             CheckEvent(AudioType.PlayerCollision, ref Events_System.OnPlayerCollision);
-            CheckEvent(AudioType.MisileHit, ref Events_System.OnMisileHit);
+            CheckEvent(AudioType.MissileHit, ref Events_System.OnMissileHit);
             CheckEvent(AudioType.LoseShield, ref Events_System.OnPlayerLoseShield);
 
             if (GetEvent(_consumers[(int)AudioType.AsteroidCollisionBig], ref Events_System.OnAsteroidsCollision, out var asteroid))
@@ -82,7 +82,7 @@ namespace Asteroids.ECS.Systems
                         PlaySound(AudioType.AsteroidCollisionSmall);
                         break;
                     case AsteroidType.Tiny:
-                        PlaySound(AudioType.MisileHit);
+                        PlaySound(AudioType.MissileHit);
                         break;
                 }
             }

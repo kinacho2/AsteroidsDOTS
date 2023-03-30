@@ -2,7 +2,7 @@ using Unity.Entities;
 
 namespace Asteroids.ECS.Components
 {
-    public struct MisileComponent : IComponentData
+    public struct MissileComponent : IComponentData
     {
         public Entity owner;
         public float speed;

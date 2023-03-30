@@ -11,12 +11,12 @@ using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
-    public class PlayerMisileSpawn_System : SystemBase
+    public class PlayerMissileSpawn_System : SystemBase
     {
-        private Entity misileEntityPrefab;
+        private Entity missileEntityPrefab;
         private World defaultWorld;
 
-        private NativeArray<float> MisileAngles;
+        private NativeArray<float> MissileAngles;
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -31,17 +31,17 @@ namespace Asteroids.ECS.Systems
 
             var weaponsDB = Configs.PlayerData.WeaponsDB;
 
-            MisileAngles = new NativeArray<float>(weaponsDB.MisileAngleDeg, Allocator.Persistent);
+            MissileAngles = new NativeArray<float>(weaponsDB.MissileAngleDeg, Allocator.Persistent);
 
 
-            var MisilePrefab = weaponsDB.MisilePrefab;
-            var points = weaponsDB.MisileShape;
-            var meshFilter = MisilePrefab.GetComponentInChildren<MeshFilter>();
+            var MissilePrefab = weaponsDB.MissilePrefab;
+            var points = weaponsDB.MissileShape;
+            var meshFilter = MissilePrefab.GetComponentInChildren<MeshFilter>();
             meshFilter.sharedMesh = new Mesh();
-            AMeshTools.CreateMeshWithMassCenter(points, MisilePrefab.transform.localScale, meshFilter.sharedMesh);
+            AMeshTools.CreateMeshWithMassCenter(points, MissilePrefab.transform.localScale, meshFilter.sharedMesh);
 
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
-            misileEntityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(MisilePrefab, settings);
+            missileEntityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(MissilePrefab, settings);
         }
 
         protected override void OnUpdate()
@@ -69,20 +69,20 @@ namespace Asteroids.ECS.Systems
                             input.shoot = false;
                             var pos = translation.Value;
 
-                            for (int i = 0; i < weapon.misileAmount; i++)
+                            for (int i = 0; i < weapon.missileAmount; i++)
                             {
-                                var angle = math.radians(MisileAngles[i]);
+                                var angle = math.radians(MissileAngles[i]);
                                 var rot = math.mul(rotation.Value, quaternion.RotateZ(math.radians(-90) + angle));
                                 var fordward = math.mul(rotation.Value, math.down()).ToFloat2();
 
-                                var velocity = AGeometry.RotateZ(fordward, angle) * weapon.misileSpeed;
+                                var velocity = AGeometry.RotateZ(fordward, angle) * weapon.missileSpeed;
 
                                 var len = math.length(physics.Linear);
                                 if (len > 0)
                                 {
                                     velocity += fordward * math.dot(fordward, physics.Linear / len) * len;
                                 }
-                                InstantiateMisile(translation.Value, rot, math.length(velocity), weapon, ship, ref cmdBuffer);
+                                InstantiateMissile(translation.Value, rot, math.length(velocity), weapon, ship, ref cmdBuffer);
                             }
 
                             Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.level, position = translation.Value });
@@ -98,18 +98,18 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.Dispose();
         }
 
-        public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, Entity owner, ref EntityCommandBuffer cmdBuffer)
+        public void InstantiateMissile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, Entity owner, ref EntityCommandBuffer cmdBuffer)
         {
-            var entity = cmdBuffer.Instantiate(misileEntityPrefab);
+            var entity = cmdBuffer.Instantiate(missileEntityPrefab);
             //cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
-            cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range, owner = owner });
+            cmdBuffer.AddComponent(entity, new MissileComponent { speed = speed, timer = weapon.missileLifeTime, range = weapon.range, owner = owner });
             cmdBuffer.SetComponent(entity, new Translation { Value = position });
             cmdBuffer.SetComponent(entity, new Rotation { Value = rotation });
         }
 
         protected override void OnDestroy()
         {
-            MisileAngles.Dispose();
+            MissileAngles.Dispose();
             base.OnDestroy();
         }
     }

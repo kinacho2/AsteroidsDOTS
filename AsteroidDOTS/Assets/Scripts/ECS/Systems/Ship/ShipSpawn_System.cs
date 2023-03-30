@@ -62,9 +62,9 @@ namespace Asteroids.ECS.Systems
             });
             entityManager.AddComponentData(entity, new WeaponComponent
             {
-                misileAmount = weapon.misileAmount,
-                misileSpeed = weapon.misileSpeed,
-                misileLifeTime = weapon.misileLifeTime,
+                missileAmount = weapon.missileAmount,
+                missileSpeed = weapon.missileSpeed,
+                missileLifeTime = weapon.missileLifeTime,
                 range = weapon.range,
                 level = 0,
             });

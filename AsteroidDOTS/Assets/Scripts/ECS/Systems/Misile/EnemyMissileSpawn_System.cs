@@ -11,11 +11,11 @@ using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
-    public class EnemyMisileSpawn_System : SystemBase
+    public class EnemyMissileSpawn_System : SystemBase
     {
-        private Entity misileEntityPrefab;
+        private Entity missileEntityPrefab;
         private World defaultWorld;
-        private NativeArray<float> MisileAngles;
+        private NativeArray<float> MissileAngles;
 
         protected override void OnCreate()
         {
@@ -31,16 +31,16 @@ namespace Asteroids.ECS.Systems
 
             var weaponsDB = Configs.EnemyDB.WeaponsDB;
 
-            MisileAngles = new NativeArray<float>(weaponsDB.MisileAngleDeg, Allocator.Persistent);
+            MissileAngles = new NativeArray<float>(weaponsDB.MissileAngleDeg, Allocator.Persistent);
 
-            var MisilePrefab = weaponsDB.MisilePrefab;
-            var points = weaponsDB.MisileShape;
-            var meshFilter = MisilePrefab.GetComponentInChildren<MeshFilter>();
+            var MissilePrefab = weaponsDB.MissilePrefab;
+            var points = weaponsDB.MissileShape;
+            var meshFilter = MissilePrefab.GetComponentInChildren<MeshFilter>();
             meshFilter.sharedMesh = new Mesh();
-            AMeshTools.CreateMeshWithMassCenter(points, MisilePrefab.transform.localScale, meshFilter.sharedMesh);
+            AMeshTools.CreateMeshWithMassCenter(points, MissilePrefab.transform.localScale, meshFilter.sharedMesh);
 
             var settings = GameObjectConversionSettings.FromWorld(defaultWorld, null);
-            misileEntityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(MisilePrefab, settings);
+            missileEntityPrefab = GameObjectConversionUtility.ConvertGameObjectHierarchy(MissilePrefab, settings);
         }
 
         protected override void OnUpdate()
@@ -76,14 +76,13 @@ namespace Asteroids.ECS.Systems
                             input.shoot = false;
                             var pos = tr.Value;
 
-                            //var angle = math.radians(MisileAngles[i]);
                             var fordward = math.normalize((playerTr.Value - tr.Value).ToFloat2());
 
                             var rot = math.atan2(fordward.y, fordward.x);
 
-                            var velocity = fordward * weapon.misileSpeed;
+                            var velocity = fordward * weapon.missileSpeed;
 
-                            InstantiateMisile(tr.Value, quaternion.RotateZ(rot), math.length(velocity), weapon, ref cmdBuffer);
+                            InstantiateMissile(tr.Value, quaternion.RotateZ(rot), math.length(velocity), weapon, ref cmdBuffer);
 
                             Events_System.OnEntityShoot.PostEvent(new EntityShoot { weapon = weapon.level, position = tr.Value });
                         }
@@ -97,18 +96,18 @@ namespace Asteroids.ECS.Systems
             cmdBuffer.Dispose();
         }
 
-        public void InstantiateMisile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, ref EntityCommandBuffer cmdBuffer)
+        public void InstantiateMissile(float3 position, quaternion rotation, float speed, WeaponComponent weapon, ref EntityCommandBuffer cmdBuffer)
         {
-            var entity = cmdBuffer.Instantiate(misileEntityPrefab);
+            var entity = cmdBuffer.Instantiate(missileEntityPrefab);
             //cmdBuffer.AddComponent(entity, new LimitCheckComponent { cameraLimits = Configs.CameraLimits });
-            cmdBuffer.AddComponent(entity, new MisileComponent { speed = speed, timer = weapon.misileLifeTime, range = weapon.range });
+            cmdBuffer.AddComponent(entity, new MissileComponent { speed = speed, timer = weapon.missileLifeTime, range = weapon.range });
             cmdBuffer.SetComponent(entity, new Translation { Value = position });
             cmdBuffer.SetComponent(entity, new Rotation { Value = rotation });
         }
 
         protected override void OnDestroy()
         {
-            MisileAngles.Dispose();
+            MissileAngles.Dispose();
             base.OnDestroy();
         }
     }

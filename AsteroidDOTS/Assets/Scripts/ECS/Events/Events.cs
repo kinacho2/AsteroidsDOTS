@@ -53,7 +53,7 @@ namespace Asteroids.ECS.Events
         public float3 position;
     }
 
-    public struct MisileHit
+    public struct MissileHit
     {
         public float3 position;
     }

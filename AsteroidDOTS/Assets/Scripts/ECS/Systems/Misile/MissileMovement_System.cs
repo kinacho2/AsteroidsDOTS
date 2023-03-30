@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 namespace Asteroids.ECS.Systems
 {
-    public class MisileMovement_System : SystemBase
+    public class MissileMovement_System : SystemBase
     {
         protected override void OnUpdate()
         {
@@ -15,7 +15,7 @@ namespace Asteroids.ECS.Systems
             Entities
                 .WithoutBurst()
                 .ForEach((Entity entity, int entityInQueryIndex,
-                    ref MisileComponent stats,
+                    ref MissileComponent stats,
                     ref Translation tr,
                     ref Rotation rot) =>
                 {

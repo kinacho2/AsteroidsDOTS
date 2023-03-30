@@ -34,10 +34,10 @@ namespace Asteroids.UI
         private void EnableImages()
         {
             if (_weaponIndex >= WeaponsDB.Count) return;
-            var misileAmount = WeaponsDB.Get(_weaponIndex).misileAmount;
+            var missileAmount = WeaponsDB.Get(_weaponIndex).missileAmount;
             for (int i = 0; i < Images.Length; i++)
             {
-                Images[i].enabled = (i < misileAmount);
+                Images[i].enabled = (i < missileAmount);
             }
             _weaponIndex++;
         }

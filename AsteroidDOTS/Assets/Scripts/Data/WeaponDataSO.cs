@@ -9,15 +9,15 @@ namespace Asteroids.Data
         public GameObject BombPrefab { get; protected set; }
 
         [field: SerializeField] 
-        public GameObject MisilePrefab { get; protected set; }
+        public GameObject MissilePrefab { get; protected set; }
 
         [field: SerializeField] 
         public WeaponData[] Weapons { get; protected set; }
 
         [field: SerializeField] 
-        public float[] MisileAngleDeg { get; protected set; }
+        public float[] MissileAngleDeg { get; protected set; }
 
-        [field: SerializeField] public Vector2[] MisileShape { get; protected set; }
+        [field: SerializeField] public Vector2[] MissileShape { get; protected set; }
         public WeaponData Get(int range)
         {
             return Weapons[range];
@@ -25,7 +25,7 @@ namespace Asteroids.Data
 
         public float GetAngle(int idx)
         {
-            return MisileAngleDeg[idx];
+            return MissileAngleDeg[idx];
         }
 
         public int Count => Weapons.Length;
@@ -34,9 +34,9 @@ namespace Asteroids.Data
     [System.Serializable]
     public struct WeaponData
     {
-        public int misileAmount;
-        public float misileSpeed;
-        public float misileLifeTime;
+        public int missileAmount;
+        public float missileSpeed;
+        public float missileLifeTime;
         public float range;
     }
 }

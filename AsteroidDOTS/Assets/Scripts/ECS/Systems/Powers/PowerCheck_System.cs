@@ -72,9 +72,9 @@ namespace Asteroids.ECS.Systems
                                     if (weapon.level + 1 < Weapons.Length)
                                     {
                                         weapon.level++;
-                                        weapon.misileAmount = Weapons[weapon.level].misileAmount;
-                                        weapon.misileLifeTime = Weapons[weapon.level].misileLifeTime;
-                                        weapon.misileSpeed = Weapons[weapon.level].misileSpeed;
+                                        weapon.missileAmount = Weapons[weapon.level].missileAmount;
+                                        weapon.missileLifeTime = Weapons[weapon.level].missileLifeTime;
+                                        weapon.missileSpeed = Weapons[weapon.level].missileSpeed;
                                         weapon.range = Weapons[weapon.level].range;
                                         cmdBuffer.SetComponent(player, weapon);
                                     }

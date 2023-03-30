@@ -7,7 +7,6 @@ namespace Asteroids.Setup
     public class InitializeConfigs : MonoBehaviour
     {
         [SerializeField] Camera Camera;
-        [SerializeField] GameObject MisilePrefab;
         [SerializeField] GameDataSO GameData;
         [SerializeField] AsteroidDataSO AsteroidDB;
         [SerializeField] PowerDataSO PowerDB;
