@@ -61,7 +61,7 @@ Shader "Unlit/DrawLines"
             {
                 // sample the texture
                 fixed4 col = _Color;
-                col.a = (i.uv.y - _Thickness) < _Thickness;
+                col.a = (i.uv.y < _Thickness); //< _Thickness;
                 
                 // apply fog
                 //UNITY_APPLY_FOG(i.fogCoord, col);

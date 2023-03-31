@@ -8,6 +8,7 @@ using AudioType = Asteroids.Data.AudioType;
 
 namespace Asteroids.ECS.Systems
 {
+    [UpdateAfter(typeof(Events_System))]
     public class Audio_System : SystemBase
     {
         private NativeArray<EventConsumer> _consumers;

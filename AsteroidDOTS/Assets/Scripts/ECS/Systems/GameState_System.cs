@@ -7,6 +7,8 @@ using Unity.Entities;
 
 namespace Asteroids.ECS.Systems
 {
+    [UpdateAfter(typeof(Events_System))]
+
     public class GameState_System : SystemBase
     {
         private EventConsumer _eventConsumer;

@@ -50,6 +50,6 @@ namespace Asteroids.Data
         LoseShield = 16,
         WarpJump = 17,
         PlayerStopMove = 18,
-        WarpJumpStop = 18,
+        WarpJumpStop = 19,
     }
 }

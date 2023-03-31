@@ -11,6 +11,8 @@ using UnityEngine;
 
 namespace Asteroids.ECS.Systems
 {
+    [UpdateAfter(typeof(Events_System))]
+
     public class ExplosionSpawn_System : SystemBase
     {
         protected Entity entityPrefab;

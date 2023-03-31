@@ -67,7 +67,6 @@ namespace Asteroids.Setup
         {
             var discard = Random.NextFloat(-CameraLimits.x, CameraLimits.x);
             var pos = new float2(Random.NextFloat(-CameraLimits.x, CameraLimits.x), Random.NextFloat(-CameraLimits.y, CameraLimits.y));
-            Debug.Log("(" + CameraLimits.x + "," + CameraLimits.y + ")");
             return pos;
         }
 

@@ -13,6 +13,7 @@ using Random = Unity.Mathematics.Random;
 
 namespace Asteroids.ECS.Systems
 {
+    [UpdateAfter(typeof(Events_System))]
     public class PowerSpawn_System : SystemBase
     {
         protected Entity[] entityPrefabs;

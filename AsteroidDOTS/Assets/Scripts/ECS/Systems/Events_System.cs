@@ -4,7 +4,8 @@ using Unity.Entities;
 
 namespace Asteroids.ECS.Systems
 {
-    [UpdateInGroup(typeof(InitializationSystemGroup))]
+    //[UpdateInGroup(typeof(InitializationSystemGroup))]
+    
     public class Events_System : SystemBase
     {
         private static EventPublisher<PlayerMove> _onPlayerStartMove;
